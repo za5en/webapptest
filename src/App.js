@@ -19,6 +19,11 @@ function App() {
     tg.ready();
   }, [])
 
+  console.log(tg.initDataUnsafe);
+  console.log(tg.initDataUnsafe?.user);
+  console.log(tg.initDataUnsafe?.user?.photo_url);
+  console.log(tg.initDataUnsafe?.receiver);
+
   return (
     <div className="MarketBot">
             {/* <Header /> */}
