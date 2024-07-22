@@ -19,6 +19,7 @@ function App() {
     tg.ready();
   }, [])
 
+  console.log(tg);
   console.log(tg.initDataUnsafe);
   console.log(tg.initDataUnsafe?.user);
   console.log(tg.initDataUnsafe?.user?.photo_url);
