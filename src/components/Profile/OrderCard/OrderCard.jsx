@@ -2,12 +2,12 @@ import React from 'react';
 import './OrderCard.css'
 import { useNavigate } from 'react-router-dom';
 
-const ProductCard = () => {
+const OrderCard = () => {
 
     let navigate = useNavigate();
     
     return (
-        <div className='orderCard' onClick={() => navigate('OrderInfo', { replace: false })}>
+        <div className='orderCard' onClick={() => navigate('OrderPage', { replace: false })}>
             <div className='firstOrderLine'>
                 <div className='orderNum'>{'Заказ №1'}</div>
                 <div className='orderCost'>{'444 ₽'}</div>
@@ -18,4 +18,4 @@ const ProductCard = () => {
     );
 };
 
-export default ProductCard;
+export default OrderCard;

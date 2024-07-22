@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import './App.css';
 import { useTelegram } from './hooks/useTelegram';
-// import Header from './components/Header/Header';
 import {Route, Routes} from 'react-router-dom';
 import Products from './components/Products/Products';
 import Profile from './components/Profile/Profile';
@@ -11,6 +10,7 @@ import Favorites from './components/Profile/Blocks/Favorites/Favorites';
 import ProdInfo from './components/ProdInfo/ProdInfo';
 import Cart from './components/Cart/Cart';
 import ConfirmOrder from './components/Cart/ConfirmOrder/ConfirmOrder';
+import OrderPage from './components/Profile/OrderPage/OrderPage';
 
 function App() {
   const {tg} = useTelegram(); 
@@ -18,13 +18,7 @@ function App() {
   useEffect(() => {
     tg.ready();
   }, [])
-
-  console.log(tg);
-  console.log(tg.initDataUnsafe);
-  console.log(tg.initDataUnsafe?.user);
-  console.log(tg.initDataUnsafe?.user?.photo_url);
-  console.log(tg.initDataUnsafe?.receiver);
-
+  
   return (
     <div className="MarketBot">
             {/* <Header /> */}
@@ -33,7 +27,7 @@ function App() {
         <Route path={'Profile'} element={<Profile />} />
         <Route path={'Profile/Favorites'} element={<Favorites />} />
         <Route path={'Profile/Orders'} element={<Orders />} />
-        {/* <Route path={'Profile/Orders/OrderInfo/:id'} element={<OrderInfo />} /> */}
+        <Route path={'Profile/Orders/OrderPage'} element={<OrderPage />} />
         <Route path={'Profile/Promo'} element={<Promo />} />
         <Route path={'ProdInfo/:id/:type'} element={<ProdInfo />} />
         <Route path={'Cart'} element={<Cart />} />

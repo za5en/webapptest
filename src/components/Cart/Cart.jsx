@@ -16,6 +16,11 @@ const Cart = () => {
         }
     }
 
+    function ClearText() {
+        const getElement = document.getElementsByClassName('textFieldPromo');
+        getElement.value = "";
+    }
+
     function Goods() {
         if (goods.length !== 0) {
             return  <div>
@@ -56,7 +61,7 @@ const Cart = () => {
                             <div className='fieldHeader'>Промокод</div>
                             <div className='promoLine'>
                                 <input className='textFieldPromo' type="text"></input>
-                                <button className='promo-btn'>Применить</button>
+                                <button className='promo-btn' onClick={ClearText}>✔</button>
                             </div>
                         </form>
                         <button className='shop-btn' onClick={() => navigate('ConfirmOrder', { replace: false })}>Далее</button>
