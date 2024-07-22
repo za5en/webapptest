@@ -1,0 +1,33 @@
+.orders {
+    display:block;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 15px 0 0 0;
+    align-items: center;
+    text-align: center;
+}
+
+.name {
+    margin: 10px 0;
+    font-weight: 600;
+    font-size: 1.5em;
+}
+
+.null {
+    margin: 40vh 0;
+    font-weight: 600;
+    font-size: 1.3em;
+}
+
+.shop-btn {
+    width: 80%;
+    border-radius: 10px;
+    border-width: 0;
+    padding: 7px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 500;
+    color: white;
+    background-color: rgb(65 159 217); /* (--tg-theme-button-color); */
+}

@@ -1,0 +1,89 @@
+.header {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: max-content;
+    display: block;
+    align-items: center;
+    text-align: justify;
+    padding: 0 20px;
+    background: white;
+    overflow: hidden;
+}
+
+.firstLine {
+    display: flex;
+    padding: 5px 0;
+}
+
+.secondLine {
+    display: flex;
+    padding: 0 0 2px 0;
+    white-space: nowrap;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling:touch;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.username {
+    font-weight: 500;
+    margin: 10px 0 10px 5px;
+}
+
+.cancel {
+    color: rgb(65 159 217); /* (--tg-theme-button-color); */
+}
+
+.cancelButton {
+    padding: 0;
+    margin-left: 0;
+    font-size: 1em;
+}
+
+.menuButton {
+    width: max-content;
+    height: 3em;
+    background: transparent;
+    text-align: start;
+    padding: 2px 10px 2px 5px;
+    border-radius: 25px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(65 159 217); /* (--tg-theme-button-color); */
+    margin-left: auto;
+    cursor: pointer;
+}
+
+.menuButton:hover {
+    background: rgb(171, 223, 255);
+    border-color: rgb(171, 223, 255);
+}
+
+.menuIcon {
+    width: 30px;
+    height: 30px;
+    vertical-align: middle;
+}
+
+.scroll {
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+.scroll span {
+    cursor: pointer;
+    display: inline-block;
+    color: black;
+    text-align: center;
+    padding: 14px;
+    text-decoration: none;
+}
+
+.scroll span:hover {
+    background-color: rgb(171, 223, 255);
+}
