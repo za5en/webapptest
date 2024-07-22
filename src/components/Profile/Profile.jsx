@@ -6,7 +6,7 @@ import OtherHeader from '../OtherHeader/OtherHeader';
 import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
-    const {user} = useTelegram();
+    const {user, receiver} = useTelegram();
     let navigate = useNavigate();
 
     return (
@@ -18,7 +18,7 @@ const Profile = () => {
                     {user?.username ?? 'Username'}
                 </span>
             </div>
-            <div className='block' onClick={() => navigate('Orders', { replace: false })}>Заказы &gt;</div>
+            <div className='block' onClick={() => navigate('Orders', { replace: false })}>{receiver.id}</div>
             <div className='block' onClick={() => navigate('Promo', { replace: false })}>Акции &gt;</div>
             <div className='block' onClick={() => navigate('Favorites', { replace: false })}>Избранное &gt;</div>
         </div>

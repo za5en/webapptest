@@ -13,13 +13,11 @@ import Cart from './components/Cart/Cart';
 import ConfirmOrder from './components/Cart/ConfirmOrder/ConfirmOrder';
 
 function App() {
-  const {tg, receiver} = useTelegram(); 
+  const {tg} = useTelegram(); 
 
   useEffect(() => {
     tg.ready();
   }, [])
-
-  console.log(receiver)
 
   return (
     <div className="MarketBot">
