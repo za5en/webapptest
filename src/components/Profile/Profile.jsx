@@ -6,20 +6,20 @@ import OtherHeader from '../OtherHeader/OtherHeader';
 import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
-    const {user, receiver} = useTelegram();
+    const {tg, user, receiver} = useTelegram();
     let navigate = useNavigate();
 
     return (
         <div>
             <OtherHeader />
             <div className='user'>
-                <img src={user?.photo_url ?? Avatar} className='avatar' />
+                <img src={user?.photo_url} className='avatar' />
                 <span className='usernameProfile'>
                     {user?.username ?? 'Username'}
                 </span>
             </div>
-            <div className='block' onClick={() => navigate('Orders', { replace: false })}>{receiver.id}</div>
-            <div className='block' onClick={() => navigate('Promo', { replace: false })}>Акции &gt;</div>
+            <div className='block' onClick={() => navigate('Orders', { replace: false })}>{receiver?.id}</div>
+            <div className='block' onClick={() => navigate('Promo', { replace: false })}>{tg.initDataUnsafe}</div>
             <div className='block' onClick={() => navigate('Favorites', { replace: false })}>Избранное &gt;</div>
         </div>
     )
