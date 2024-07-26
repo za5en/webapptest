@@ -18,22 +18,14 @@
 }
 
 .title1 {
-    padding: 10px 0 10px 5px;
+    padding: 0 0 10px 5px;
     font-size: 2.3em;
     font-weight: 500;
 }
 
 .description1 {
-    padding: 0 0 0 5px;
+    padding: 0 0 10px 5px;
     font-size: 1em;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    line-height: 1.5em;
-    height: 3em;
 }
 
 .price1 {
@@ -57,4 +49,104 @@
     color: red;
     padding-left: 5px;
     font-size: 1.1em;
+}
+
+.prodWeight {
+    padding: 0 0 0 5px;
+    font-size: 1em;
+}
+
+.prodBlock {
+    background: white;
+    border-radius: 15px;
+    margin: 15px 10px;
+    padding: 15px;
+}
+
+.prodOptions {
+    padding: 0 0 0 5px;
+    font-size: 1em;
+}
+
+.buy-btn {
+    margin-left: auto;
+    width: 100%;
+    height: 35px;
+    border-radius: 10px;
+    border-width: 0;
+    text-align: center;
+    cursor: pointer;
+    font-size: 1.2em;
+    font-weight: 500;
+    color: white;
+    background-color: rgb(65 159 217); /* (--tg-theme-button-color); */
+}
+
+.buy-btn:hover {
+    background-color: rgb(171, 223, 255);
+}
+
+.selectLine {
+    display: flex;
+}
+
+.selectPoint {
+    margin: 0 10px 15px 5px;
+    transform: scale(1.5);
+}
+
+.selectText {
+    font-size: 1em;
+}
+
+.pricePoint {
+    margin-left: auto;
+    font-weight: 500;
+}
+
+.minus-btn {
+    margin-right: auto;
+    width: 30%;
+    height: 30px;
+    border-radius: 10px;
+    border-width: 0;
+    text-align: center;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+    color: white;
+    background-color: rgb(65 159 217);
+}
+
+.minus-btn:hover {
+    background-color: rgb(171, 223, 255);
+}
+
+.plus-btn {
+    margin-left: auto;
+    width: 30%;
+    height: 30px;
+    border-radius: 10px;
+    border-width: 0;
+    text-align: center;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+    color: white;
+    background-color: rgb(65 159 217);
+}
+
+.plus-btn:hover {
+    background-color: rgb(171, 223, 255);
+}
+
+.amount {
+    font-size: 1.3em;
+    font-weight: 500;
+}
+
+.addToCartLine {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 10px;
 }

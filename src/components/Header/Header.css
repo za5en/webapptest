@@ -84,4 +84,15 @@
 
 .scroll span:hover {
     background-color: rgb(171, 223, 255);
+    border-radius: 15px;
+}
+
+.scroll-selected {
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+    padding: 14px;
+    background-color: rgb(65 159 217);
+    color: white;
+    border-radius: 15px;
 }

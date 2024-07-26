@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './ProdInfo.css'
 import BurgerIcon from '../../assets/images/burger.png';
-import {useLocation} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import OtherHeader from '../OtherHeader/OtherHeader.jsx';
 
 const ProdInfo = () => {
+
+    let navigate = useNavigate();
 
     const {products} = require('../TestData/prod.jsx');
     
@@ -12,15 +14,83 @@ const ProdInfo = () => {
 
     let product = {};
 
+    const [price, setPrice] = useState();
+
+    const [amount, setAmount] = useState();
+
+    const onChange = (edit) => {
+        if (edit === '-') {
+            if (typeof amount !== 'undefined') {
+                if (amount > 1) {
+                    if (typeof price !== 'undefined') {
+                        setPrice(price - parseFloat(product.price.substring(0, product.price.indexOf(' '))))
+                    } else {
+                        setPrice(parseFloat(product.price.substring(0, product.price.indexOf(' '))))
+                    }
+                    setAmount(amount - 1)
+                }
+            } else {
+                setAmount(1)
+                setPrice(parseFloat(product.price.substring(0, product.price.indexOf(' '))))
+            }
+        } else {
+            if (typeof amount !== 'undefined') {
+                if (typeof price !== 'undefined') {
+                    setPrice(price + parseFloat(product.price.substring(0, product.price.indexOf(' '))))
+                } else {
+                    setPrice(parseFloat(product.price.substring(0, product.price.indexOf(' '))) * 2)
+                }                
+                setAmount(amount + 1)
+            } else {
+                setAmount(2)
+                setPrice(parseFloat(product.price.substring(0, product.price.indexOf(' '))) * 2)
+            }
+        }
+    }
+
     // const onAddHandler = () => {
     //     location.onAdd(location.product);
     // }
 
     let find = false;
     for (let i = 0; i < Object.keys(products).length && !find; i++) {
-        if (products[i].id == location.state.id) {
+        if (products[i].id === location.state.id) {
             product = products[i];
             find = true;
+        }
+    }
+
+    function Variants() {
+        if (product.variants?.length > 0) {
+            return  <div className='prodBlock'>
+                        <div className={'prodOptions'}>Варианты товара</div>
+                        <form className='radioButtons'>
+                            {product.variants?.map(item => (
+                                <div className='selectLine'>
+                                    <input className='selectPoint' type="radio" name="payment" id={item} value="card"></input>
+                                    <label className='selectText' for={item}>{item}</label><br />
+                                    <span className='pricePoint'>99.00 ₽</span>
+                                </div>
+                            ))}
+                        </form>
+                    </div>
+        }
+    }
+
+    function Options() {
+        if (product.options?.length > 0) {
+            return  <div className='prodBlock'>
+                        <div className={'prodOptions'}>Рекомендуемые опции</div>
+                        <form className='radioButtons'>
+                            {product.options?.map(item => (
+                                <div className='selectLine'>
+                                    <input className='selectPoint' type="checkbox" name="payment" id={item} value="card"></input>
+                                    <label className='selectText' for={item}>{item}</label><br />
+                                    <span className='pricePoint'>50 ₽</span>
+                                </div>
+                            ))}
+                        </form>
+                    </div>
         }
     }
     
@@ -35,21 +105,36 @@ const ProdInfo = () => {
 			    		className='productIcon1'
 			    	/>
                 </div>
-                <div className={'title1'}>{product.title}</div>
-                <div className={'price1'}>
-                    {product.price}
+                <div className='prodBlock'>
+                    <div className={'title1'}>{product.title}</div>
+                    <div className={'price1'}>
+                        {product.price}
+                    </div>
+                    <div>
+                        <span className={'oldPrice1'}>
+                            {product.oldPrice}
+                        </span>
+                        <span className={'discount1'}>
+                            {typeof product.oldPrice === 'string' 
+                            ? `-${Math.round((1 - parseFloat(product.price.substring(0, product.price.indexOf(' '))) / parseFloat(product.oldPrice.substring(0, product.oldPrice.indexOf(' ')))) * 100)}%` 
+                            : ''}
+                        </span>
+                    </div>
                 </div>
-                <div>
-                    <span className={'oldPrice1'}>
-                        {product.oldPrice}
-                    </span>
-                    <span className={'discount1'}>
-                        {typeof product.oldPrice === 'string' 
-                        ? `-${Math.round((1 - parseFloat(product.price.substring(0, product.price.indexOf(' '))) / parseFloat(product.oldPrice.substring(0, product.oldPrice.indexOf(' ')))) * 100)}%` 
-                        : ''}
-                    </span>
+                <div className='prodBlock'>
+                    <div className={'description1'}>{product.description}</div>
+                    <div className={'prodWeight'}><b>Вес:</b> {product.weight} гр</div>
                 </div>
-                <div className={'description1'}>{product.description}</div>
+                <Variants />
+                <Options />
+                <div className='prodBlock'>
+                    <div className='addToCartLine'>
+                        <button className='minus-btn' onClick={() => onChange('-')}>-</button>
+                        <div className='amount'>{amount ?? 1}</div>
+                        <button className='plus-btn' onClick={() => onChange('+')}>+</button>
+                    </div>
+                    <button className='buy-btn' onClick={() => navigate(-1)}>{price?.toFixed(2) ?? '0'} ₽</button>
+                </div>
             </div>
         </div>
     );

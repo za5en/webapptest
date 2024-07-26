@@ -15,7 +15,11 @@ const Orders = () => {
                         <button className='shop-btn' onClick={() => navigate(-2)}>К списку товаров</button>
                     </div>;
         else
-            return <OrderCard />
+            return  <div>
+                        {orders.map(item => (
+                            <OrderCard />
+                        ))}
+                    </div>
     }
 
     return (
