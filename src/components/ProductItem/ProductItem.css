@@ -2,14 +2,15 @@
     display: flex;
     flex-direction: column;
     border-radius: 7px;
+    border: none;
     padding: 0;
     margin: 0 10px 10px 10px;
-    width: 160px;
+    width: 150px;
     background-color: white;
 }
 
 .img {
-    width: 94.2px;
+    width: 88.25px;
     height: 100px;
     text-align: center;
     align-content: center;
@@ -79,4 +80,42 @@
 
 .toInfo {
     cursor: pointer;
+}
+
+.addToCartButtons {
+    display: flex;
+    align-items: baseline;
+}
+
+.amountCart {
+    font-size: 1.1em;
+    font-weight: 400;
+}
+
+.minus-cart-btn {
+    margin-right: auto;
+    width: 30%;
+    border-radius: 7px;
+    padding: 7px;
+    border: none;
+    text-align: center;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+    color: white;
+    background-color: rgb(65 159 217);
+}
+
+.plus-cart-btn {
+    margin-left: auto;
+    width: 30%;
+    padding: 7px;
+    border-radius: 7px;
+    border: none;
+    text-align: center;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+    color: white;
+    background-color: rgb(65 159 217);
 }

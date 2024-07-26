@@ -30,7 +30,7 @@ const Promo = () => {
         } else {
             return  <div>
                         <p className='name'>Акции</p>
-                        <div className='null'>Акций пока нет</div>
+                        <div className='nullEdited'>Акций пока нет</div>
                     </div>
         }
     }

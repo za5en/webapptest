@@ -110,15 +110,15 @@ const ProdInfo = () => {
                     <div className={'price1'}>
                         {product.price}
                     </div>
-                    <div>
-                        <span className={'oldPrice1'}>
+                    <div className='selectLine'>
+                        <div className={'oldPrice1'}>
                             {product.oldPrice}
-                        </span>
-                        <span className={'discount1'}>
+                        </div>
+                        <div className={'discount1'}>
                             {typeof product.oldPrice === 'string' 
                             ? `-${Math.round((1 - parseFloat(product.price.substring(0, product.price.indexOf(' '))) / parseFloat(product.oldPrice.substring(0, product.oldPrice.indexOf(' ')))) * 100)}%` 
                             : ''}
-                        </span>
+                        </div>
                     </div>
                 </div>
                 <div className='prodBlock'>
@@ -133,7 +133,7 @@ const ProdInfo = () => {
                         <div className='amount'>{amount ?? 1}</div>
                         <button className='plus-btn' onClick={() => onChange('+')}>+</button>
                     </div>
-                    <button className='buy-btn' onClick={() => navigate(-1)}>{price?.toFixed(2) ?? '0'} ₽</button>
+                    <button className='buy-btn' onClick={() => navigate(-1)}>{price?.toFixed(2) ?? (product.price.substring(0, product.price.indexOf(' ')))} ₽</button>
                 </div>
             </div>
         </div>

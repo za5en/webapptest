@@ -17,11 +17,9 @@ const Favorites = () => {
         if (added) {
             newItems = Object.values(added).filter(item => item.id !== product.id);
             price[0] += parseFloat(product.price.substring(0, product.price.indexOf(' ')))
-            console.log(price[0])
         } else {
             newItems = [...addedItems, product];
             price[0] += parseFloat(product.price.substring(0, product.price.indexOf(' ')))
-            console.log(price[0])
         }
 
         setAddedItems(newItems)
@@ -51,7 +49,7 @@ const Favorites = () => {
                     </div>
         } else {
             return  <div>
-                    <div className='null'>Избранных товаров пока нет</div>
+                    <div className='nullEdited'>Избранных товаров пока нет</div>
                     <button className='shop-btn' onClick={() => navigate(-2)}>К списку товаров</button>
                     </div>
         }

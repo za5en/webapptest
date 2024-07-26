@@ -35,13 +35,11 @@
 }
 
 .oldPrice1 {
-    padding: 7px 0 0 5px;
+    padding: 0 0 0 5px;
     font-weight: 500;
     font-size: 1em;
     text-decoration: line-through;
     color: gray;
-    line-height: 2em;
-    height: 2em;
 }
 
 .discount1 {
@@ -87,6 +85,7 @@
 
 .selectLine {
     display: flex;
+    align-items: baseline;
 }
 
 .selectPoint {

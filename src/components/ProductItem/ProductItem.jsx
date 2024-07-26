@@ -1,14 +1,54 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './ProductItem.css'
 import BurgerIcon from '../../assets/images/burger.png';
 import { useNavigate } from 'react-router-dom';
 
-const ProductItem = ({product, className, onAdd}) => {
+const ProductItem = ({product, className, onAdd, changePrice}) => {
 
     let navigate = useNavigate();
 
     const onAddHandler = () => {
         onAdd(product);
+        setAmount(1);
+    }
+
+    const changePriceHandler = (editType) => {
+        changePrice(editType, product.price.substring(0, product.price.indexOf(' ')));
+    }
+
+    const [amount, setAmount] = useState();
+
+    const onChange = (edit) => {
+        if (edit === '-') {
+            if (typeof amount !== 'undefined') {
+                if (amount > 0) {
+                    changePriceHandler(edit);
+                    setAmount(amount - 1);
+                }
+            }
+        } else {
+            if (typeof amount !== 'undefined') {
+                changePriceHandler(edit);          
+                setAmount(amount + 1);
+            } else {                
+                changePriceHandler(edit);
+                setAmount(2);
+            }
+        }
+    }
+
+    function Button() {
+        if (typeof amount === 'undefined' || amount === 0) {
+            return  <button className={'add-btn'} onClick={onAddHandler}>
+                        <p className={'toCart'}>В корзину</p>
+                    </button>
+        } else {
+            return  <div className='addToCartButtons'>
+                        <button className='minus-cart-btn' onClick={() => onChange('-')}>-</button>
+                        <div className='amountCart'>{amount ?? 1}</div>
+                        <button className='plus-cart-btn' onClick={() => onChange('+')}>+</button>
+                    </div>
+        }
     }
     
     return (
@@ -33,9 +73,7 @@ const ProductItem = ({product, className, onAdd}) => {
                     </span>
                 </div>
             </div>
-            <button className={'add-btn'} onClick={onAddHandler}>
-                <p className={'toCart'}>В корзину</p>
-            </button>
+            <Button />
         </div>
     );
 };

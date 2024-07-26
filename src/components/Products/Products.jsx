@@ -27,6 +27,8 @@ const Products = () => {
 
     let newItems = [];
 
+    let nullPrice = 0;
+
     let productsByCat = new Map();
 
     for (let i = 0; i < categories.length; i++) {
@@ -87,6 +89,18 @@ const Products = () => {
         // }
     }
 
+    const changePrice = (edit, prodPrice) => {
+        if (edit === '+') {
+            setPrice(price + Number(prodPrice));
+        } else {
+            if (price - Number(prodPrice) >= 0) { 
+                setPrice(price - Number(prodPrice));
+            } else {
+                setPrice(0);
+            }
+        }
+    }
+
     return (
         <div>
             <Header />
@@ -100,6 +114,7 @@ const Products = () => {
                                 product={item}
                                 onAdd={onAdd}
                                 className={'item'}
+                                changePrice={changePrice}
                             />
                         ))}
                         </div>
@@ -108,7 +123,7 @@ const Products = () => {
             </div>
             <div className='space'/>
             <footer>
-                <button className='cart-btn' onClick={() => navigate('Cart', { replace: false })}>{`Корзина: ${price?.toFixed(2) ?? 0} ₽`}</button>
+                <button className='cart-btn' onClick={() => navigate('Cart', { replace: false })}>{`Корзина: ${price?.toFixed(2) ?? nullPrice.toFixed(2)} ₽`}</button>
             </footer>
         </div>
     );

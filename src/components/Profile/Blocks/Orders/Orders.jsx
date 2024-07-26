@@ -11,7 +11,7 @@ const Orders = () => {
     function Orders() {
         if (orders.length === 0)
             return  <div>
-                        <div className='null'>Заказов пока нет</div>
+                        <div className='nullEdited'>Заказов пока нет</div>
                         <button className='shop-btn' onClick={() => navigate(-2)}>К списку товаров</button>
                     </div>;
         else
