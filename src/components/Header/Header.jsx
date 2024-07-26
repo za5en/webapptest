@@ -62,7 +62,7 @@ const Header = () => {
             <div className='firstLine'>
                 <Button className='cancelButton' onClick={onClose}><b className='cancel'>Закрыть</b></Button>
                 <button className='menuButton' onClick={() => navigate('Profile', { replace: false })}>
-                    <img src={user?.photo_url ?? Avatar} className='menuIcon' />
+                    {/* <img src={user?.photo_url ?? Avatar} className='menuIcon' /> */}
                     <span className='username'>
                         {user?.username ?? 'Username'}
                     </span>

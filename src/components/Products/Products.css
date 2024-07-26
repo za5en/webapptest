@@ -1,7 +1,7 @@
 .list {
     display: block;
     text-align: center;
-    margin: 10px 5px 0 5px;
+    margin: 15px 0 0 0;
 }
 
 .item {
@@ -13,14 +13,14 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    margin: 15px 10px;
+    margin: 20px 10px;
     text-align: start;
 }
 
 .catName {
-    scroll-margin-top: 110px;
-    font-size: 1.1em;
-    font-weight: 500;
+    scroll-margin-top: 115px;
+    font-size: 1.5em;
+    font-weight: 800;
 }
 
 .cart-btn {

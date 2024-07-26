@@ -57,13 +57,13 @@ const Cart = () => {
                             </div>
                             <PaidDelivery />
                         </div>
-                        <form className='payments'>
+                        {/* <form className='payments'>
                             <div className='fieldHeader'>Промокод</div>
                             <div className='promoLine'>
                                 <input className='textFieldPromo' type="text"></input>
                                 <button className='promo-btn' onClick={ClearText}>✔</button>
                             </div>
-                        </form>
+                        </form> */}
                         <button className='shop-btn' onClick={() => navigate('ConfirmOrder', { replace: false })}>Далее</button>
                     </div>
         }

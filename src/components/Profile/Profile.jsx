@@ -13,7 +13,7 @@ const Profile = () => {
         <div>
             <OtherHeader />
             <div className='user'>
-                <img src={user?.photo_url ?? Avatar} className='avatar' />
+                {/* <img src={user?.photo_url ?? Avatar} className='avatar' /> */}
                 <span className='usernameProfile'>
                     {user?.username ?? 'Username'}
                 </span>
