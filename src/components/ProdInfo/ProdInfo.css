@@ -1,7 +1,6 @@
 .product1 {
     display: block;
     flex-direction: column;
-    border: 1px solid var(--tg-theme-button-color);
     border-radius: 7px;
     padding: 0;
     margin: 15px 10px 10px 10px;
