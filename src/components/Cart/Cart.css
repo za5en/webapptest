@@ -37,7 +37,7 @@
 .prodPrice {
     margin: 0 10px 5px;
     font-weight: 600;
-    font-size: 1.5em;
+    font-size: 1.2em;
     color: black;
 }
 
@@ -135,4 +135,10 @@
     font-weight: 500;
     color: white;
     background-color: rgb(65 159 217); /* (--tg-theme-button-color); */
+}
+
+.changeAmountButtons {
+    display: flex;
+    align-items: baseline;
+    padding-left: 10px;
 }

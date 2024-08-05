@@ -11,6 +11,8 @@ const getTotalPrice = (items = []) => {
     }, 0)
 }
 
+export var goodsAmount = new Map()
+
 const Products = () => {
 
     let navigate = useNavigate();
@@ -66,7 +68,7 @@ const Products = () => {
     const onAdd = (product) => {
         let added = addedItems.find(item => item.id === product.id);
 
-        let addPrice = price ?? 0;
+        let addPrice = price ?? nullPrice;
 
         if (added) {
             newItems = addedItems;
@@ -74,6 +76,7 @@ const Products = () => {
         } else {
             newItems = [...addedItems, product];
             addPrice += parseFloat(product.price.substring(0, product.price.indexOf(' ')));
+            goodsAmount.set(product.id, 1);
         }
 
         setPrice(addPrice)
@@ -89,14 +92,40 @@ const Products = () => {
         // }
     }
 
+    for (var [key, value] of goodsAmount) {
+        let find = false;
+        for (let i = 0; i < products.length && !find; i++) {
+            if (products[i].id === key) {
+                find = true;
+                if (nullPrice === 0) {
+                    nullPrice = parseFloat(products[i].price.substring(0, products[i].price.indexOf(' '))) * value;
+                } else {
+                    nullPrice = nullPrice + parseFloat(products[i].price.substring(0, products[i].price.indexOf(' '))) * value;
+                }
+            }
+        }
+    }
+
     const changePrice = (edit, prodPrice) => {
         if (edit === '+') {
-            setPrice(price + Number(prodPrice));
-        } else {
-            if (price - Number(prodPrice) >= 0) { 
-                setPrice(price - Number(prodPrice));
+            if (typeof price === "undefined" && nullPrice != 0) {
+                setPrice(nullPrice + Number(prodPrice));
             } else {
-                setPrice(0);
+                setPrice(price + Number(prodPrice));
+            }
+        } else {
+            if (typeof price === "undefined" && nullPrice != 0) {
+                if (nullPrice - Number(prodPrice) >= 0) { 
+                    setPrice(nullPrice - Number(prodPrice));
+                } else {
+                    setPrice(0);
+                }
+            } else {
+                if (price - Number(prodPrice) >= 0) { 
+                    setPrice(price - Number(prodPrice));
+                } else {
+                    setPrice(0);
+                }
             }
         }
     }

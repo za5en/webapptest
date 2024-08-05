@@ -42,17 +42,6 @@ const ConfirmOrder = () => {
                                 <label className='radioText' for="cash">Наличными курьеру</label><br />
                             </div>
                         </form>
-                        <div className='fieldHeader'>Выберите способ доставки:</div>
-                        <form className='radioButtons'>
-                            <div>
-                                <input className='radioField' type="radio" name="deliveryType" id="delivery" value="delivery"></input>
-                                <label className='radioText' for="delivery">Доставка</label><br />
-                            </div>
-                            <div>
-                                <input className='radioField' type="radio" name="deliveryType" id="pickup" value="pickup"></input>
-                                <label className='radioText' for="pickup">Самовывоз</label><br />
-                            </div>
-                        </form>
                     </div>
                     <button className='shop-btn' onClick={onClose}>Подтвердить оформление</button>
                 </div>

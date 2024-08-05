@@ -3,6 +3,7 @@ import './ProdInfo.css'
 import BurgerIcon from '../../assets/images/burger.png';
 import {useLocation, useNavigate} from 'react-router-dom';
 import OtherHeader from '../OtherHeader/OtherHeader.jsx';
+import { goodsAmount } from '../Products/Products.jsx'
 
 const ProdInfo = () => {
 
@@ -15,8 +16,10 @@ const ProdInfo = () => {
     let product = {};
 
     const [price, setPrice] = useState();
+    let defPrice = 0;
 
     const [amount, setAmount] = useState();
+    let defAmount = 1;
 
     const onChange = (edit) => {
         if (edit === '-') {
@@ -30,27 +33,33 @@ const ProdInfo = () => {
                     setAmount(amount - 1)
                 }
             } else {
-                setAmount(1)
-                setPrice(parseFloat(product.price.substring(0, product.price.indexOf(' '))))
+                if (defAmount > 1) {
+                    setAmount(defAmount - 1)
+                    setPrice(defPrice - parseFloat(product.price.substring(0, product.price.indexOf(' '))))
+                } else {
+                    setAmount(1)
+                    setPrice(parseFloat(product.price.substring(0, product.price.indexOf(' '))))
+                }
             }
         } else {
             if (typeof amount !== 'undefined') {
                 if (typeof price !== 'undefined') {
                     setPrice(price + parseFloat(product.price.substring(0, product.price.indexOf(' '))))
                 } else {
-                    setPrice(parseFloat(product.price.substring(0, product.price.indexOf(' '))) * 2)
+                    setPrice(parseFloat(product.price.substring(0, product.price.indexOf(' '))) + defPrice)
                 }                
                 setAmount(amount + 1)
             } else {
-                setAmount(2)
-                setPrice(parseFloat(product.price.substring(0, product.price.indexOf(' '))) * 2)
+                setAmount(defAmount + 1)
+                setPrice(parseFloat(product.price.substring(0, product.price.indexOf(' '))) + defPrice)
             }
         }
     }
 
-    // const onAddHandler = () => {
-    //     location.onAdd(location.product);
-    // }
+    const onExit = () => {
+        goodsAmount.set(product.id, amount);
+        navigate(-1);
+    }
 
     let find = false;
     for (let i = 0; i < Object.keys(products).length && !find; i++) {
@@ -59,6 +68,8 @@ const ProdInfo = () => {
             find = true;
         }
     }
+    defAmount = goodsAmount.get(product.id)
+    defPrice = parseFloat(product.price.substring(0, product.price.indexOf(' '))) * defAmount
 
     function Variants() {
         if (product.variants?.length > 0) {
@@ -130,10 +141,10 @@ const ProdInfo = () => {
                 <div className='prodBlock'>
                     <div className='addToCartLine'>
                         <button className='minus-btn' onClick={() => onChange('-')}>-</button>
-                        <div className='amount'>{amount ?? 1}</div>
+                        <div className='amount'>{amount ?? defAmount}</div>
                         <button className='plus-btn' onClick={() => onChange('+')}>+</button>
                     </div>
-                    <button className='buy-btn' onClick={() => navigate(-1)}>{price?.toFixed(2) ?? (product.price.substring(0, product.price.indexOf(' ')))} ₽</button>
+                    <button className='buy-btn' onClick={() => onExit()}>{price?.toFixed(2) ?? defPrice.toFixed(2)} ₽</button>
                 </div>
             </div>
         </div>

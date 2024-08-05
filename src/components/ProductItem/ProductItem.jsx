@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './ProductItem.css'
 import BurgerIcon from '../../assets/images/burger.png';
 import { useNavigate } from 'react-router-dom';
+import { goodsAmount } from '../Products/Products.jsx'
 
 const ProductItem = ({product, className, onAdd, changePrice}) => {
 
@@ -9,43 +10,45 @@ const ProductItem = ({product, className, onAdd, changePrice}) => {
 
     const onAddHandler = () => {
         onAdd(product);
-        setAmount(1);
+        goodsAmount.set(product.id, 1);
     }
 
     const changePriceHandler = (editType) => {
         changePrice(editType, product.price.substring(0, product.price.indexOf(' ')));
     }
 
-    const [amount, setAmount] = useState();
-
     const onChange = (edit) => {
         if (edit === '-') {
-            if (typeof amount !== 'undefined') {
-                if (amount > 0) {
-                    changePriceHandler(edit);
-                    setAmount(amount - 1);
+            if (goodsAmount.has(product.id)) {
+                changePriceHandler(edit);
+                if (goodsAmount.get(product.id) == 1) {
+                    goodsAmount.delete(product.id);
+                }
+                else {
+                    goodsAmount.set(product.id, goodsAmount.get(product.id) - 1)
                 }
             }
         } else {
-            if (typeof amount !== 'undefined') {
-                changePriceHandler(edit);          
-                setAmount(amount + 1);
+            if (goodsAmount.has(product.id)) {
+                changePriceHandler(edit);
+                goodsAmount.set(product.id, goodsAmount.get(product.id) + 1)
             } else {                
                 changePriceHandler(edit);
-                setAmount(2);
+                goodsAmount.set(product.id, 2)
             }
         }
+        // console.log(goodsAmount)
     }
 
     function Button() {
-        if (typeof amount === 'undefined' || amount === 0) {
+        if (!goodsAmount.has(product.id)) {
             return  <button className={'add-btn'} onClick={onAddHandler}>
                         <p className={'toCart'}>В корзину</p>
                     </button>
         } else {
             return  <div className='addToCartButtons'>
                         <button className='minus-cart-btn' onClick={() => onChange('-')}>-</button>
-                        <div className='amountCart'>{amount ?? 1}</div>
+                        <div className='amountCart'>{goodsAmount.get(product.id) ?? 1}</div>
                         <button className='plus-cart-btn' onClick={() => onChange('+')}>+</button>
                     </div>
         }
