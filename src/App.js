@@ -37,7 +37,7 @@ function App() {
   let response = ''
 
   useEffect(() => {
-      response = fetch(`http://togethergame:8001/user/get_user?bot_id=${botId}&client_tg_id=${user.id}`)
+      response = fetch(`//togethergame:8001/user/get_user?bot_id=${botId}&client_tg_id=${user.id}`)
           .then(response => response.json())
           .then(data => setTotalReactPackages(data.total));
   }, []);
