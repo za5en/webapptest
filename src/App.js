@@ -38,31 +38,12 @@ function App() {
   let response = ''
 //get user
   useEffect(() => {
-      response = fetch(`http://localhost:8000/user/get_user?bot_id=${botId}&client_tg_id=${user.id}`)
+      response = fetch(`http://togethergame:8001/user/get_user/?bot_id=${botId}&client_tg_id=${user.id}`)
           .then(response => response.json())
           .then(data => setTotalReactPackages(data.total));
   }, []);
 
   console.log(response);
-
-//   let clientId = 1
-// //get contacts
-//   useEffect(() => {
-//       response = fetch(`http://togethergame:8001/info/get_contacts?bot_id=${botId}&client_id=${clientId}`)
-//           .then(response => response.json())
-//           .then(data => setTotalReactPackages(data.total));
-//   }, []);
-
-//   let orderId = 1
-// //хз что это
-//   useEffect(() => {
-//       response = fetch(`http://togethergame:8001/clients_orders/delivery/get_variants?order_id=${orderId}`)
-//           .then(response => response.json())
-//           .then(data => setTotalReactPackages(data.total));
-//   }, []);
-
-//get orders
-
    
   return (
     <div className="MarketBot">
