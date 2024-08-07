@@ -26,7 +26,10 @@ function App() {
   console.log(window.Telegram.WebApp.initDataUnsafe.start_param)
   let params = new URL(document.location.toString()).searchParams;
   console.log(params)
-  // console.log(params.get("name"))
+  console.log(params.get("tgWebAppStartParam"))
+  var url = window.location.search;
+  url = url.replace("?", '');
+  console.log(url);
   
   return (
     <div className="MarketBot">
