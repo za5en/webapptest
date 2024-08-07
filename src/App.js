@@ -20,6 +20,9 @@ function App() {
   useEffect(() => {
     tg.ready();
   }, [])
+
+  console.log(tg)
+  console.log(tg.initDataUnsafe)
   
   return (
     <div className="MarketBot">

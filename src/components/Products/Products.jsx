@@ -49,7 +49,7 @@ const Products = () => {
             totalPrice: getTotalPrice(addedItems),
             queryId
         }
-        fetch('http://localhost:8000', {
+        fetch('http://togethergame:8001', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
