@@ -15,7 +15,7 @@ import Feedback from './components/Feedback/Feedback';
 import Contacts from './components/Profile/Blocks/Contacts/Contacts';
 
 function App() {
-  const {tg} = useTelegram(); 
+  const {tg, user} = useTelegram(); 
 
   useEffect(() => {
     tg.ready();
@@ -34,13 +34,17 @@ function App() {
   //   })
   // }, [])
 
+  console.log(tg)
+  console.log(user)
+  console.log(user.id)
+
   let response = ''
 
-  useEffect(() => {
-      response = fetch(`http://togethergame:8001/user/get_user?bot_id=${botId}&client_tg_id=${tg.user.id}`)
-          .then(response => response.json())
-          .then(data => setTotalReactPackages(data.total));
-  }, []);
+  // useEffect(() => {
+  //     response = fetch(`http://togethergame:8001/user/get_user?bot_id=${botId}&client_tg_id=${tg.user.id}`)
+  //         .then(response => response.json())
+  //         .then(data => setTotalReactPackages(data.total));
+  // }, []);
 
   console.log(response);
 
