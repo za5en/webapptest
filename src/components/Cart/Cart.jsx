@@ -15,6 +15,11 @@ const Cart = () => {
 
     const {products} = require('../TestData/prod.jsx');
 
+    const deliveryMethod = [
+        {method: 'Самовывоз'},
+        {method: 'Доставка'}
+    ];
+
     let find = false;
     for (let i = 0; i < Object.keys(products).length && !find; i++) {
         if (goodsAmount.has(products[i].id)) {
@@ -47,8 +52,11 @@ const Cart = () => {
     //     console.log(goodsAmount)
     // }
 
+    const [activeButton, setActiveButton] = useState(0);
+
     const changeType = (type) => {
-        if (type === 1) {
+        setActiveButton(type)
+        if (type === 0) {
             setCourier(false);
             setDelivery(0);
         } else {
@@ -109,7 +117,16 @@ const Cart = () => {
                         ))}
                         <div className='payments'>
                             <div className='fieldHeader'>Выберите способ доставки:</div>
-                            <form className='radioButtons'>
+                            <div className='deliveryLine'>
+                                {deliveryMethod.map((method, index) =>
+                                    <div className='deliveryButton'>
+                                        <button className={`method${activeButton === index ? 'active' : ''}`} label={activeButton === index ? 'ACTIVE' : 'inactive'} onClick={() => changeType(index)}>
+                                            {method.method}
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                            {/* <form className='radioButtons'>
                                 <div onClick={() => changeType(1)}>
                                     <input className='radioField' type="radio" name="deliveryType" id="pickup" value="pickup"></input>
                                     <label className='radioText' for="pickup">Самовывоз</label><br />
@@ -118,7 +135,7 @@ const Cart = () => {
                                     <input className='radioField' type="radio" name="deliveryType" id="delivery" value="delivery"></input>
                                     <label className='radioText' for="delivery">Доставка</label><br />
                                 </div>
-                            </form>
+                            </form> */}
                         </div>
                         <Address />
                         <div className='moneyBlock'>

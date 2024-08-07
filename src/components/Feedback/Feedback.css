@@ -1,0 +1,51 @@
+.feedbackHeader {
+    width: 100%;
+    height: 50px;
+    text-align: justify;
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 0 20px;
+    background: white;
+}
+
+.feedbackHeaderName {
+    margin-right: 48px;
+    font-weight: 600;
+    font-size: 1.2em;
+    color: black;
+}
+.firstFdLine {
+    display: flex;
+    justify-content: space-between;
+    width: 200%;
+    padding: 0 10px 0;
+}
+
+.mark {
+    background-color: lightgray;
+    border-radius: 10px;
+    border-color: lightgray;
+    border-style: solid;
+    font-size: 1em;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.markactive {
+    background-color: rgb(65 159 217);
+    border-radius: 10px;
+    border-color: rgb(65 159 217);
+    border-style: solid;
+    font-size: 1em;
+    color: white;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.prodImgFd {
+    width: 170px;
+    height: 125px;
+    vertical-align: middle;
+}

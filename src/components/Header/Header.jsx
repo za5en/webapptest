@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Button from '../Button/Button';
 import { useTelegram } from '../../hooks/useTelegram';
 import './Header.css'
-import Avatar from '../../assets/icons/avatar.svg';
+// import Avatar from '../../assets/icons/avatar.svg';
 import { useNavigate } from 'react-router-dom';
 
 class HeaderComponent extends Component {

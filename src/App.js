@@ -11,6 +11,8 @@ import ProdInfo from './components/ProdInfo/ProdInfo';
 import Cart from './components/Cart/Cart';
 import ConfirmOrder from './components/Cart/ConfirmOrder/ConfirmOrder';
 import OrderPage from './components/Profile/OrderPage/OrderPage';
+import Feedback from './components/Feedback/Feedback';
+import Contacts from './components/Profile/Blocks/Contacts/Contacts';
 
 function App() {
   const {tg} = useTelegram(); 
@@ -29,9 +31,11 @@ function App() {
         <Route path={'Profile/Orders'} element={<Orders />} />
         <Route path={'Profile/Orders/OrderPage'} element={<OrderPage />} />
         <Route path={'Profile/Promo'} element={<Promo />} />
+        <Route path={'Profile/Contacts'} element={<Contacts />} />
         <Route path={'ProdInfo/:id/:type'} element={<ProdInfo />} />
         <Route path={'Cart'} element={<Cart />} />
         <Route path={'Cart/ConfirmOrder'} element={<ConfirmOrder />} />
+        <Route path={'Feedback'} element={<Feedback />} />
       </Routes>
       <footer>
         {/* <button>Купить</button> */}

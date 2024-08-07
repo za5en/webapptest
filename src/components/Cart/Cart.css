@@ -142,3 +142,32 @@
     align-items: baseline;
     padding-left: 10px;
 }
+
+.method {
+    background-color: white;
+    border-radius: 10px;
+    border-color: lightgray;
+    border-style: solid;
+    font-size: 1em;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.methodactive {
+    background-color: white;
+    border-radius: 10px;
+    border-color: rgb(65 159 217);
+    border-style: solid;
+    font-size: 1em;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.deliveryLine {
+    display: flex;
+    margin: 0 10px 5px;
+}
+
+.deliveryButton {
+    margin-right: 10px;
+}

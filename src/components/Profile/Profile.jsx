@@ -20,6 +20,7 @@ const Profile = () => {
             </div>
             <div className='block' onClick={() => navigate('Orders', { replace: false })}>Заказы &gt;</div>
             <div className='block' onClick={() => navigate('Promo', { replace: false })}>Акции &gt;</div>
+            <div className='block' onClick={() => navigate('Contacts', { replace: false })}>Контактная информация &gt;</div>
             {/* <div className='block' onClick={() => navigate('Favorites', { replace: false })}>Избранное &gt;</div> */}
         </div>
     )
