@@ -21,16 +21,34 @@ function App() {
     tg.ready();
   }, [])
 
-  console.log(tg)
-  console.log(tg.initDataUnsafe)
-  console.log(window.Telegram.WebApp.initDataUnsafe.start_param)
-  let params = new URL(document.location.toString()).searchParams;
-  console.log(params)
-  console.log(params.get("tgWebAppStartParam"))
-  var url = window.location.search;
-  url = url.replace("?", '');
-  console.log(url);
-  
+  let botId = 0;
+  botId = window.Telegram.WebApp.initDataUnsafe.start_param; //by direct link
+  if (typeof botId === 'undefined') {
+    let params = new URL(document.location.toString()).searchParams;
+    botId = params.get("bot_id"); //by inline button
+  }
+
+  // useCallback(() => {
+  //   fetch(`http://togethergame:8001/user/get_user?bot_id=${botId}&client_tg_id=${tg.user.id}`, {
+  //       method: 'GET'
+  //   })
+  // }, [])
+
+  useEffect(() => {
+      fetch(`http://togethergame:8001/user/get_user?bot_id=${botId}&client_tg_id=${tg.user.id}`)
+          .then(response => response.json())
+          .then(data => setTotalReactPackages(data.total));
+  }, []);
+
+  console.log(response);
+
+  // async function getUser() {
+  //   const response = await fetch(`http://togethergame:8001/user/get_user?bot_id=${botId}&client_tg_id=${tg.user.id}`);
+  //   const data = await response.json();
+  //   console.log(data);
+  //   // this.setState({ totalReactPackages: data.total })
+  // }
+   
   return (
     <div className="MarketBot">
             {/* <Header /> */}
