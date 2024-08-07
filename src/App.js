@@ -23,6 +23,7 @@ function App() {
 
   console.log(tg)
   console.log(tg.initDataUnsafe)
+  console.log(window.Telegram.WebApp.initDataUnsafe.start_param)
   
   return (
     <div className="MarketBot">
