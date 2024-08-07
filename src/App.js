@@ -24,6 +24,9 @@ function App() {
   console.log(tg)
   console.log(tg.initDataUnsafe)
   console.log(window.Telegram.WebApp.initDataUnsafe.start_param)
+  let params = new URL(document.location.toString()).searchParams;
+  console.log(params)
+  // console.log(params.get("name"))
   
   return (
     <div className="MarketBot">
