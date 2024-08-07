@@ -13,6 +13,7 @@ import ConfirmOrder from './components/Cart/ConfirmOrder/ConfirmOrder';
 import OrderPage from './components/Profile/OrderPage/OrderPage';
 import Feedback from './components/Feedback/Feedback';
 import Contacts from './components/Profile/Blocks/Contacts/Contacts';
+import { Helmet } from 'react-helmet';
 
 function App() {
   const {tg, user} = useTelegram(); 
@@ -37,7 +38,7 @@ function App() {
   let response = ''
 
   useEffect(() => {
-      response = fetch(`//togethergame:8001/user/get_user?bot_id=${botId}&client_tg_id=${user.id}`)
+      response = fetch(`http://togethergame:8001/user/get_user?bot_id=${botId}&client_tg_id=${user.id}`)
           .then(response => response.json())
           .then(data => setTotalReactPackages(data.total));
   }, []);
@@ -53,6 +54,9 @@ function App() {
    
   return (
     <div className="MarketBot">
+      <Helmet>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+      </Helmet>
             {/* <Header /> */}
       <Routes>
         <Route index element={<Products />} />

@@ -8,7 +8,6 @@ import { BrowserRouter } from 'react-router-dom';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
     <BrowserRouter>
       <App />
     </BrowserRouter>
