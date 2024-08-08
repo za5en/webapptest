@@ -22,6 +22,8 @@ function App() {
     tg.ready();
   }, [])
 
+  console.log(user.id)
+
   let botId = 0;
   botId = window.Telegram.WebApp.initDataUnsafe.start_param; //by direct link
   if (typeof botId === 'undefined') {
