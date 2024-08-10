@@ -4,7 +4,6 @@
     border-radius: 7px;
     padding: 0;
     margin: 15px 10px 10px 10px;
-    width: 99%;
     background-color: rgb(241 241 241);
 }
 
@@ -58,7 +57,7 @@
 .prodBlock {
     background: white;
     border-radius: 15px;
-    margin: 15px 10px;
+    margin: 15px 5px;
     padding: 15px;
 }
 

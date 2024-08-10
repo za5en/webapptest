@@ -48,13 +48,13 @@ const OrderPage = () => {
                                         {prod.review.length === 0 ? (
                                             <button className='rate-btn' onClick={() => rateProduct(prod)}>Оценить товар</button>
                                         ) : (
-                                            <div className='orderMain'>Ваша оценка: {prod.review.rate}</div>
+                                            <div className='orderMainRate'>Ваша оценка: {prod.review.rate}</div>
                                         )}
                                     </div>
                                 </div>
                             </div>
                         ))}
-                        <div className='firstOrderLine'>
+                        <div className='firstOrderLineEdited'>
                             <div className='orderMainNoMargin'>{'Сумма заказа'}</div>
                             <div className='orderMainNoMargin'>{item[0].sum + '₽'}</div>
                         </div>

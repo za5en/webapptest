@@ -5,7 +5,6 @@ import { useTelegram } from '../../../hooks/useTelegram';
 import { goodsAmount } from '../../Products/Products';
 import axios from 'axios';
 import { userInfo } from '../../TestData/user';
-import SecondOtherHeader from '../../OtherHeader/OtherHeader2.jsx';
 import { cartId } from '../Cart.jsx';
 import ReactLoading from "react-loading";
 
@@ -144,7 +143,7 @@ const ConfirmOrder = () => {
                 </div>
             ) : (
                 <div>
-                    <SecondOtherHeader />
+                    {/* <SecondOtherHeader /> */}
                     <div className='cart'>
                         <p className='name'>Оформление заказа</p>
                         <div>
