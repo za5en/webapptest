@@ -48,15 +48,6 @@ const Header = () => {
     const {user, onClose} = useTelegram(); 
     let navigate = useNavigate();
 
-    // let selected = categories[0]
-
-    // const onClick = (id) => {
-    //     const getElement = document.getElementById(id);
-    //     getElement.scrollIntoView({behavior: "smooth"});
-    //     selected = id;
-    //     console.log(selected);
-    // }
-
     return (
         <div className='header'>
             <div className='firstLine'>

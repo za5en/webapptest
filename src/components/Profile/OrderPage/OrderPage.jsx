@@ -40,9 +40,9 @@ const OrderPage = () => {
                                         className='prodImg1'
                                     />
                                     <div className='prodText'>
-                                        <div className='prodName'>{prod.name}</div>
+                                        <div className='prodName1'>{prod.name}</div>
                                         <div className='multiple'>
-                                            <div className='orderAmount'>{prod.order_quantity + ' шт'}</div>
+                                            <div className='orderAmount'>{prod.weight + ' г'}</div>
                                             <div className='orderCostInside'>{prod.price + ' ₽'}</div>
                                         </div>
                                         {prod.review.length === 0 ? (

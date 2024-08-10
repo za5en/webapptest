@@ -8,6 +8,8 @@ import { deliveryType } from './ConfirmOrder/ConfirmOrder.jsx';
 import { promo } from './ConfirmOrder/ConfirmOrder.jsx';
 import axios from 'axios';
 import { userInfo } from '../TestData/user.jsx';
+import { contacts } from '../Profile/Profile.jsx';
+import ReactLoading from "react-loading";
 
 export var cartId = []
 
@@ -61,6 +63,7 @@ const Cart = () => {
     const [activeButton, setActiveButton] = useState(0);
 
     const [appState, setAppState] = useState();
+    const [isLoading, setIsLoading] = useState(false);
 
     const changeType = (type) => {
         setActiveButton(type)
@@ -85,7 +88,9 @@ const Cart = () => {
             deliveryAddress.push(document.getElementById('deliveryAddress').value)
         }
 
+        setIsLoading(true);
         await createCart()
+        setIsLoading(false);
         navigate('ConfirmOrder', { replace: false })
     }
 
@@ -93,8 +98,6 @@ const Cart = () => {
         var response  = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/create_cart?client_id=${userInfo[0].id}`)
         cartId.length = 0
         cartId.push(response.data.data)
-        console.log(response)
-        console.log(response.data)
         setAppState(response);
 
         await addToCart();
@@ -114,8 +117,6 @@ const Cart = () => {
                     'Content-Type': 'application/json'
                 }
               })
-              console.log(response)
-              console.log(response.data)
         }
         // message = response.data.message
         // if (message === 'Product added to cart')
@@ -132,14 +133,14 @@ const Cart = () => {
         if (courier) {
             return  <form className='payments'>
                         <div className='fieldHeader'>Адрес доставки</div>
-                        <input className='textField' type="text" id='deliveryAddress'></input>
+                        <textarea className='textFieldAddress' type="text" id='deliveryAddress'></textarea>
                     </form>
+        } else {
+            return <div className='payments'>
+                <div className='fieldHeader'>Адрес самовывоза</div>
+                <textarea className='textFieldAddress' type="text" id='pickupAddress' readOnly>{contacts[0].shop_address}</textarea>
+            </div>
         }
-    }
-
-    function ClearText() {
-        const getElement = document.getElementById('promo');
-        getElement.value = "";
     }
 
     function Goods() {
@@ -181,16 +182,6 @@ const Cart = () => {
                                     </div>
                                 )}
                             </div>
-                            {/* <form className='radioButtons'>
-                                <div onClick={() => changeType(1)}>
-                                    <input className='radioField' type="radio" name="deliveryType" id="pickup" value="pickup"></input>
-                                    <label className='radioText' for="pickup">Самовывоз</label><br />
-                                </div>
-                                <div onClick={() => changeType(0)}>
-                                    <input className='radioField' type="radio" name="deliveryType" id="delivery" value="delivery"></input>
-                                    <label className='radioText' for="delivery">Доставка</label><br />
-                                </div>
-                            </form> */}
                         </div>
                         <Address />
                         <div className='moneyBlock'>
@@ -222,11 +213,20 @@ const Cart = () => {
     
     return (
         <div>
-            <OtherHeader />
-            <div className='cart'>
-                <p className='name'>Корзина</p>
-                <Goods />
-            </div>
+            {isLoading ? (
+                <div className='loadScreen'>
+                    <ReactLoading type="bubbles" color="#419FD9"
+                        height={100} width={50} />
+                </div>
+            ) : (
+                <div>
+                    <OtherHeader />
+                    <div className='cart'>
+                        <p className='name'>Корзина</p>
+                        <Goods />
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

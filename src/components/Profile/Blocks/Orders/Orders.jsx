@@ -15,7 +15,7 @@ const Orders = () => {
                         <button className='shop-btn' onClick={() => navigate(-2)}>К списку товаров</button>
                     </div>;
         else
-            return  <div>
+            return  <div className='ordersBlock'>
                         {orders.map(item => (
                             <OrderCard
                              order={item}

@@ -8,3 +8,11 @@ body {
   background: rgb(241 241 241);/* var(--tg-theme-bg-color); */
   color: rgb(34 34 34);/* var(--tg-theme-text-color); */
 }
+
+.loadScreen {
+  margin-top: 35vh;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}

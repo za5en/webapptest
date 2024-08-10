@@ -32,6 +32,18 @@
     border-style: solid;
 }
 
+.textFieldAddress {
+    margin: 0 10px 10px;
+    padding: 5px;
+    height: 30px;
+    resize: none;
+    width: 99%;
+    border-radius: 10px;
+    border-width: 1px;
+    border-color: lightgray;
+    border-style: solid;
+}
+
 .textFieldExt {
     margin: 0 10px 10px;
     padding: 5px;
@@ -90,4 +102,11 @@
 .paymentButton {
     margin-right: 10px;
     margin-bottom: 2px;
+}
+
+.wrongPhone {
+    color: red;
+    font-size: 0.7em;
+    margin-left: 10px;
+    margin-bottom: 15px;
 }

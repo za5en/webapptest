@@ -19,7 +19,7 @@
 }
 
 .orderMain {
-    margin: 5px 15px 10px;
+    margin: 5px 0 10px 15px;
     font-weight: 500;
 }
 
@@ -98,4 +98,11 @@
     vertical-align: middle;
     border-radius: 10px;
     border-width: 0px;
+}
+
+.prodName1 {
+    margin: 0 15px 5px;
+    font-weight: 500;
+    font-size: 1.5em;
+    color: black;
 }

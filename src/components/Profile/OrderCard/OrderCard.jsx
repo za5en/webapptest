@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { item } from '../OrderPage/OrderPage.jsx'
 import { userInfo } from '../../TestData/user';
 import axios from 'axios';
+import ReactLoading from "react-loading";
 
 export var goodsOrder = new Map()
 
@@ -41,7 +42,9 @@ const OrderCard = ({order}) => {
             try {
                 var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_reviews/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&product_id=${prodId}`)
                 if (response.status === 200) {
-                  review = response.data[0]
+                    if (response.data[0].reviewer_id === userInfo[0].id) {
+                        review = response.data[0]
+                    }
                 }
                 setAppState(response);
             } catch (e) {
@@ -66,13 +69,22 @@ const OrderCard = ({order}) => {
     }
     
     return (
-        <div className='orderCard' onClick={() => openOrder()}>
-            <div className='firstOrderLine'>
-                <div className='orderNum'>{'Заказ №' + order.id}</div>
-                <div className='orderCost'>{order.sum + '₽'}</div>
-            </div>
-            <div className='orderStatus'>{statuses.get(order.status)}</div>
-            <div className='orderDate'>{new Date(order.start_time).toLocaleDateString(undefined, {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})}</div>
+        <div>
+            {isLoading ? (
+                <div className='loadScreen'>
+                    <ReactLoading type="bubbles" color="#419FD9"
+                        height={100} width={50} />
+                </div>
+            ) : (
+                <div className='orderCard' onClick={() => openOrder()}>
+                    <div className='firstOrderLine'>
+                        <div className='orderNum'>{'Заказ №' + order.id}</div>
+                        <div className='orderCost'>{order.sum + '₽'}</div>
+                    </div>
+                    <div className='orderStatus'>{statuses.get(order.status)}</div>
+                    <div className='orderDate'>{new Date(order.start_time).toLocaleDateString(undefined, {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})}</div>
+                </div>
+            )}
         </div>
     );
 };

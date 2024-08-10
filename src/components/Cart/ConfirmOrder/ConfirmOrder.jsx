@@ -1,23 +1,25 @@
 import React, { useEffect, useState } from 'react'
 import './ConfirmOrder.css'
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTelegram } from '../../../hooks/useTelegram';
 import { goodsAmount } from '../../Products/Products';
 import axios from 'axios';
 import { userInfo } from '../../TestData/user';
 import SecondOtherHeader from '../../OtherHeader/OtherHeader2.jsx';
 import { cartId } from '../Cart.jsx';
+import ReactLoading from "react-loading";
 
 export var promo = []
 export var deliveryAddress = []
 export var deliveryType = []
 
 const ConfirmOrder = () => {
-    // let navigate = useNavigate();
+    let navigate = useNavigate();
     const {queryId, onClose} = useTelegram(); 
 
     const [appState, setAppState] = useState();
     const [isLoading, setIsLoading] = useState(false);
+    const [isValid, setIsValid] = useState(true);
 
     const {products} = require('../../TestData/prod.jsx');
 
@@ -62,15 +64,13 @@ const ConfirmOrder = () => {
                   'Content-Type': 'application/json'
               }
             })
-            console.log(response)
-            console.log(response.data)
             setAppState(response);
+            return response.status
           }
   
           async function payForCart() {
-              var response = ''
               if (promo[0] !== null && promo[0] !== "" && typeof promo[0] !== "undefined") {
-                response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/get_all_menu?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&cart_id=${cartId[0]}&promo_code=${promo[0]}`, {
+                var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/get_all_menu?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&cart_id=${cartId[0]}&promo_code=${promo[0]}`, {
                     "client_id": userInfo[0].id,
                     "bot_id": userInfo[0].bot_id,
                     "cart_id": cartId,
@@ -84,6 +84,10 @@ const ConfirmOrder = () => {
                         'Content-Type': 'application/json'
                     }
                   })
+                var json = response.data
+                json.query_id = queryId
+                setAppState(response);
+                return response.status
               } else {
                 response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/get_all_menu?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&cart_id=${cartId[0]}`, {
                   "client_id": userInfo[0].id,
@@ -99,28 +103,32 @@ const ConfirmOrder = () => {
                       'Content-Type': 'application/json'
                   }
                 })
+                var json = response.data
+                json.query_id = queryId
+                setAppState(response);
+                return response.status
               }
-              console.log(response)
-              console.log(response.data)
-              json = response.data
-              json.query_id = queryId
-              console.log(json)
-              setAppState(response);
           }
       
           async function makeRequest() {
-            setIsLoading(true);
             if (paymentMethod[activeButton] === "Онлайн") {
-                await payForCart()
+                return await payForCart()
             } else {
-                await createOrder()
+                return await createOrder()
             }
-            setIsLoading(false);
-            onClose
           }
 
-        await makeRequest();
-        onClose
+        if (document.getElementById('phone').value.length === 11) {
+            setIsValid(true);
+            setIsLoading(true);
+            var code = await makeRequest();
+            setIsLoading(false);
+            if (code === 200) {
+                navigate('OrderConfirmed', { replace: false })
+            }
+        } else {
+            setIsValid(false);
+        }
     }
 
     const changeType = (type) => {
@@ -129,51 +137,51 @@ const ConfirmOrder = () => {
     
     return (
         <div>
-            <SecondOtherHeader />
-            <div className='cart'>
-                <p className='name'>Оформление заказа</p>
-                <div>
-                    <form className='payments'>
-                        {/* <div className='fieldHeader'>ФИО</div>
-                        <input className='textField' type="text" id='name'></input> */}
-                        <div className='fieldHeader'>Номер телефона</div>
-                        <input className='textField' type="text" id='phone'></input>
-                        {/* <div className='fieldHeader'>Ник в Telegram</div>
-                        <input className='textField' type="text" id='tg'></input> */}
-                        {/* <div className='fieldHeader'>Адрес доставки</div>
-                        <input className='textField' type="text" id='address'></input> */}
-                        <div className='fieldHeader'>Комментарий</div>
-                        <textarea className='textFieldExt' type="text" id='comment' placeholder='Комментарий'></textarea>
-                    </form>
-                    <div className='payments'>
-                        <div className='fieldHeader'>Выберите способ оплаты:</div>
-                        <div className='paymentBlock'>
-                                {paymentMethod.map((method, index) =>
-                                    <div className='paymentButton'>
-                                        <button className={`method${activeButton === index ? 'active' : ''}`} label={activeButton === index ? 'ACTIVE' : 'inactive'} onClick={() => changeType(index)}>
-                                            {method.method}
-                                        </button>
-                                    </div>
-                                )}
-                        </div>
-                        {/* <form className='radioButtons'>
-                            <div>
-                                <input className='radioField' type="radio" name="payment" id="remittance" value="remittance"></input>
-                                <label className='radioText' for="remittance">Онлайн</label><br />
-                            </div>
-                            <div>
-                                <input className='radioField' type="radio" name="payment" id="card" value="card"></input>
-                                <label className='radioText' for="card">Банковской картой</label><br />
-                            </div>
-                            <div>
-                                <input className='radioField' type="radio" name="payment" id="cash" value="cash"></input>
-                                <label className='radioText' for="cash">Наличными курьеру</label><br />
-                            </div>
-                        </form> */}
-                    </div>
-                    <button className='shop-btn' onClick={() => confirm()}>Подтвердить оформление</button>
+            {isLoading ? (
+                <div className='loadScreen'>
+                    <ReactLoading type="bubbles" color="#419FD9"
+                        height={100} width={50} />
                 </div>
-            </div>
+            ) : (
+                <div>
+                    <SecondOtherHeader />
+                    <div className='cart'>
+                        <p className='name'>Оформление заказа</p>
+                        <div>
+                            <form className='payments'>
+                                {/* <div className='fieldHeader'>ФИО</div>
+                                <input className='textField' type="text" id='name'></input> */}
+                                <div className='fieldHeader'>Номер телефона</div>
+                                <input className='textField' type="text" id='phone'></input>
+                                { isValid ? ( 
+                                    <div></div> 
+                                ) : (
+                                    <div className='wrongPhone'>Номер телефона должен содержать строго 11 цифр</div>
+                                )}
+                                {/* <div className='fieldHeader'>Ник в Telegram</div>
+                                <input className='textField' type="text" id='tg'></input> */}
+                                {/* <div className='fieldHeader'>Адрес доставки</div>
+                                <input className='textField' type="text" id='address'></input> */}
+                                <div className='fieldHeader'>Комментарий</div>
+                                <textarea className='textFieldExt' type="text" id='comment' placeholder='Комментарий'></textarea>
+                            </form>
+                            <div className='payments'>
+                                <div className='fieldHeader'>Выберите способ оплаты:</div>
+                                <div className='paymentBlock'>
+                                        {paymentMethod.map((method, index) =>
+                                            <div className='paymentButton'>
+                                                <button className={`method${activeButton === index ? 'active' : ''}`} label={activeButton === index ? 'ACTIVE' : 'inactive'} onClick={() => changeType(index)}>
+                                                    {method.method}
+                                                </button>
+                                            </div>
+                                        )}
+                                </div>
+                            </div>
+                            <button className='shop-btn' onClick={() => confirm()}>Подтвердить оформление</button>
+                        </div>
+                    </div>
+                </div>
+            )}            
         </div>
     )
 }

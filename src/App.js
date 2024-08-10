@@ -3,7 +3,7 @@ import './App.css';
 import { useTelegram } from './hooks/useTelegram';
 import {Route, Routes} from 'react-router-dom';
 import Products from './components/Products/Products';
-import Profile from './components/Profile/Profile';
+import Profile, { contacts } from './components/Profile/Profile';
 import Orders from './components/Profile/Blocks/Orders/Orders';
 import Promo from './components/Profile/Blocks/Promo/Promo';
 import Favorites from './components/Profile/Blocks/Favorites/Favorites';
@@ -16,6 +16,8 @@ import Contacts from './components/Profile/Blocks/Contacts/Contacts';
 import { userInfo } from './components/TestData/user.jsx';
 import { products, categories } from './components/TestData/prod.jsx';
 import axios from 'axios';
+import OrderConfirmed from './components/Cart/ConfirmOrder/OrderConfirmed.jsx';
+import ReactLoading from "react-loading";
 
 function App() {
   const {tg, user} = useTelegram(); 
@@ -30,6 +32,9 @@ function App() {
     let params = new URL(document.location.toString()).searchParams;
     botId = params.get("bot_id"); //by inline button
   }
+
+  // botId = 44
+  // let userId = 649105595
 
   const [appState, setAppState] = useState();
   const [isLoading, setIsLoading] = useState(false);
@@ -52,9 +57,9 @@ function App() {
       for (let i = 0; i < products.length; i++) {
         if (!categories.includes(products[i].category)) {
           categories.push(products[i].category)
-          var photo = await getPhoto(products[i].id)
-          products[i].photoFile = photo;
         }
+        var photo = await getPhoto(products[i].id)
+        products[i].photoFile = photo;
       }
       setAppState(response);
     }
@@ -64,9 +69,21 @@ function App() {
       return URL.createObjectURL(response.data)
     }
 
+    async function getContacts() {
+      var response  = await axios.get(`https://market-bot.org:8082/clients_api/info/get_contacts/?bot_id=${botId}&client_id=${userInfo[0].id}`)
+      contacts.length = 0
+      contacts.push(response.data[0])
+      setAppState(response);
+    }
+
     async function makeRequest() {
       setIsLoading(true);
-      await getUser();
+      try {
+        await getUser();
+        await getContacts();
+      } catch (e) {
+        console.log(e)
+      }
       setIsLoading(false);
     }
 
@@ -77,7 +94,10 @@ function App() {
     <div className="MarketBot">
       {
         isLoading ? (
-          <div></div>
+          <div className='loadScreen'>
+            <ReactLoading type="bubbles" color="#419FD9"
+                    height={100} width={50} />
+          </div>
         ) : (
           <Routes>
             <Route index element={<Products />} />
@@ -90,6 +110,7 @@ function App() {
             <Route path={'ProdInfo/:id/:type'} element={<ProdInfo />} />
             <Route path={'Cart'} element={<Cart />} />
             <Route path={'Cart/ConfirmOrder'} element={<ConfirmOrder />} />
+            <Route path={'Cart/ConfirmOrder/OrderConfirmed'} element={<OrderConfirmed />} />
             <Route path={'Profile/Orders/OrderPage/Feedback'} element={<Feedback />} />
           </Routes>
         )

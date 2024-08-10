@@ -10,15 +10,15 @@
 .contactInfo {
     margin-left: auto;
     font-weight: 300;
-    font-size: 1.3em;
-    padding: 10px 0;
+    font-size: 0.9em;
+    padding: 0 15px;
 }
 
 .contactLink {
     margin-left: auto;
     font-weight: 300;
-    font-size: 1.3em;
-    padding: 10px 0;
+    font-size: 0.9em;
+    padding: 0 15px;
     text-decoration: underline;
     color: blue;
     cursor: pointer;
@@ -31,7 +31,7 @@
 .policyLink {
     margin-right: auto;
     font-weight: 300;
-    font-size: 1.3em;
+    font-size: 0.9em;
     padding: 10px 0;
     text-decoration: underline;
     color: blue;
@@ -40,4 +40,11 @@
 
 .policyLink:hover {
     color: rgb(72, 72, 226);
+}
+
+.contactsTitle {
+    margin-right: auto;
+    font-weight: 500;
+    font-size: 0.9em;
+    padding: 5px 15px 2px;
 }

@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import './Feedback.css'
-import BurgerIcon from '../../assets/images/burger.png';
 import Button from '../Button/Button';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { userInfo } from '../TestData/user.jsx';
 import { product } from '../Profile/OrderPage/OrderPage.jsx';
+import ReactLoading from "react-loading";
 
 const Feedback = () => {
     let navigate = useNavigate();
@@ -72,7 +72,6 @@ const Feedback = () => {
         var content = document.getElementById('content').value
         async function createReview() {
             var response  = await axios.post(`https://market-bot.org:8082/clients_api/reviews/create_review/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&product_id=${product.id}&content=${content}&rate=${score[activeButton].mark}`)
-            console.log(response.data)
             setAppState(response);
           }
 
@@ -87,18 +86,28 @@ const Feedback = () => {
     }
     
     return (
-        <div>
-            <FeedbackHeader />
-            <div className='cart'>
-                <ProdCard item={product} />
-                <form className='payments'>
-                    <div className='fieldHeader'>Отзыв</div>
-                    <textarea className='textFieldExt' type="text" id='content' placeholder='Краткий отзыв по товару'></textarea>
-                </form>
-            </div>
-            <footer>
-                <button className='cart-btn' onClick={() => sendFeedback()}>{'Готово'}</button>
-            </footer>
+        <div> 
+            {isLoading ? (
+                <div className='loadScreen'>
+                    <ReactLoading type="bubbles" color="#419FD9"
+                        height={100} width={50} />
+                </div>
+            ) : (
+                <div>
+                    <FeedbackHeader />
+                    <div className='cart'>
+                        <ProdCard item={product} />
+                        <form className='payments'>
+                            <div className='fieldHeader'>Отзыв</div>
+                            <textarea className='textFieldExt' type="text" id='content' placeholder='Краткий отзыв по товару'></textarea>
+                        </form>
+                    </div>
+                    <footer>
+                        <button className='cart-btn' onClick={() => sendFeedback()}>{'Готово'}</button>
+                    </footer>
+                </div>
+            )}
+            
         </div>
     )
 }
