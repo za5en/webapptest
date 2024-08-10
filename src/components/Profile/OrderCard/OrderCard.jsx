@@ -37,12 +37,16 @@ const OrderCard = ({order}) => {
           }
       
           async function getReviews(prodId) {
-            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_reviews/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&product_id=${prodId}`)
             var review = []
-            if (response.status === 200) {
-              review = response.data[0]
+            try {
+                var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_reviews/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&product_id=${prodId}`)
+                if (response.status === 200) {
+                  review = response.data[0]
+                }
+                setAppState(response);
+            } catch (e) {
+                console.log(e)
             }
-            setAppState(response);
             return review 
           }
 
