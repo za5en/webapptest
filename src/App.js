@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import { useTelegram } from './hooks/useTelegram';
 import {Route, Routes} from 'react-router-dom';
@@ -14,7 +14,6 @@ import OrderPage from './components/Profile/OrderPage/OrderPage';
 import Feedback from './components/Feedback/Feedback';
 import Contacts from './components/Profile/Blocks/Contacts/Contacts';
 import { userInfo } from './components/TestData/user.jsx';
-import { cartId } from './components/Cart/ConfirmOrder/ConfirmOrder.jsx';
 import { products, categories } from './components/TestData/prod.jsx';
 import axios from 'axios';
 
@@ -45,7 +44,7 @@ function App() {
       setAppState(response);
       if (response.status === 200) {
         await getMenu()
-        await createCart()
+        // await createCart()
       }
     }
 
@@ -66,13 +65,6 @@ function App() {
     async function getPhoto(prodId) {
       var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_photo?bot_id=${botId}&product_id=${prodId}`, {responseType: 'blob'})
       return URL.createObjectURL(response.data)
-    }
-
-    async function createCart() {
-      var response  = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/create_cart?client_id=${userInfo[0].id}`)
-      cartId.length = 0
-      cartId.push(response.data.data)
-      setAppState(response);
     }
 
     async function makeRequest() {

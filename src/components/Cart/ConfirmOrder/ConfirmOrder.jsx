@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import './ConfirmOrder.css'
-import OtherHeader from '../../OtherHeader/OtherHeader';
 // import { useNavigate } from 'react-router-dom';
 import { useTelegram } from '../../../hooks/useTelegram';
 import { goodsAmount } from '../../Products/Products';
 import axios from 'axios';
 import { userInfo } from '../../TestData/user';
+import SecondOtherHeader from '../../OtherHeader/OtherHeader2.jsx';
+import { cartId } from '../Cart.jsx';
 
-export var cartId = []
 export var promo = []
 export var deliveryAddress = []
 export var deliveryType = []
@@ -46,34 +46,6 @@ const ConfirmOrder = () => {
     const confirm = async () => {
         var paymentType = paymentMethod[activeButton] === 'Банковской картой' ? 'card' : 'cash';
         var delType = deliveryType[0] === 'Самовывоз' ? 'pickup': 'delivery';
-
-        async function addToCart() {
-            var response = ''
-            for (let i = 0; i < goods.length; i++) {
-                response = await axios.post('https://market-bot.org:8082/clients_api/clients_menu/add_to_cart', {
-                    cart_id: cartId[0],
-                    product_id: goods[i].id,
-                    count: goodsAmount.get(goods[i].id),
-                    price: goods[i].price * goodsAmount.get(goods[i].id),
-                    option: []
-                  }, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                  })
-            }
-            
-            if (paymentMethod[activeButton] === "Онлайн") {
-                await payForCart()
-            } else {
-                await createOrder()
-            }
-            console.log(response)
-            console.log(response.data)
-            // message = response.data.message
-            // if (message === 'Product added to cart')
-            setAppState(response);
-          }
       
           async function createOrder() {
             var response = await axios.post('https://market-bot.org:8082/clients_api/clients_orders/create_order', {
@@ -138,12 +110,17 @@ const ConfirmOrder = () => {
       
           async function makeRequest() {
             setIsLoading(true);
-            await addToCart()
+            if (paymentMethod[activeButton] === "Онлайн") {
+                await payForCart()
+            } else {
+                await createOrder()
+            }
             setIsLoading(false);
+            onClose
           }
 
         await makeRequest();
-        onClose;
+        onClose
     }
 
     const changeType = (type) => {
@@ -152,7 +129,7 @@ const ConfirmOrder = () => {
     
     return (
         <div>
-            <OtherHeader />
+            <SecondOtherHeader />
             <div className='cart'>
                 <p className='name'>Оформление заказа</p>
                 <div>

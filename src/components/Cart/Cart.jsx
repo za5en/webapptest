@@ -6,6 +6,10 @@ import { goodsAmount } from '../Products/Products';
 import { deliveryAddress } from './ConfirmOrder/ConfirmOrder.jsx';
 import { deliveryType } from './ConfirmOrder/ConfirmOrder.jsx';
 import { promo } from './ConfirmOrder/ConfirmOrder.jsx';
+import axios from 'axios';
+import { userInfo } from '../TestData/user.jsx';
+
+export var cartId = []
 
 const Cart = () => {
     let navigate = useNavigate();
@@ -56,6 +60,8 @@ const Cart = () => {
 
     const [activeButton, setActiveButton] = useState(0);
 
+    const [appState, setAppState] = useState();
+
     const changeType = (type) => {
         setActiveButton(type)
         if (type === 0) {
@@ -69,7 +75,7 @@ const Cart = () => {
         }
     }
 
-    const confirm = () => {
+    const confirm = async () => {
         promo.length = 0
         promo.push(document.getElementById('promo').value)
         deliveryType.length = 0
@@ -78,8 +84,43 @@ const Cart = () => {
         if (activeButton === 1) {
             deliveryAddress.push(document.getElementById('deliveryAddress').value)
         }
+
+        await createCart()
         navigate('ConfirmOrder', { replace: false })
     }
+
+    async function createCart() {
+        var response  = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/create_cart?client_id=${userInfo[0].id}`)
+        cartId.length = 0
+        cartId.push(response.data.data)
+        console.log(response)
+        console.log(response.data)
+        setAppState(response);
+
+        await addToCart();
+    }
+
+    async function addToCart() {
+        var response = ''
+        for (let i = 0; i < goods.length; i++) {
+            response = await axios.post('https://market-bot.org:8082/clients_api/clients_menu/add_to_cart', {
+                cart_id: cartId[0],
+                product_id: goods[i].id,
+                count: goodsAmount.get(goods[i].id),
+                price: goods[i].price * goodsAmount.get(goods[i].id),
+                option: []
+              }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+              })
+              console.log(response)
+              console.log(response.data)
+        }
+        // message = response.data.message
+        // if (message === 'Product added to cart')
+        setAppState(response);
+      }
 
     function PaidDelivery() {
         if (courier && price < 999) {
