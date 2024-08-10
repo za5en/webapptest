@@ -31,6 +31,8 @@ const ConfirmOrder = () => {
 
     let goods = []
 
+    let json = {}
+
     for (let i = 0; i < Object.keys(products).length && !find; i++) {
         if (goodsAmount.has(products[i].id)) {
             goods.push(products[i])
@@ -77,11 +79,10 @@ const ConfirmOrder = () => {
               "bot_id": userInfo[0].bot_id,
               "cart_id": cartId,
               "pay_type": paymentMethod[activeButton],
-              "delivery_type": deliveryType,
-              "delivery_address": deliveryAddress,
+              "delivery_type": deliveryType[0],
+              "delivery_address": deliveryAddress[0],
               "comment": document.getElementById('comment').value,
-              "phone": document.getElementById('phone').value,
-              "promo_code": promo
+              "phone": document.getElementById('phone').value
             }, {
               headers: {
                   'Content-Type': 'application/json'
@@ -92,8 +93,13 @@ const ConfirmOrder = () => {
           }
   
           async function payForCart() {
-              var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/get_all_menu?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&cart_id=${cartId[0]}`)
+              if (promo[0] !== null && promo[0] !== "" && typeof promo[0] !== "undefined") {
+                var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/get_all_menu?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&cart_id=${cartId[0]}&promo_code=${promo[0]}`)
+              } else {
+                var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/get_all_menu?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&cart_id=${cartId[0]}`)
+              }
               console.log(response.data)
+              json = response.data
               setAppState(response);
           }
       
@@ -102,8 +108,10 @@ const ConfirmOrder = () => {
             for (let i = 0; i < goods.length; i++) {
               await addToCart(goods[i], goodsAmount.get(goods[i].id))
             }
+            if (paymentMethod[activeButton] === "Онлайн") {
+                await payForCart()
+            }
             await createOrder()
-            await payForCart()
             setIsLoading(false);
           }
 
