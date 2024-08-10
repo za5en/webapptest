@@ -6,15 +6,15 @@ import { useTelegram } from '../../../hooks/useTelegram';
 import { goodsAmount } from '../../Products/Products';
 import axios from 'axios';
 import { userInfo } from '../../TestData/user';
-import { promo } from '../Cart.jsx';
-import { deliveryAddress } from '../Cart.jsx';
-import { deliveryType } from '../Cart.jsx';
 
 export var cartId = []
+export var promo = []
+export var deliveryAddress = []
+export var deliveryType = []
 
 const ConfirmOrder = () => {
     // let navigate = useNavigate();
-    const {onClose} = useTelegram(); 
+    const {queryId, onClose} = useTelegram(); 
 
     const [appState, setAppState] = useState();
     const [isLoading, setIsLoading] = useState(false);
@@ -44,32 +44,34 @@ const ConfirmOrder = () => {
     // }, [setAppState]);
 
     const confirm = async () => {
-        async function addToCart(product, amount) {
-            var response  = await axios.post('https://market-bot.org:8082/clients_api/clients_menu/add_to_cart', {
-              cart_id: cartId,
-              product_id: product.id,
-              count: amount,
-              price: product.price * amount,
-              // option: [
-              //   {
-              //     group_name: groupName,
-              //     options: [
-              //       {
-              //         name: optionName,
-              //         article_number: article,
-              //         price: optionPrice,
-              //         weight: optionWeight,
-              //         max_count: optionMax
-              //       }
-              //     ]
-              //   }
-              // ]
-            }, {
-              headers: {
-                  'Content-Type': 'application/json'
-              }
-            })
+        var paymentType = paymentMethod[activeButton] === 'Банковской картой' ? 'card' : 'cash';
+        var delType = deliveryType[0] === 'Самовывоз' ? 'pickup': 'delivery';
+
+        async function addToCart() {
+            var response = ''
+            for (let i = 0; i < goods.length; i++) {
+                response = await axios.post('https://market-bot.org:8082/clients_api/clients_menu/add_to_cart', {
+                    cart_id: cartId[0],
+                    product_id: goods[i].id,
+                    count: goodsAmount.get(goods[i].id),
+                    price: goods[i].price * goodsAmount.get(goods[i].id),
+                    option: []
+                  }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                  })
+            }
+            
+            if (paymentMethod[activeButton] === "Онлайн") {
+                await payForCart()
+            } else {
+                await createOrder()
+            }
+            console.log(response)
             console.log(response.data)
+            // message = response.data.message
+            // if (message === 'Product added to cart')
             setAppState(response);
           }
       
@@ -77,9 +79,9 @@ const ConfirmOrder = () => {
             var response = await axios.post('https://market-bot.org:8082/clients_api/clients_orders/create_order', {
               "client_id": userInfo[0].id,
               "bot_id": userInfo[0].bot_id,
-              "cart_id": cartId,
-              "pay_type": paymentMethod[activeButton],
-              "delivery_type": deliveryType[0],
+              "cart_id": cartId[0],
+              "pay_type": paymentType,
+              "delivery_type": delType,
               "delivery_address": deliveryAddress[0],
               "comment": document.getElementById('comment').value,
               "phone": document.getElementById('phone').value
@@ -88,30 +90,55 @@ const ConfirmOrder = () => {
                   'Content-Type': 'application/json'
               }
             })
+            console.log(response)
             console.log(response.data)
             setAppState(response);
           }
   
           async function payForCart() {
+              var response = ''
               if (promo[0] !== null && promo[0] !== "" && typeof promo[0] !== "undefined") {
-                var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/get_all_menu?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&cart_id=${cartId[0]}&promo_code=${promo[0]}`)
+                response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/get_all_menu?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&cart_id=${cartId[0]}&promo_code=${promo[0]}`, {
+                    "client_id": userInfo[0].id,
+                    "bot_id": userInfo[0].bot_id,
+                    "cart_id": cartId,
+                    "pay_type": paymentType,
+                    "delivery_type": delType,
+                    "delivery_address": deliveryAddress[0],
+                    "comment": document.getElementById('comment').value,
+                    "phone": document.getElementById('phone').value
+                  }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                  })
               } else {
-                var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/get_all_menu?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&cart_id=${cartId[0]}`)
+                response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/get_all_menu?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&cart_id=${cartId[0]}`, {
+                  "client_id": userInfo[0].id,
+                  "bot_id": userInfo[0].bot_id,
+                  "cart_id": cartId,
+                  "pay_type": paymentType,
+                  "delivery_type": delType,
+                  "delivery_address": deliveryAddress[0],
+                  "comment": document.getElementById('comment').value,
+                  "phone": document.getElementById('phone').value
+                }, {
+                  headers: {
+                      'Content-Type': 'application/json'
+                  }
+                })
               }
+              console.log(response)
               console.log(response.data)
               json = response.data
+              json.query_id = queryId
+              console.log(json)
               setAppState(response);
           }
       
           async function makeRequest() {
             setIsLoading(true);
-            for (let i = 0; i < goods.length; i++) {
-              await addToCart(goods[i], goodsAmount.get(goods[i].id))
-            }
-            if (paymentMethod[activeButton] === "Онлайн") {
-                await payForCart()
-            }
-            await createOrder()
+            await addToCart()
             setIsLoading(false);
           }
 
@@ -139,7 +166,7 @@ const ConfirmOrder = () => {
                         {/* <div className='fieldHeader'>Адрес доставки</div>
                         <input className='textField' type="text" id='address'></input> */}
                         <div className='fieldHeader'>Комментарий</div>
-                        <input className='textFieldExt' type="text" id='comment'></input>
+                        <textarea className='textFieldExt' type="text" id='comment' placeholder='Комментарий'></textarea>
                     </form>
                     <div className='payments'>
                         <div className='fieldHeader'>Выберите способ оплаты:</div>

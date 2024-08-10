@@ -3,10 +3,9 @@ import './Cart.css'
 import OtherHeader from '../OtherHeader/OtherHeader';
 import { useNavigate } from 'react-router-dom';
 import { goodsAmount } from '../Products/Products';
-
-export var promo = []
-export var deliveryAddress = []
-export var deliveryType = []
+import { deliveryAddress } from './ConfirmOrder/ConfirmOrder.jsx';
+import { deliveryType } from './ConfirmOrder/ConfirmOrder.jsx';
+import { promo } from './ConfirmOrder/ConfirmOrder.jsx';
 
 const Cart = () => {
     let navigate = useNavigate();
@@ -74,7 +73,7 @@ const Cart = () => {
         promo.length = 0
         promo.push(document.getElementById('promo').value)
         deliveryType.length = 0
-        deliveryType.push(deliveryMethod[activeButton].method.method)
+        deliveryType.push(deliveryMethod[activeButton].method)
         deliveryAddress.length = 0
         if (activeButton === 1) {
             deliveryAddress.push(document.getElementById('deliveryAddress').value)
@@ -114,7 +113,7 @@ const Cart = () => {
                             <div className='goods'>
                                 <img
 			    		            src={item.photoFile}
-                                    alt='burger'
+                                    alt={item.name}
                                     className='prodImg'
                                 />
                                 <div className='prodText'>

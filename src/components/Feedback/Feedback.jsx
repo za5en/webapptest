@@ -3,18 +3,14 @@ import './Feedback.css'
 import BurgerIcon from '../../assets/images/burger.png';
 import Button from '../Button/Button';
 import { useNavigate } from 'react-router-dom';
-import { goodsAmount } from '../Products/Products';
-import { useTelegram } from '../../hooks/useTelegram.js';
 import axios from 'axios';
+import { userInfo } from '../TestData/user.jsx';
+import { product } from '../Profile/OrderPage/OrderPage.jsx';
 
 const Feedback = () => {
-    const {onClose} = useTelegram(); 
-    let goods = []
-    let price = 0
+    let navigate = useNavigate();
 
     var goodsMarks = new Map()
-
-    const {products} = require('../TestData/prod.jsx');
 
     const score = [
         {mark: 1},
@@ -23,14 +19,6 @@ const Feedback = () => {
         {mark: 4},
         {mark: 5},
     ];
-
-    let find = false;
-    for (let i = 0; i < Object.keys(products).length && !find; i++) {
-        if (goodsAmount.has(products[i].id)) {
-            goods.push(products[i])
-            price += products[i].price * goodsAmount.get(products[i].id)
-        }
-    }
 
     const [activeButton, setActiveButton] = useState(0);
 
@@ -54,17 +42,15 @@ const Feedback = () => {
         return (
             <div className='goods'>
                 <img
-                    src={BurgerIcon}
-                    alt='burger'
-                    className='prodImgFd'
+                    src={item.photoFile}
+                    alt={item.name}
+                    className='prodImg1'
                 />
                 <div className='prodText'>
-                    <div className='firstFdLine'>
-                        <div className='orderNum'>{'Бургер'}</div>
-                        <div className='orderCost'>{'99'} ₽</div>
-                    </div>
-                    <div className='prodParam'>{'250'} гр</div>
-                    <div className='prodParam'>{'2'} шт.</div>
+                    <div className='prodName'>{item.name}</div>
+                    <div className='prodName'>{item.price} ₽</div>
+                    {/* <div className='prodParam'>{item.weight} гр</div> */}
+                    {/* <div className='prodParam'>{item.order_quantity} шт.</div> */}
                     <div className='deliveryLine'>
                         {score.map((mark, index) =>
                             <div className='deliveryButton'>
@@ -82,46 +68,32 @@ const Feedback = () => {
     const [appState, setAppState] = useState();
     const [isLoading, setIsLoading] = useState(false);
 
-    // useEffect(() => {
-
-    // }, [setAppState]);
-
     const sendFeedback = async () => {
+        var content = document.getElementById('content').value
         async function createReview() {
-            var response  = await axios.post(`https://market-bot.org:8082/clients_api/reviews/create_review/?bot_id=${botId}&client_id=${clientId}&product_id=${prodId}&content=${content}&rate=${rate}&photo=${photo}`)
+            var response  = await axios.post(`https://market-bot.org:8082/clients_api/reviews/create_review/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&product_id=${product.id}&content=${content}&rate=${score[activeButton].mark}`)
             console.log(response.data)
             setAppState(response);
           }
-      
-          async function clientsOrders() {
-            var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_orders/get_orders?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}`)
-            console.log(response.data)
-            setAppState(response);
-          }
-      
+
           async function makeRequest() {
             setIsLoading(true);
             await createReview();
-            await clientsOrders();
             setIsLoading(false);
           }
       
         await makeRequest()
-        onClose;
+        navigate(-2)
     }
     
     return (
         <div>
             <FeedbackHeader />
             <div className='cart'>
-                {goods.map(item => (
-                    <ProdCard
-                        item={item} 
-                    />
-                ))}
+                <ProdCard item={product} />
                 <form className='payments'>
                     <div className='fieldHeader'>Отзыв</div>
-                    <textarea className='textFieldExt' type="text" placeholder='Краткий отзыв по заказу'></textarea>
+                    <textarea className='textFieldExt' type="text" id='content' placeholder='Краткий отзыв по товару'></textarea>
                 </form>
             </div>
             <footer>

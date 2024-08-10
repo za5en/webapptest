@@ -18,6 +18,8 @@
     width: 170px;
     height: 110px;
     vertical-align: middle;
+    border-radius: 10px;
+    border-width: 0px;
 }
 
 .prodName {

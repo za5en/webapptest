@@ -17,7 +17,9 @@ const Orders = () => {
         else
             return  <div>
                         {orders.map(item => (
-                            <OrderCard />
+                            <OrderCard
+                             order={item}
+                            />
                         ))}
                     </div>
     }

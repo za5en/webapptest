@@ -19,7 +19,7 @@
 .firstFdLine {
     display: flex;
     justify-content: space-between;
-    width: 200%;
+    width: 100%;
     padding: 0 10px 0;
 }
 

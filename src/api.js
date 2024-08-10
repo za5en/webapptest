@@ -9,7 +9,7 @@ function Api() {
       }, []);
     
       let orderId = 1
-    //хз что это
+    //товары в заказе
       useEffect(() => {
           response = fetch(`https://market-bot.org:8082/clients_api/clients_orders/delivery/get_variants?order_id=${orderId}`)
               .then(response => response.json())

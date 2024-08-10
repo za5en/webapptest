@@ -111,7 +111,7 @@ const ProdInfo = () => {
                 <div>
                     <img
 			    		src={product.photoFile}
-			    		alt='burger'
+			    		alt={product.name}
 			    		className='productIcon1'
 			    	/>
                 </div>
