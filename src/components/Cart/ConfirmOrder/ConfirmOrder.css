@@ -81,3 +81,13 @@
     color: white;
     background-color: rgb(65 159 217); /* (--tg-theme-button-color); */
 }
+
+.paymentBlock {
+    display: inline-block;
+    margin: 0 10px 5px;
+}
+
+.paymentButton {
+    margin-right: 10px;
+    margin-bottom: 2px;
+}

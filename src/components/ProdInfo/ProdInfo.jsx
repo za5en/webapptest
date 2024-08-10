@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import './ProdInfo.css'
-import BurgerIcon from '../../assets/images/burger.png';
 import {useLocation, useNavigate} from 'react-router-dom';
 import OtherHeader from '../OtherHeader/OtherHeader.jsx';
 import { goodsAmount } from '../Products/Products.jsx'
@@ -26,32 +25,32 @@ const ProdInfo = () => {
             if (typeof amount !== 'undefined') {
                 if (amount > 1) {
                     if (typeof price !== 'undefined') {
-                        setPrice(price - parseFloat(product.price.substring(0, product.price.indexOf(' '))))
+                        setPrice(price - product.price)
                     } else {
-                        setPrice(parseFloat(product.price.substring(0, product.price.indexOf(' '))))
+                        setPrice(product.price)
                     }
                     setAmount(amount - 1)
                 }
             } else {
                 if (defAmount > 1) {
                     setAmount(defAmount - 1)
-                    setPrice(defPrice - parseFloat(product.price.substring(0, product.price.indexOf(' '))))
+                    setPrice(defPrice - product.price)
                 } else {
                     setAmount(1)
-                    setPrice(parseFloat(product.price.substring(0, product.price.indexOf(' '))))
+                    setPrice(product.price)
                 }
             }
         } else {
             if (typeof amount !== 'undefined') {
                 if (typeof price !== 'undefined') {
-                    setPrice(price + parseFloat(product.price.substring(0, product.price.indexOf(' '))))
+                    setPrice(price + product.price)
                 } else {
-                    setPrice(parseFloat(product.price.substring(0, product.price.indexOf(' '))) + defPrice)
+                    setPrice(product.price + defPrice)
                 }                
                 setAmount(amount + 1)
             } else {
                 setAmount(defAmount + 1)
-                setPrice(parseFloat(product.price.substring(0, product.price.indexOf(' '))) + defPrice)
+                setPrice(product.price + defPrice)
             }
         }
     }
@@ -68,8 +67,8 @@ const ProdInfo = () => {
             find = true;
         }
     }
-    defAmount = goodsAmount.get(product.id)
-    defPrice = parseFloat(product.price.substring(0, product.price.indexOf(' '))) * defAmount
+    defAmount = goodsAmount.get(product.id) ?? 1
+    defPrice = product.price * defAmount
 
     function Variants() {
         if (product.variants?.length > 0) {
@@ -111,15 +110,15 @@ const ProdInfo = () => {
             <div className={'product1 ' + location.state.className}>
                 <div>
                     <img
-			    		src={BurgerIcon}
+			    		src={product.photoFile}
 			    		alt='burger'
 			    		className='productIcon1'
 			    	/>
                 </div>
                 <div className='prodBlock'>
-                    <div className={'title1'}>{product.title}</div>
+                    <div className={'title1'}>{product.name}</div>
                     <div className={'price1'}>
-                        {product.price}
+                        {product.price} ₽
                     </div>
                     <div className='selectLine'>
                         <div className={'oldPrice1'}>
@@ -127,7 +126,7 @@ const ProdInfo = () => {
                         </div>
                         <div className={'discount1'}>
                             {typeof product.oldPrice === 'string' 
-                            ? `-${Math.round((1 - parseFloat(product.price.substring(0, product.price.indexOf(' '))) / parseFloat(product.oldPrice.substring(0, product.oldPrice.indexOf(' ')))) * 100)}%` 
+                            ? `-${Math.round((1 - product.price / product.oldPrice) * 100)}%` 
                             : ''}
                         </div>
                     </div>
@@ -136,8 +135,8 @@ const ProdInfo = () => {
                     <div className={'description1'}>{product.description}</div>
                     <div className={'prodWeight'}><b>Вес:</b> {product.weight} гр</div>
                 </div>
-                <Variants />
-                <Options />
+                {/* <Variants />
+                <Options /> */}
                 <div className='prodBlock'>
                     <div className='addToCartLine'>
                         <button className='minus-btn' onClick={() => onChange('-')}>-</button>

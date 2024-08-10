@@ -16,10 +16,10 @@ const Favorites = () => {
 
         if (added) {
             newItems = Object.values(added).filter(item => item.id !== product.id);
-            price[0] += parseFloat(product.price.substring(0, product.price.indexOf(' ')))
+            price[0] += product.price
         } else {
             newItems = [...addedItems, product];
-            price[0] += parseFloat(product.price.substring(0, product.price.indexOf(' ')))
+            price[0] += product.price
         }
 
         setAddedItems(newItems)

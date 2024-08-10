@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './Feedback.css'
 import BurgerIcon from '../../assets/images/burger.png';
 import Button from '../Button/Button';
 import { useNavigate } from 'react-router-dom';
 import { goodsAmount } from '../Products/Products';
 import { useTelegram } from '../../hooks/useTelegram.js';
+import axios from 'axios';
 
 const Feedback = () => {
     const {onClose} = useTelegram(); 
@@ -27,7 +28,7 @@ const Feedback = () => {
     for (let i = 0; i < Object.keys(products).length && !find; i++) {
         if (goodsAmount.has(products[i].id)) {
             goods.push(products[i])
-            price += parseFloat(products[i].price.substring(0, products[i].price.indexOf(' '))) * goodsAmount.get(products[i].id)
+            price += products[i].price * goodsAmount.get(products[i].id)
         }
     }
 
@@ -77,6 +78,37 @@ const Feedback = () => {
             </div>
         );
     }
+
+    const [appState, setAppState] = useState();
+    const [isLoading, setIsLoading] = useState(false);
+
+    // useEffect(() => {
+
+    // }, [setAppState]);
+
+    const sendFeedback = async () => {
+        async function createReview() {
+            var response  = await axios.post(`https://market-bot.org:8082/clients_api/reviews/create_review/?bot_id=${botId}&client_id=${clientId}&product_id=${prodId}&content=${content}&rate=${rate}&photo=${photo}`)
+            console.log(response.data)
+            setAppState(response);
+          }
+      
+          async function clientsOrders() {
+            var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_orders/get_orders?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}`)
+            console.log(response.data)
+            setAppState(response);
+          }
+      
+          async function makeRequest() {
+            setIsLoading(true);
+            await createReview();
+            await clientsOrders();
+            setIsLoading(false);
+          }
+      
+        await makeRequest()
+        onClose;
+    }
     
     return (
         <div>
@@ -93,7 +125,7 @@ const Feedback = () => {
                 </form>
             </div>
             <footer>
-                <button className='cart-btn' onClick={onClose}>{'Готово'}</button>
+                <button className='cart-btn' onClick={() => sendFeedback()}>{'Готово'}</button>
             </footer>
         </div>
     )

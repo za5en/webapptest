@@ -4,6 +4,7 @@ import { useTelegram } from '../../hooks/useTelegram';
 import './Header.css'
 // import Avatar from '../../assets/icons/avatar.svg';
 import { useNavigate } from 'react-router-dom';
+import { categories } from '../TestData/prod.jsx';
 
 class HeaderComponent extends Component {
     constructor(props) {
@@ -46,7 +47,6 @@ class HeaderComponent extends Component {
 const Header = () => {
     const {user, onClose} = useTelegram(); 
     let navigate = useNavigate();
-    const {categories} = require('../TestData/prod.jsx');
 
     // let selected = categories[0]
 

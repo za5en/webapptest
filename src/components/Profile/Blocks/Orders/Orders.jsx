@@ -3,10 +3,10 @@ import '../Blocks.css'
 import OtherHeader from '../../../OtherHeader/OtherHeader';
 import { useNavigate } from 'react-router-dom';
 import OrderCard from '../../OrderCard/OrderCard';
+import { orders } from '../../Profile.jsx';
 
 const Orders = () => {
     let navigate = useNavigate();
-    let orders = []
 
     function Orders() {
         if (orders.length === 0)

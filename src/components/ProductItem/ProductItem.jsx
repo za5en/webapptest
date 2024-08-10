@@ -14,7 +14,7 @@ const ProductItem = ({product, className, onAdd, changePrice}) => {
     }
 
     const changePriceHandler = (editType) => {
-        changePrice(editType, product.price.substring(0, product.price.indexOf(' ')));
+        changePrice(editType, product.price);
     }
 
     const onChange = (edit) => {
@@ -37,7 +37,6 @@ const ProductItem = ({product, className, onAdd, changePrice}) => {
                 goodsAmount.set(product.id, 2)
             }
         }
-        // console.log(goodsAmount)
     }
 
     function Button() {
@@ -59,19 +58,19 @@ const ProductItem = ({product, className, onAdd, changePrice}) => {
             <div className='toInfo' onClick={() => navigate(`ProdInfo/${product.id}/${className}`, { replace: false, state: {id: product.id, className: className}})}>
                 <div className={'img'}>
                     <img
-			    		src={BurgerIcon}
-			    		alt='burger'
+			    		src={product.photoFile}
+			    		alt={product.name}
 			    		className='productIcon'
 			    	/>
                 </div>
-                <div className={'title'}>{product.title}</div>
+                <div className={'title'}>{product.name}</div>
                 <div className={'description'}>{product.description}</div>
                 <div className={'oldPrice'}>{product.oldPrice}</div>
                 <div className={'price'}>
-                    {product.price}
+                    {product.price} ₽
                     <span className={'discount'}>
                         {typeof product.oldPrice === 'string' 
-                        ? `-${Math.round((1 - parseFloat(product.price.substring(0, product.price.indexOf(' '))) / parseFloat(product.oldPrice.substring(0, product.oldPrice.indexOf(' ')))) * 100)}%` 
+                        ? `-${Math.round((1 - product.price) / product.oldPrice * 100)}%` 
                         : ''}
                     </span>
                 </div>

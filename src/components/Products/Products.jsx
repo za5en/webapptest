@@ -72,10 +72,10 @@ const Products = () => {
 
         if (added) {
             newItems = addedItems;
-            addPrice += parseFloat(product.price.substring(0, product.price.indexOf(' ')));
+            addPrice += product.price;
         } else {
             newItems = [...addedItems, product];
-            addPrice += parseFloat(product.price.substring(0, product.price.indexOf(' ')));
+            addPrice += product.price;
             goodsAmount.set(product.id, 1);
         }
 
@@ -98,9 +98,9 @@ const Products = () => {
             if (products[i].id === key) {
                 find = true;
                 if (nullPrice === 0) {
-                    nullPrice = parseFloat(products[i].price.substring(0, products[i].price.indexOf(' '))) * value;
+                    nullPrice = products[i].price * value;
                 } else {
-                    nullPrice = nullPrice + parseFloat(products[i].price.substring(0, products[i].price.indexOf(' '))) * value;
+                    nullPrice = nullPrice + products[i].price * value;
                 }
             }
         }

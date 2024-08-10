@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
 import './Cart.css'
-import BurgerIcon from '../../assets/images/burger.png';
 import OtherHeader from '../OtherHeader/OtherHeader';
 import { useNavigate } from 'react-router-dom';
 import { goodsAmount } from '../Products/Products';
+
+export var promo = []
+export var deliveryAddress = []
+export var deliveryType = []
 
 const Cart = () => {
     let navigate = useNavigate();
@@ -24,7 +27,7 @@ const Cart = () => {
     for (let i = 0; i < Object.keys(products).length && !find; i++) {
         if (goodsAmount.has(products[i].id)) {
             goods.push(products[i])
-            price += parseFloat(products[i].price.substring(0, products[i].price.indexOf(' '))) * goodsAmount.get(products[i].id)
+            price += products[i].price * goodsAmount.get(products[i].id)
         }
     }
 
@@ -67,6 +70,18 @@ const Cart = () => {
         }
     }
 
+    const confirm = () => {
+        promo.length = 0
+        promo.push(document.getElementById('promo').value)
+        deliveryType.length = 0
+        deliveryType.push(deliveryMethod[activeButton].method.method)
+        deliveryAddress.length = 0
+        if (activeButton === 1) {
+            deliveryAddress.push(document.getElementById('deliveryAddress').value)
+        }
+        navigate('ConfirmOrder', { replace: false })
+    }
+
     function PaidDelivery() {
         if (courier && price < 999) {
             return <div className='deliveryMin'>Минимальная сумма заказа для бесплатной доставки - 999 ₽</div>
@@ -77,13 +92,13 @@ const Cart = () => {
         if (courier) {
             return  <form className='payments'>
                         <div className='fieldHeader'>Адрес доставки</div>
-                        <input className='textField' type="text"></input>
+                        <input className='textField' type="text" id='deliveryAddress'></input>
                     </form>
         }
     }
 
     function ClearText() {
-        const getElement = document.getElementsByClassName('textFieldPromo');
+        const getElement = document.getElementById('promo');
         getElement.value = "";
     }
 
@@ -98,12 +113,12 @@ const Cart = () => {
                         {[...Array.from(goods)].map(item => ( 
                             <div className='goods'>
                                 <img
-                                    src={BurgerIcon}
+			    		            src={item.photoFile}
                                     alt='burger'
                                     className='prodImg'
                                 />
                                 <div className='prodText'>
-                                    <div className='prodName'>{item.title}</div>
+                                    <div className='prodName'>{item.name}</div>
                                     <div className='prodParam'>{item.weight} гр</div>
                                     {/* <div className='changeAmountButtons'>
                                         <button className='minus-cart-btn' onClick={() => onChange('-', item.id)}>-</button>
@@ -111,7 +126,7 @@ const Cart = () => {
                                         <button className='plus-cart-btn' onClick={() => onChange('+', item.id)}>+</button>
                                     </div>                   */}
                                     <div className='prodParam'>{goodsAmount.get(item.id)} шт.</div>
-                                    <div className='prodPrice'>{(parseFloat(item.price.substring(0, item.price.indexOf(' '))) * goodsAmount.get(item.id)).toFixed(2)} ₽</div>
+                                    <div className='prodPrice'>{(item.price * goodsAmount.get(item.id)).toFixed(2)} ₽</div>
                                 </div>
                             </div>
                         ))}
@@ -156,11 +171,11 @@ const Cart = () => {
                         <form className='payments'>
                             <div className='fieldHeader'>Промокод</div>
                             <div className='promoLine'>
-                                <input className='textFieldPromo' type="text"></input>
-                                <button className='promo-btn' onClick={ClearText}>ОК</button>
+                                <input className='textFieldPromo' type="text" id='promo'></input>
+                                {/* <button className='promo-btn' onClick={ClearText}>ОК</button> */}
                             </div>
                         </form>
-                        <button className='shop-btn' onClick={() => navigate('ConfirmOrder', { replace: false })}>Далее</button>
+                        <button className='shop-btn' onClick={() => confirm()}>Далее</button>
                     </div>
         }
     }
