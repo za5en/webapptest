@@ -9,7 +9,7 @@ const OrderConfirmed = () => {
         <div>
             {/* <SecondOtherHeader /> */}
             <div className='blocks'>
-                <div className='nullEdited'>Заказ был успешно оформлен!</div>
+                <div className='confirmedText'>Заказ успешно оформлен!</div>
                 <button className='shop-btn' onClick={onClose}>Закрыть</button>
             </div>
         </div>

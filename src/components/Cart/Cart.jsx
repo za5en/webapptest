@@ -21,6 +21,9 @@ const Cart = () => {
 
     const [courier, setCourier] = useState()
 
+    const [isValidPromo, setIsValidPromo] = useState(true);
+    const [isValidAddress, setIsValidAddress] = useState(true);
+
     const {products} = require('../TestData/prod.jsx');
 
     const deliveryMethod = [
@@ -88,10 +91,24 @@ const Cart = () => {
             deliveryAddress.push(document.getElementById('deliveryAddress').value)
         }
 
-        setIsLoading(true);
-        await createCart()
-        setIsLoading(false);
-        navigate('ConfirmOrder', { replace: false })
+        if ((activeButton === 1 && document.getElementById('deliveryAddress').value.length > 0 && document.getElementById('deliveryAddress').value.length < 200) || (activeButton === 0)) {
+            setIsValidAddress(true);
+            if (document.getElementById('promo').value.length < 50) {
+                setIsValidPromo(true);
+                setIsLoading(true);
+                try {
+                    await createCart()
+                } catch (e) {
+                    console.log(e)
+                }
+                setIsLoading(false);
+                navigate('ConfirmOrder', { replace: false })
+            } else {
+                setIsValidPromo(false);
+            }
+        } else {
+            setIsValidAddress(false);
+        }
     }
 
     async function createCart() {
@@ -131,11 +148,13 @@ const Cart = () => {
 
     function Address() {
         if (courier) {
+            setIsValidAddress(true)
             return  <form className='payments'>
                         <div className='fieldHeader'>Адрес доставки</div>
                         <textarea className='textFieldAddress' type="text" id='deliveryAddress'></textarea>
                     </form>
         } else {
+            setIsValidAddress(true)
             return <div className='payments'>
                 <div className='fieldHeader'>Адрес самовывоза</div>
                 <textarea className='textFieldAddress' type="text" id='pickupAddress' readOnly>{contacts[0].shop_address}</textarea>
@@ -184,6 +203,11 @@ const Cart = () => {
                             </div>
                         </div>
                         <Address />
+                        { isValidAddress ? ( 
+                            <div></div> 
+                        ) : (
+                            <div className='wrongPhone'>Адрес должен быть заполнен (не боле 200 символов)</div>
+                        )}
                         <div className='moneyBlock'>
                             <div className='cartLine'>
                                 <div className='cartName'>Сумма заказа</div>
@@ -205,6 +229,11 @@ const Cart = () => {
                                 <input className='textFieldPromo' type="text" id='promo'></input>
                                 {/* <button className='promo-btn' onClick={ClearText}>ОК</button> */}
                             </div>
+                            { isValidPromo ? ( 
+                                <div></div> 
+                            ) : (
+                                <div className='wrongPhone'>Промокод должен содержать до 50 символов</div>
+                            )}
                         </form>
                         <button className='shop-btn' onClick={() => confirm()}>Далее</button>
                     </div>

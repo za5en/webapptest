@@ -15,7 +15,7 @@
 }
 
 .fieldHeader {
-    margin: 0 10px 5px;
+    margin: 0 5px 5px;
     font-weight: 600;
     font-size: 0.9em;
     color: black;
@@ -33,11 +33,11 @@
 }
 
 .textFieldAddress {
-    margin: 0 10px 10px;
+    margin: 0 5px 10px;
     padding: 5px;
     height: 30px;
     resize: none;
-    width: 99%;
+    width: 98%;
     border-radius: 10px;
     border-width: 1px;
     border-color: lightgray;
@@ -45,10 +45,10 @@
 }
 
 .textFieldExt {
-    margin: 0 10px 10px;
+    margin: 0 5px 5px;
     padding: 5px;
     height: 60px;
-    width: 99%;
+    width: 98%;
     border-radius: 10px;
     border-width: 1px;
     border-color: lightgray;
@@ -59,7 +59,7 @@
     background: white;
     border-radius: 15px;
     margin: 15px;
-    padding: 15px 25px;
+    padding: 10px 5px 5px;
     text-align: start;
     display: block;
 }
@@ -109,4 +109,10 @@
     font-size: 0.7em;
     margin-left: 10px;
     margin-bottom: 15px;
+}
+
+.confirmedText {
+    margin: 40vh 0 15vh;
+    font-weight: 600;
+    font-size: 1.3em;
 }

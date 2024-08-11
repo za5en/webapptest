@@ -17,10 +17,10 @@ const OrderPage = () => {
     statuses.set('completed', 'Выполнен')
     statuses.set('cancelled', 'Отменен')
 
-    const rateProduct = (prod) => {
+    const rateProduct = () => {
         // product.length = 0
         // product.push(prod)
-        product = prod
+        // product = prod
         navigate('Feedback', { replace: false })
     }
 
@@ -46,7 +46,8 @@ const OrderPage = () => {
                                             <div className='orderCostInside'>{prod.price + ' ₽'}</div>
                                         </div>
                                         {prod.review.length === 0 ? (
-                                            <button className='rate-btn' onClick={() => rateProduct(prod)}>Оценить товар</button>
+                                            // <button className='rate-btn' onClick={() => rateProduct(prod)}>Оценить товар</button>
+                                            <div></div>
                                         ) : (
                                             <div className='orderMainRate'>Ваша оценка: {prod.review.rate}</div>
                                         )}
@@ -63,7 +64,12 @@ const OrderPage = () => {
                         <div className='orderSub'>{'Адрес доставки'}</div>
                         <div className='orderMain'>{item[0].delivery_address}</div>
                         <div className='orderSub'>{'Дата и время заказа'}</div>
-                        <div className='orderMain'>{new Date(item[0].start_time).toLocaleDateString(undefined, {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})}</div>
+                        <div className='orderMain'>{new Date(item[0].start_time+'Z').toLocaleDateString(undefined, {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})}</div>
+                        {prod.review.length === 0 ? (
+                            <button className='repeat-btn' onClick={() => rateProduct()}>Оценить заказ</button>
+                        ) : (
+                            <div></div>
+                        )}
                     </div>
                     <button className='repeat-btn' onClick={() => navigate(-3)}>Повторить заказ</button>
                 </div>

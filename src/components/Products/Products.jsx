@@ -134,7 +134,8 @@ const Products = () => {
         <div>
             <Header />
             <div className='list'>
-                {[...Array.from(productsByCat.keys())].map(key => (
+                {productsByCat.size !== 0 ? 
+                [...Array.from(productsByCat.keys())].map(key => (
                     <div>
                         <span id={key} className='catName'>{key}</span>
                         <div className='cat'>
@@ -148,7 +149,9 @@ const Products = () => {
                         ))}
                         </div>
                     </div>
-                ))}
+                )) : (
+                    <div className='null'>Владелец магазин пока не добавил ни одного товара</div>
+                )}
             </div>
             <div className='space'/>
             <footer>

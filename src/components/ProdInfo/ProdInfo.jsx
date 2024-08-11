@@ -56,7 +56,9 @@ const ProdInfo = () => {
     }
 
     const onExit = () => {
-        goodsAmount.set(product.id, amount);
+        if (amount !== "undefined") {
+            goodsAmount.set(product.id, amount);
+        }
         navigate(-1);
     }
 

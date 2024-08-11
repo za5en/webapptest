@@ -45,7 +45,30 @@
 }
 
 .prodImgFd {
-    width: 170px;
-    height: 125px;
+    width: 100px;
+    height: 110px;
     vertical-align: middle;
+}
+
+.goodsFd {
+    display: block;
+    background: white;
+    border-radius: 15px;
+    margin: 15px;
+    text-align: start;
+    padding-bottom: 10px;
+}
+
+.goodsInnerFd {
+    background: white;
+    border-radius: 15px;
+    padding: 10px 10px;
+    text-align: start;
+    display: flex;
+}
+
+.markLine {
+    display: flex;
+    justify-content:space-around;
+    margin-left: 10px;
 }

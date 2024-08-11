@@ -18,7 +18,9 @@ const ConfirmOrder = () => {
 
     const [appState, setAppState] = useState();
     const [isLoading, setIsLoading] = useState(false);
-    const [isValid, setIsValid] = useState(true);
+    const [isValidPhone, setIsValidPhone] = useState(true);
+    const [isValidName, setIsValidName] = useState(true);
+    const [isValidComment, setIsValidComment] = useState(true);
 
     const {products} = require('../../TestData/prod.jsx');
 
@@ -118,15 +120,30 @@ const ConfirmOrder = () => {
           }
 
         if (document.getElementById('phone').value.length === 11) {
-            setIsValid(true);
-            setIsLoading(true);
-            var code = await makeRequest();
-            setIsLoading(false);
-            if (code === 200) {
-                navigate('OrderConfirmed', { replace: false })
+            setIsValidPhone(true);
+            if (document.getElementById('name').value.length > 0 && document.getElementById('name').value.length < 100) {
+                setIsValidName(true);
+                if (document.getElementById('comment').value.length < 200) {
+                    setIsValidComment(true);
+                    setIsLoading(true);
+                    var code = 400
+                    try {
+                        code = await makeRequest();
+                    } catch (e) {
+                        console.log(e)
+                    }
+                    setIsLoading(false);
+                    if (code === 200) {
+                        navigate('OrderConfirmed', { replace: false })
+                    }
+                } else {
+                    setIsValidComment(false);
+                }
+            } else {
+                setIsValidName(true);
             }
         } else {
-            setIsValid(false);
+            setIsValidPhone(false);
         }
     }
 
@@ -148,11 +165,16 @@ const ConfirmOrder = () => {
                         <p className='name'>Оформление заказа</p>
                         <div>
                             <form className='payments'>
-                                {/* <div className='fieldHeader'>ФИО</div>
-                                <input className='textField' type="text" id='name'></input> */}
+                                <div className='fieldHeader'>ФИО</div>
+                                <input className='textField' type="text" id='name'></input>
+                                { isValidName ? ( 
+                                    <div></div> 
+                                ) : (
+                                    <div className='wrongPhone'>ФИО должно быть заполнено (не более 100 символов)</div>
+                                )}
                                 <div className='fieldHeader'>Номер телефона</div>
                                 <input className='textField' type="text" id='phone'></input>
-                                { isValid ? ( 
+                                { isValidPhone ? ( 
                                     <div></div> 
                                 ) : (
                                     <div className='wrongPhone'>Номер телефона должен содержать строго 11 цифр</div>
@@ -163,6 +185,11 @@ const ConfirmOrder = () => {
                                 <input className='textField' type="text" id='address'></input> */}
                                 <div className='fieldHeader'>Комментарий</div>
                                 <textarea className='textFieldExt' type="text" id='comment' placeholder='Комментарий'></textarea>
+                                { isValidComment ? ( 
+                                    <div></div> 
+                                ) : (
+                                    <div className='wrongPhone'>Комментарий должен содержать до 200 символов</div>
+                                )}
                             </form>
                             <div className='payments'>
                                 <div className='fieldHeader'>Выберите способ оплаты:</div>
