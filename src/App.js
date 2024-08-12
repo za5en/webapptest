@@ -33,15 +33,15 @@ function App() {
     botId = params.get("bot_id"); //by inline button
   }
 
-  botId = 44
-  let userId = 649105595
+  // botId = 44
+  // let userId = 649105595
 
   const [appState, setAppState] = useState();
   const [isLoading, setIsLoading] = useState(false);
   
   useEffect(() => {
     async function getUser() {
-      var response  = await axios.get(`https://market-bot.org:8082/clients_api/user/get_user/?bot_id=${botId}&client_tg_id=${userId}`)
+      var response  = await axios.get(`https://market-bot.org:8082/clients_api/user/get_user/?bot_id=${botId}&client_tg_id=${user.id}`)
       userInfo = response.data
       setAppState(response);
       if (response.status === 200) {
