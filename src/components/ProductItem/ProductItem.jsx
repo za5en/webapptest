@@ -65,7 +65,7 @@ const ProductItem = ({product, className, onAdd, changePrice}) => {
                 </div>
                 <div className={'title'}>{product.name}</div>
                 <div className={'description'}>{product.description}</div>
-                <div className={'oldPrice'}>{product.oldPrice}</div>
+                {/* <div className={'oldPrice'}>{product.oldPrice}</div> */}
                 <div className={'price'}>
                     {product.price} ₽
                     <span className={'discount'}>

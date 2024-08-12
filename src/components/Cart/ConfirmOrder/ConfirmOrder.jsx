@@ -140,7 +140,7 @@ const ConfirmOrder = () => {
                     setIsValidComment(false);
                 }
             } else {
-                setIsValidName(true);
+                setIsValidName(false);
             }
         } else {
             setIsValidPhone(false);
@@ -166,14 +166,18 @@ const ConfirmOrder = () => {
                         <div>
                             <form className='payments'>
                                 <div className='fieldHeader'>ФИО</div>
-                                <input className='textField' type="text" id='name'></input>
+                                <div className='promoLine'>
+                                    <input className='textField' type="text" id='name'></input>
+                                </div>
                                 { isValidName ? ( 
                                     <div></div> 
                                 ) : (
                                     <div className='wrongPhone'>ФИО должно быть заполнено (не более 100 символов)</div>
                                 )}
                                 <div className='fieldHeader'>Номер телефона</div>
-                                <input className='textField' type="text" id='phone'></input>
+                                <div className='promoLine'>
+                                    <input className='textField' type="text" id='phone'></input>
+                                </div>
                                 { isValidPhone ? ( 
                                     <div></div> 
                                 ) : (

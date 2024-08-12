@@ -157,7 +157,7 @@ const Cart = () => {
             setIsValidAddress(true)
             return <div className='payments'>
                 <div className='fieldHeader'>Адрес самовывоза</div>
-                <textarea className='textFieldAddress' type="text" id='pickupAddress' readOnly>{contacts[0].shop_address}</textarea>
+                <textarea className='textFieldAddress' type="text" id='pickupAddress' defaultValue={contacts[0].shop_address} readOnly></textarea>
             </div>
         }
     }

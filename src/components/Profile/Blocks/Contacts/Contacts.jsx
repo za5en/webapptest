@@ -5,6 +5,10 @@ import OtherHeader from '../../../OtherHeader/OtherHeader';
 import { contacts } from '../../Profile.jsx';
 
 const Contacts = () => {
+    if (contacts[0].shop_vk.includes("/")) {
+        contacts[0].shop_vk = contacts[0].shop_vk.substring(contacts[0].shop_vk.lastIndexOf("/") + 1)
+    }
+
     return (
         <div>
             <OtherHeader />

@@ -17,6 +17,14 @@ const OrderPage = () => {
     statuses.set('completed', 'Выполнен')
     statuses.set('cancelled', 'Отменен')
 
+    var reviews = false
+
+    for (let i = 0; i < goodsOrder.length; i++) {
+        if (goodsOrder[i].review.length !== 0) {
+            reviews = true
+        }
+    }
+
     const rateProduct = () => {
         // product.length = 0
         // product.push(prod)
@@ -57,7 +65,7 @@ const OrderPage = () => {
                         ))}
                         <div className='firstOrderLineEdited'>
                             <div className='orderMainNoMargin'>{'Сумма заказа'}</div>
-                            <div className='orderMainNoMargin'>{item[0].sum + '₽'}</div>
+                            <div className='orderMainNoMarginColored'>{item[0].sum + '₽'}</div>
                         </div>
                         <div className='orderSub'>{'Статус'}</div>
                         <div className='orderMain'>{statuses.get(item[0].status)}</div>
@@ -65,8 +73,10 @@ const OrderPage = () => {
                         <div className='orderMain'>{item[0].delivery_address}</div>
                         <div className='orderSub'>{'Дата и время заказа'}</div>
                         <div className='orderMain'>{new Date(item[0].start_time+'Z').toLocaleDateString(undefined, {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})}</div>
-                        {prod.review.length === 0 ? (
-                            <button className='repeat-btn' onClick={() => rateProduct()}>Оценить заказ</button>
+                        {!reviews ? (
+                            <div className='promoLine'>
+                                <button className='rate-btn' onClick={() => rateProduct()}>Оценить заказ</button>
+                            </div>
                         ) : (
                             <div></div>
                         )}
