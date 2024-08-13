@@ -25,8 +25,9 @@
 }
 
 .title {
-    text-align: center;
+    text-align: start;
     padding: 5px;
+    padding-left: 7px;
     padding-top: 45px;
     font-size: 1em;
     font-weight: 500;
@@ -46,8 +47,9 @@
 }
 
 .description {
+    color: gray;
     padding-left: 7px;
-    font-size: 0.8em;
+    font-size: 0.75em;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -59,7 +61,7 @@
 }
 
 .price {
-    padding: 5px 0 7px 7px;
+    padding: 5px 0 2px 7px;
     font-weight: 500;
 }
 
@@ -81,9 +83,11 @@
 
 .add-btn {
     width: 100%;
-    border-radius: 7px;
-    border-width: 0;
-    padding: 8px;
+    border-radius: 15px;
+    border-width: 5px;
+    border-color: white;
+    border-style: solid;
+    padding: 6px;
     cursor: pointer;
     text-align: center;
     background-color: rgb(65 159 217); /* rgb(81, 52, 255); */ /* (--tg-theme-button-color); */
@@ -106,9 +110,11 @@
 .minus-cart-btn {
     margin-right: auto;
     width: 30%;
-    border-radius: 7px;
-    padding: 7px;
-    border: none;
+    border-radius: 15px;
+    border-width: 4px;
+    border-color: white;
+    border-style: solid;
+    padding: 6px;
     text-align: center;
     cursor: pointer;
     font-size: 0.9em;
@@ -120,9 +126,11 @@
 .plus-cart-btn {
     margin-left: auto;
     width: 30%;
-    padding: 7px;
-    border-radius: 7px;
-    border: none;
+    padding: 6px;
+    border-radius: 15px;
+    border-width: 4px;
+    border-color: white;
+    border-style: solid;
     text-align: center;
     cursor: pointer;
     font-size: 0.9em;

@@ -57,7 +57,7 @@
 .prodBlock {
     background: white;
     border-radius: 15px;
-    margin: 15px 5px;
+    margin: 15px 5px 10px;
     padding: 15px;
 }
 
@@ -148,4 +148,40 @@
     display: flex;
     align-items: baseline;
     margin-bottom: 10px;
+}
+
+.reviews {
+    padding-left: 5px;
+    font-size: 1.4em;
+    font-weight: 600;
+}
+
+.reviewBlock {
+    background: white;
+    border-radius: 15px;
+    margin: 5px 5px 10px;
+    padding: 10px;
+}
+
+.itemRating {
+    background-color: rgb(65 159 217);
+    border-radius: 10px;
+    color: white;
+    padding: 5px;
+}
+
+.ratingAuthor {
+    padding: 7px;
+    padding-left: 2px;
+    margin-right: 2px;
+}
+
+.ratingDate {
+    padding: 7px;
+    margin-left: auto;
+    color: gray
+}
+
+.ratingDesc {
+    padding: 7px 0 5px 2px;
 }

@@ -18,6 +18,7 @@ import { products, categories } from './components/TestData/prod.jsx';
 import axios from 'axios';
 import OrderConfirmed from './components/Cart/ConfirmOrder/OrderConfirmed.jsx';
 import ReactLoading from "react-loading";
+import BannerPage from './components/BannerPage/BannerPage.jsx';
 
 function App() {
   const {tg, user} = useTelegram(); 
@@ -109,6 +110,7 @@ function App() {
             <Route path={'Profile/Contacts'} element={<Contacts />} />
             <Route path={'ProdInfo/:id/:type'} element={<ProdInfo />} />
             <Route path={'Cart'} element={<Cart />} />
+            <Route path={'BannerPage/:id'} element={<BannerPage />} />
             <Route path={'Cart/ConfirmOrder'} element={<ConfirmOrder />} />
             <Route path={'Cart/ConfirmOrder/OrderConfirmed'} element={<OrderConfirmed />} />
             <Route path={'Profile/Orders/OrderPage/Feedback'} element={<Feedback />} />

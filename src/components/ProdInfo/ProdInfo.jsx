@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './ProdInfo.css'
 import {useLocation, useNavigate} from 'react-router-dom';
 import OtherHeader from '../OtherHeader/OtherHeader.jsx';
 import { goodsAmount } from '../Products/Products.jsx'
+import { userInfo } from '../TestData/user.jsx';
+import axios from 'axios';
+import ReactLoading from "react-loading";
 
 const ProdInfo = () => {
 
     let navigate = useNavigate();
 
-    const {products} = require('../TestData/prod.jsx');
+    const {products, reviews, reviewsId} = require('../TestData/prod.jsx');
     
     const location = useLocation();
 
@@ -19,6 +22,9 @@ const ProdInfo = () => {
 
     const [amount, setAmount] = useState();
     let defAmount = 1;
+
+    const [appState, setAppState] = useState();
+    const [isLoading, setIsLoading] = useState(false);
 
     const onChange = (edit) => {
         if (edit === '-') {
@@ -105,49 +111,97 @@ const ProdInfo = () => {
                     </div>
         }
     }
+
+    useEffect(() => {
+        async function getReviews() {
+            var response  = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_reviews/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&product_id=${location.state.id}`)
+            if (response.status === 200) {
+                for (let i = 0; i < response.data.length; i++) {
+                    if (!reviewsId.includes(response.data[i].id)) {
+                        console.log(response.data[i])
+                        reviewsId.push(response.data[i].id)
+                        reviews.push(response.data[i])
+                    }
+                }
+            }
+            setAppState(response);
+        }
+
+        async function makeRequest() {
+          setIsLoading(true);
+          try {
+            await getReviews();
+          } catch (e) {
+            console.log(e)
+          }
+          setIsLoading(false);
+        }
+    
+        makeRequest()
+    }, [setAppState]);
     
     return (
         <div>
             <OtherHeader />
-            <div className={'product1 ' + location.state.className}>
-                <div>
-                    <img
-			    		src={product.photoFile}
-			    		alt={product.name}
-			    		className='productIcon1'
-			    	/>
+            {isLoading ? (
+                <div className='loadScreen'>
+                    <ReactLoading type="bubbles" color="#419FD9"
+                        height={100} width={50} />
                 </div>
-                <div className='prodBlock'>
-                    <div className={'title1'}>{product.name}</div>
-                    <div className={'price1'}>
-                        {product.price} ₽
+            ) : (
+                <div className={'product1 ' + location.state.className}>
+                    <div>
+                        <img
+			        		src={product.photoFile}
+			        		alt={product.name}
+			        		className='productIcon1'
+			        	/>
                     </div>
-                    <div className='selectLine'>
-                        <div className={'oldPrice1'}>
-                            {product.oldPrice}
+                    <div className='prodBlock'>
+                        <div className={'title1'}>{product.name}</div>
+                        <div className={'price1'}>
+                            {product.price} ₽
                         </div>
-                        <div className={'discount1'}>
-                            {typeof product.oldPrice === 'string' 
-                            ? `-${Math.round((1 - product.price / product.oldPrice) * 100)}%` 
-                            : ''}
+                        <div className='selectLine'>
+                            <div className={'oldPrice1'}>
+                                {product.oldPrice}
+                            </div>
+                            <div className={'discount1'}>
+                                {typeof product.oldPrice === 'string' 
+                                ? `-${Math.round((1 - product.price / product.oldPrice) * 100)}%` 
+                                : ''}
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className='prodBlock'>
-                    <div className={'description1'}>{product.description}</div>
-                    <div className={'prodWeight'}><b>Вес:</b> {product.weight} гр</div>
-                </div>
-                {/* <Variants />
-                <Options /> */}
-                <div className='prodBlock'>
-                    <div className='addToCartLine'>
-                        <button className='minus-btn' onClick={() => onChange('-')}>-</button>
-                        <div className='amount'>{amount ?? defAmount}</div>
-                        <button className='plus-btn' onClick={() => onChange('+')}>+</button>
+                    <div className='prodBlock'>
+                        <div className={'description1'}>{product.description}</div>
+                        <div className={'prodWeight'}><b>Вес:</b> {product.weight} гр</div>
                     </div>
-                    <button className='buy-btn' onClick={() => onExit()}>{price?.toFixed(2) ?? defPrice.toFixed(2)} ₽</button>
+                    {/* <Variants />
+                    <Options /> */}
+                    <div className='prodBlock'>
+                        <div className='addToCartLine'>
+                            <button className='minus-btn' onClick={() => onChange('-')}>-</button>
+                            <div className='amount'>{amount ?? defAmount}</div>
+                            <button className='plus-btn' onClick={() => onChange('+')}>+</button>
+                        </div>
+                        <button className='buy-btn' onClick={() => onExit()}>{price?.toFixed(2) ?? defPrice.toFixed(2)} ₽</button>
+                    </div>
+                    <div className='reviews'>Отзывы</div>
+                    {reviews.map(item => {
+                        return <div>
+                            <div className='reviewBlock'>
+                                <div className='promoLine'>
+                                    <div className='ratingAuthor'>User{item.reviewer_id}</div>
+                                    <div className='itemRating'>★{item.rate}</div>
+                                    <div className='ratingDate'>{new Date(item.create_date).toLocaleDateString(undefined, {year: 'numeric', month: '2-digit', day: '2-digit'})}</div>
+                                </div>
+                                <div className='ratingDesc'>{item.content}</div>
+                            </div>
+                        </div>
+                    })}
                 </div>
-            </div>
+            )}
         </div>
     );
 };

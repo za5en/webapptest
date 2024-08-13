@@ -1,9 +1,10 @@
 import './Products.css'
 import ProductItem from '../ProductItem/ProductItem';
 import { useTelegram } from '../../hooks/useTelegram';
-import {useCallback, useEffect, useState} from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Header from '../Header/Header';
 import { useNavigate } from 'react-router-dom';
+import Banner from '../Banner/Banner.jsx';
 
 const getTotalPrice = (items = []) => {
     return items.reduce((acc, item) => {
@@ -17,15 +18,15 @@ const Products = () => {
 
     let navigate = useNavigate();
 
-    const {products, categories} = require('../TestData/prod.jsx');
+    const {products, categories, banners} = require('../TestData/prod.jsx');
 
     const [addedItems, setAddedItems] = useState([]);
 
     const [price, setPrice] = useState();
 
-    const {tg, queryId} = useTelegram();
+    // const {tg, queryId} = useTelegram();
 
-    const data = {}
+    // const data = {}
 
     let newItems = [];
 
@@ -43,27 +44,27 @@ const Products = () => {
         productsByCat.set(products[i].category, currentProd);
     }
 
-    const onSendData = useCallback(() => {
-        data = {
-            product: addedItems,
-            totalPrice: getTotalPrice(addedItems),
-            queryId
-        }
-        fetch('http://localhost:8000', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        })
-    }, [data])
+    // const onSendData = useCallback(() => {
+    //     data = {
+    //         product: addedItems,
+    //         totalPrice: getTotalPrice(addedItems),
+    //         queryId
+    //     }
+    //     fetch('http://localhost:8000', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify(data)
+    //     })
+    // }, [data])
 
-    useEffect(() => {
-        tg.onEvent('mainButtonClicked', onSendData)
-        return () => {
-            tg.offEvent('mainButtonClicked', onSendData)
-        }
-    }, [onSendData])
+    // useEffect(() => {
+    //     tg.onEvent('mainButtonClicked', onSendData)
+    //     return () => {
+    //         tg.offEvent('mainButtonClicked', onSendData)
+    //     }
+    // }, [onSendData])
 
     const onAdd = (product) => {
         let added = addedItems.find(item => item.id === product.id);
@@ -133,6 +134,16 @@ const Products = () => {
     return (
         <div>
             <Header />
+            <div className='bannerLine'>
+                {banners.map(item => (
+                    <div className='scroll'>
+                        <Banner
+                            header={item.header}
+                            id={item.id}
+                        />
+                    </div>
+                ))}
+            </div>
             <div className='list'>
                 {productsByCat.size !== 0 ? 
                 [...Array.from(productsByCat.keys())].map(key => (
@@ -145,6 +156,7 @@ const Products = () => {
                                 onAdd={onAdd}
                                 className={'item'}
                                 changePrice={changePrice}
+                                link={true}
                             />
                         ))}
                         </div>

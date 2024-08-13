@@ -4,14 +4,13 @@ import Button from '../Button/Button';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { userInfo } from '../TestData/user.jsx';
-import { product } from '../Profile/OrderPage/OrderPage.jsx';
 import ReactLoading from "react-loading";
 import { goodsOrder } from '../Profile/OrderCard/OrderCard.jsx';
 
+var goodsMarks = new Map()
+
 const Feedback = () => {
     let navigate = useNavigate();
-
-    var goodsMarks = new Map()
 
     const score = [
         {mark: 1},
@@ -60,7 +59,7 @@ const Feedback = () => {
                 <div className='markLine'>
                     {score.map((mark, index) =>
                         <div className='deliveryButton'>
-                            <button className={`mark${activeButton === index ? 'active' : ''}`} label={activeButton === index ? 'ACTIVE' : 'inactive'} onClick={() => changeType(index, item.id)}>
+                            <button className={`mark${activeButton === index ? 'active' : ''}`} label={activeButton === index ? 'ACTIVE' : 'inactive'} onClick={() => changeType(index + 1, item.id)}>
                                 {mark.mark}
                             </button>
                         </div>
@@ -76,8 +75,8 @@ const Feedback = () => {
     const sendFeedback = async () => {
         var content = document.getElementById('content').value
         async function createReview() {
-            for (var product in goodsOrder) {
-                var response  = await axios.post(`https://market-bot.org:8082/clients_api/reviews/create_review/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&product_id=${product.id}&content=${content}&rate=${goodsMarks.get(product.id)}`)
+            for (let i = 0; i < goodsOrder.length; i++) {
+                var response  = await axios.post(`https://market-bot.org:8082/clients_api/reviews/create_review/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&product_id=${goodsOrder[i].id}&content=${content}&rate=${goodsMarks.get(goodsOrder[i].id)}`)
                 setAppState(response);
             }
           }

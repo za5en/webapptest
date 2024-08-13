@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './ProductItem.css'
-import BurgerIcon from '../../assets/images/burger.png';
 import { useNavigate } from 'react-router-dom';
 import { goodsAmount } from '../Products/Products.jsx'
+import { reviews, reviewsId } from '../TestData/prod.jsx';
 
-const ProductItem = ({product, className, onAdd, changePrice}) => {
+const ProductItem = ({product, className, onAdd, changePrice, link}) => {
 
     let navigate = useNavigate();
 
@@ -52,10 +52,20 @@ const ProductItem = ({product, className, onAdd, changePrice}) => {
                     </div>
         }
     }
+
+    const toInfo = () => {
+        while (reviews.length !== 0) {
+            reviews.pop();
+        }
+        while (reviewsId.length !== 0) {
+            reviewsId.pop();
+        }
+        navigate(link ? `ProdInfo/${product.id}/${className}` : `../../ProdInfo/${product.id}/${className}`, { replace: false, state: {id: product.id, className: className}})
+    }
     
     return (
         <div className={'product ' + className}>
-            <div className='toInfo' onClick={() => navigate(`ProdInfo/${product.id}/${className}`, { replace: false, state: {id: product.id, className: className}})}>
+            <div className='toInfo' onClick={() => toInfo()}>
                 <div className={'img'}>
                     <img
 			    		src={product.photoFile}
