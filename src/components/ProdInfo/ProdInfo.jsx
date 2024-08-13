@@ -187,7 +187,11 @@ const ProdInfo = () => {
                         </div>
                         <button className='buy-btn' onClick={() => onExit()}>{price?.toFixed(2) ?? defPrice.toFixed(2)} ₽</button>
                     </div>
-                    <div className='reviews'>Отзывы</div>
+                    {reviews.length !== 0 ? (
+                        <div className='reviews'>Отзывы</div>
+                    ) : (
+                        <div className='reviews'>Отзывов пока нет</div>
+                    )}
                     {reviews.map(item => {
                         return <div>
                             <div className='reviewBlock'>
