@@ -82,11 +82,17 @@ const Cart = () => {
     }
 
     const confirm = async () => {
-        promo.length = 0
+        while (promo.length > 0) {
+            promo.pop()
+        }
         promo.push(document.getElementById('promo').value)
-        deliveryType.length = 0
+        while (deliveryType.length > 0) {
+            deliveryType.pop()
+        }
         deliveryType.push(deliveryMethod[activeButton].method)
-        deliveryAddress.length = 0
+        while (deliveryAddress.length > 0) {
+            deliveryAddress.pop()
+        }
         if (activeButton === 1) {
             deliveryAddress.push(document.getElementById('deliveryAddress').value)
         }
@@ -113,7 +119,9 @@ const Cart = () => {
 
     async function createCart() {
         var response  = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/create_cart?client_id=${userInfo[0].id}`)
-        cartId.length = 0
+        while (cartId.length > 0) {
+            cartId.pop()
+        }
         cartId.push(response.data.data)
         setAppState(response);
 

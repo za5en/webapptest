@@ -1,16 +1,23 @@
 import React, { useState } from 'react'
-import './Feedback.css'
+import '../Feedback/Feedback.css'
 import Button from '../Button/Button';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { userInfo } from '../TestData/user.jsx';
 import ReactLoading from "react-loading";
-import { goodsOrder } from '../Profile/OrderCard/OrderCard.jsx';
 
-var goodsMarks = new Map()
+var prodMark = new Map()
 
-const Feedback = () => {
+const EditReview = () => {
     let navigate = useNavigate();
+
+    const location = useLocation();
+
+    let product = {};
+
+    let review = {};
+
+    const {products, myReviews} = require('../TestData/prod.jsx');
 
     const score = [
         {mark: 1},
@@ -20,16 +27,32 @@ const Feedback = () => {
         {mark: 5},
     ];
 
+    let find = false;
+    for (let i = 0; i < Object.keys(products).length && !find; i++) {
+        if (products[i].id === location.state.prodId) {
+            product = products[i];
+            find = true;
+        }
+    }
+
+    find = false;
+    for (let i = 0; i < Object.keys(myReviews).length && !find; i++) {
+        if (myReviews[i].id === location.state.revId) {
+            review = myReviews[i];
+            find = true;
+        }
+    }
+
     const [appState, setAppState] = useState(0);
+    const [activeButton, setActiveButton] = useState(review.rate - 1);
 
     const [isValidContent, setIsValidContent] = useState(true);
 
     const [isValidMark, setIsValidMark] = useState(true);
 
     const changeType = (mark, id) => {
-        var state = appState + 1;
-        goodsMarks.set(id, mark)
-        setAppState(state)
+        prodMark.set(id, mark)
+        setActiveButton(mark)
     }
     
     function FeedbackHeader() {
@@ -37,7 +60,7 @@ const Feedback = () => {
         return (
             <div className='feedbackHeader'>
                 <Button className='cancelButton' onClick={() => navigate(-1)}><b className='cancel'>Назад</b></Button>
-                <div className='feedbackHeaderName'>Оценить заказ</div>
+                <div className='feedbackHeaderName'>Изменить отзыв</div>
                 <span />
             </div>
         )
@@ -55,14 +78,12 @@ const Feedback = () => {
                     <div className='prodText'>
                         <div className='prodName'>{item.name}</div>
                         <div className='prodName'>{item.price} ₽</div>
-                        {/* <div className='prodParam'>{item.weight} гр</div> */}
-                        {/* <div className='prodParam'>{item.order_quantity} шт.</div> */}
                     </div>
                 </div>
                 <div className='markLine'>
                     {score.map((mark, index) =>
                         <div className='deliveryButton'>
-                            <button className={`mark${goodsMarks.get(item.id) === index ? 'active' : ''}`} onClick={() => changeType(index, item.id)}>
+                            <button className={`mark${activeButton === index ? 'active' : ''}`} onClick={() => changeType(index, item.id)}>
                                 {mark.mark}
                             </button>
                         </div>
@@ -74,36 +95,29 @@ const Feedback = () => {
 
     const [isLoading, setIsLoading] = useState(false);
 
-    const sendFeedback = async () => {
+    const sendReview = async () => {
         var content = document.getElementById('content').value
-        async function createReview() {
-            for (let i = 0; i < goodsOrder.length; i++) {
-                var response  = await axios.post(`https://market-bot.org:8082/clients_api/reviews/create_review/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&product_id=${goodsOrder[i].id}&content=${content}&rate=${goodsMarks.get(goodsOrder[i].id) + 1}`)
-                setAppState(response);
-            }
+        async function editReview() {
+            var response = await axios.post(`https://market-bot.org:8082/clients_api/reviews/change_review/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&review_id=${location.state.revId}&content=${content}&rate=${prodMark.get(product.id) + 1}`)
+            console.log(response)
+            setAppState(response);
           }
 
           async function makeRequest() {
             if (document.getElementById('content').value.length < 200) {
                 setIsValidContent(true);
-                let find = false;
-                for (let i = 0; i < goodsOrder.length && !find; i++) {
-                    if (!goodsMarks.has(goodsOrder[i].id)) {
-                        find = true;
-                    }
-                }
-                if (find) {
+                if (!prodMark.has(product.id)) {
                     setIsValidMark(false);
                 } else {
                     setIsValidMark(true);
                     setIsLoading(true);
                     try {
-                        await createReview();
+                        await editReview();
                     } catch (e) {
                         console.log(e)
                     }
                     setIsLoading(false);
-                    navigate(-2)
+                    navigate(-1)
                 }
             } else {
                 setIsValidContent(false);
@@ -124,17 +138,15 @@ const Feedback = () => {
                 <div>
                     <FeedbackHeader />
                     <div className='cart'>
-                        {goodsOrder.map(prod => (
-                            <ProdCard item={prod} />
-                        ))}
+                        <ProdCard item={product} />
                         {isValidMark ? (
                             <div></div>
                         ) : (
-                            <div className='wrongPhone'>Необходимо установить оценки для всех продуктов</div>
+                            <div className='wrongPhone'>Необходимо выбрать оценку</div>
                         )}
                         <form className='payments'>
                             <div className='fieldHeader'>Отзыв</div>
-                            <textarea className='textFieldExt' type="text" id='content' placeholder='Краткий отзыв по заказу'></textarea>
+                            <textarea className='textFieldExt' type="text" id='content' placeholder='Краткий отзыв по товару' defaultValue={review.content}></textarea>
                             {isValidContent ? (
                                 <div></div>
                             ) : (
@@ -143,7 +155,7 @@ const Feedback = () => {
                         </form>
                     </div>
                     <footer>
-                        <button className='cart-btn' onClick={() => sendFeedback()}>{'Готово'}</button>
+                        <button className='cart-btn' onClick={() => sendReview()}>{'Готово'}</button>
                     </footer>
                 </div>
             )}
@@ -152,4 +164,4 @@ const Feedback = () => {
     )
 }
 
-export default Feedback;
+export default EditReview;

@@ -1,16 +1,9 @@
 import './Products.css'
 import ProductItem from '../ProductItem/ProductItem';
-import { useTelegram } from '../../hooks/useTelegram';
-import { useCallback, useEffect, useState } from 'react'
+import { useState } from 'react'
 import Header from '../Header/Header';
 import { useNavigate } from 'react-router-dom';
 import Banner from '../Banner/Banner.jsx';
-
-const getTotalPrice = (items = []) => {
-    return items.reduce((acc, item) => {
-        return acc += 1
-    }, 0)
-}
 
 export var goodsAmount = new Map()
 
@@ -24,47 +17,28 @@ const Products = () => {
 
     const [price, setPrice] = useState();
 
-    // const {tg, queryId} = useTelegram();
-
-    // const data = {}
-
     let newItems = [];
 
     let nullPrice = 0;
 
     let productsByCat = new Map();
 
+    // let hiddenCats = new Map();
+
     for (let i = 0; i < categories.length; i++) {
         productsByCat.set(categories[i], []);
+        // hiddenCats.set(categories[i], 0);
     }
 
     for (let i = 0; i < Object.keys(products).length; i++) {
         let currentProd = productsByCat.get(products[i].category);
         currentProd.push(products[i]);
         productsByCat.set(products[i].category, currentProd);
+        // if (currentProd.it_hidden) {
+        //     let hidden = hiddenCats.get(products[i].categories);
+        //     hiddenCats.set(products[i].categories, hidden + 1);
+        // }
     }
-
-    // const onSendData = useCallback(() => {
-    //     data = {
-    //         product: addedItems,
-    //         totalPrice: getTotalPrice(addedItems),
-    //         queryId
-    //     }
-    //     fetch('http://localhost:8000', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify(data)
-    //     })
-    // }, [data])
-
-    // useEffect(() => {
-    //     tg.onEvent('mainButtonClicked', onSendData)
-    //     return () => {
-    //         tg.offEvent('mainButtonClicked', onSendData)
-    //     }
-    // }, [onSendData])
 
     const onAdd = (product) => {
         let added = addedItems.find(item => item.id === product.id);
@@ -148,18 +122,28 @@ const Products = () => {
                 {productsByCat.size !== 0 ? 
                 [...Array.from(productsByCat.keys())].map(key => (
                     <div>
-                        <span id={key} className='catName'>{key}</span>
-                        <div className='cat'>
-                        {productsByCat.get(key).map(item => (
-                            <ProductItem 
-                                product={item}
-                                onAdd={onAdd}
-                                className={'item'}
-                                changePrice={changePrice}
-                                link={true}
-                            />
-                        ))}
-                        </div>
+                        {/* {hiddenCats.get(key) === productsByCat.get(key).length ? (
+                            <div></div>
+                        ) : (
+                            <div> */}
+                                <span id={key} className='catName'>{key}</span>
+                                <div className='cat'>
+                                {productsByCat.get(key).map(item => (
+                                    item.it_hidden ? (
+                                        <div></div>
+                                    ) : (
+                                        <ProductItem 
+                                        product={item}
+                                        onAdd={onAdd}
+                                        className={'item'}
+                                        changePrice={changePrice}
+                                        link={true}
+                                    />
+                                    )
+                                ))}
+                                </div>
+                            {/* </div>
+                        )} */}
                     </div>
                 )) : (
                     <div className='null'>Владелец магазин пока не добавил ни одного товара</div>

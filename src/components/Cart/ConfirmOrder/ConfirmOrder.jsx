@@ -71,7 +71,7 @@ const ConfirmOrder = () => {
   
           async function payForCart() {
               if (promo[0] !== null && promo[0] !== "" && typeof promo[0] !== "undefined") {
-                var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/get_all_menu?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&cart_id=${cartId[0]}&promo_code=${promo[0]}`, {
+                var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/pay_for_cart/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&cart_id=${cartId[0]}&promo_code=${promo[0]}`, {
                     "client_id": userInfo[0].id,
                     "bot_id": userInfo[0].bot_id,
                     "cart_id": cartId,
@@ -90,7 +90,7 @@ const ConfirmOrder = () => {
                 setAppState(response);
                 return response.status
               } else {
-                response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/get_all_menu?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&cart_id=${cartId[0]}`, {
+                response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/pay_for_cart/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&cart_id=${cartId[0]}`, {
                   "client_id": userInfo[0].id,
                   "bot_id": userInfo[0].bot_id,
                   "cart_id": cartId,

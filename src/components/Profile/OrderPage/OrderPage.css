@@ -12,6 +12,10 @@
     background-color: rgb(65 159 217); /* (--tg-theme-button-color); */
 }
 
+.repeat-btn:hover {
+    background-color: rgb(171, 223, 255);
+}
+
 .orderSub {
     margin: 5px 5px;
     font-size: 0.9em;

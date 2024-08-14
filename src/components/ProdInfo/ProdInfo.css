@@ -156,6 +156,12 @@
     font-weight: 600;
 }
 
+.noReviews {
+    text-align: center;
+    font-size: 1.1em;
+    font-weight: 500;
+}
+
 .reviewBlock {
     background: white;
     border-radius: 15px;
@@ -184,4 +190,34 @@
 
 .ratingDesc {
     padding: 7px 0 5px 2px;
+}
+
+.allReviews {
+    margin-left: auto;
+    background-color: rgb(65 159 217);
+    padding: 5px;
+    color: white;
+    cursor: pointer;
+    border-radius: 10px;
+    margin-right: 5px;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+.review-btn{
+    margin: 5px 40px;
+    width: 100%;
+    height: 30px;
+    border-radius: 10px;
+    border-width: 0;
+    text-align: center;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+    color: white;
+    background-color: rgb(65 159 217);
+}
+
+.review-btn:hover {
+    background-color: rgb(171, 223, 255);
 }

@@ -29,11 +29,11 @@ class HeaderComponent extends Component {
         let button;
         for (let i = 0; i < this.categories?.length ?? 0; i++) {
             if (this.state.selected === this.categories[i]) {
-                button= <div className='scroll-selected'>
+                button = <div className='scroll-selected'>
                             <span onClick={() => this.onMove(this.categories[i])}>{this.categories[i]}</span>
                         </div>
             } else {
-                button= <div className='scroll'>
+                button = <div className='scroll'>
                             <span onClick={() => this.onSelectChange(this.categories[i])}>{this.categories[i]}</span>
                         </div>
             }

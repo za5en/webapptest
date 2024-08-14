@@ -24,7 +24,9 @@ const OrderCard = ({order}) => {
     statuses.set('cancelled', 'Отменен')
 
     const openOrder = async () => {
-        item.length = 0
+        while (item.length > 0) {
+            item.pop()
+        }
         item.push(order)
         
         async function getProducts() {

@@ -19,6 +19,8 @@ import axios from 'axios';
 import OrderConfirmed from './components/Cart/ConfirmOrder/OrderConfirmed.jsx';
 import ReactLoading from "react-loading";
 import BannerPage from './components/BannerPage/BannerPage.jsx';
+import Reviews from './components/Reviews/Reviews.jsx';
+import EditReview from './components/EditReview/EditReview.jsx';
 
 function App() {
   const {tg, user} = useTelegram(); 
@@ -34,7 +36,7 @@ function App() {
     botId = params.get("bot_id"); //by inline button
   }
 
-  // botId = 58
+  // botId = 60
   // let userId = 649105595
 
   const [appState, setAppState] = useState();
@@ -56,7 +58,7 @@ function App() {
       products = response.data
       categories = []
       for (let i = 0; i < products.length; i++) {
-        if (!categories.includes(products[i].category)) {
+        if (!categories.includes(products[i].category) && !products[i].it_hidden) {
           categories.push(products[i].category)
         }
         var photo = await getPhoto(products[i].id)
@@ -72,7 +74,9 @@ function App() {
 
     async function getContacts() {
       var response  = await axios.get(`https://market-bot.org:8082/clients_api/info/get_contacts/?bot_id=${botId}&client_id=${userInfo[0].id}`)
-      contacts.length = 0
+      while (contacts.length > 0) {
+        contacts.pop()
+      }
       contacts.push(response.data[0])
       setAppState(response);
     }
@@ -109,6 +113,8 @@ function App() {
             <Route path={'Profile/Promo'} element={<Promo />} />
             <Route path={'Profile/Contacts'} element={<Contacts />} />
             <Route path={'ProdInfo/:id/:type'} element={<ProdInfo />} />
+            <Route path={'ProdInfo/:id/:type/EditReview/:prodId/:revId'} element={<EditReview />} />
+            <Route path={'ProdInfo/:id/:type/Reviews'} element={<Reviews />} />
             <Route path={'Cart'} element={<Cart />} />
             <Route path={'BannerPage/:id'} element={<BannerPage />} />
             <Route path={'Cart/ConfirmOrder'} element={<ConfirmOrder />} />

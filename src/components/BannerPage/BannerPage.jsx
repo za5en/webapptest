@@ -103,13 +103,17 @@ const BannerPage = () => {
                 <div className='list'>
                     <div className='cat'>
                         {goods.map(item => (
-                            <ProductItem
-                                product={item}
-                                onAdd={onAdd}
-                                className={'item'}
-                                changePrice={changePrice}
-                                link={false}
-                            />
+                            item.it_hidden ? (
+                                <div></div>
+                            ) : (
+                                <ProductItem
+                                    product={item}
+                                    onAdd={onAdd}
+                                    className={'item'}
+                                    changePrice={changePrice}
+                                    link={false}
+                                />
+                            )
                         ))}
                     </div>
                 </div>

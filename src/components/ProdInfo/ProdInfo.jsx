@@ -11,7 +11,7 @@ const ProdInfo = () => {
 
     let navigate = useNavigate();
 
-    const {products, reviews, reviewsId} = require('../TestData/prod.jsx');
+    const {products, reviews, reviewsId, myReviews} = require('../TestData/prod.jsx');
     
     const location = useLocation();
 
@@ -112,21 +112,38 @@ const ProdInfo = () => {
         }
     }
 
-    useEffect(() => {
-        async function getReviews() {
-            var response  = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_reviews/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&product_id=${location.state.id}`)
-            if (response.status === 200) {
-                for (let i = 0; i < response.data.length; i++) {
-                    if (!reviewsId.includes(response.data[i].id)) {
-                        console.log(response.data[i])
-                        reviewsId.push(response.data[i].id)
+    const editReview = async (reviewId) => {
+        navigate(`EditReview/${product.id}/${reviewId}`, { replace: false, state: {prodId: product.id, revId: reviewId}});
+    }
+
+    async function getReviews() {
+        while (reviews.length > 0) {
+            reviews.pop();
+        }
+        while (reviewsId.length > 0) {
+            reviewsId.pop();
+        }
+        while (myReviews.length > 0) {
+            myReviews.pop();
+        }
+
+        var response  = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_reviews/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&product_id=${location.state.id}`)
+        if (response.status === 200) {
+            for (let i = 0; i < response.data.length; i++) {
+                if (!reviewsId.includes(response.data[i].id)) {
+                    reviewsId.push(response.data[i].id)
+                    if (response.data[i].reviewer_id === userInfo[0].id) {
+                        myReviews.push(response.data[i])
+                    } else {
                         reviews.push(response.data[i])
                     }
                 }
             }
-            setAppState(response);
         }
+        setAppState(response);
+    }
 
+    useEffect(() => {
         async function makeRequest() {
           setIsLoading(true);
           try {
@@ -139,6 +156,19 @@ const ProdInfo = () => {
     
         makeRequest()
     }, [setAppState]);
+
+    const deleteReview = async (reviewId) => {
+        try {
+            var response = await axios.post(`https://market-bot.org:8082/clients_api/reviews/delete_review/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&review_id=${reviewId}`)
+            if (response.status === 200) {
+                await getReviews();
+            }
+        } catch (e) {
+            console.log(e)
+        }
+        setAppState(response);
+    }
+
     
     return (
         <div>
@@ -187,23 +217,59 @@ const ProdInfo = () => {
                         </div>
                         <button className='buy-btn' onClick={() => onExit()}>{price?.toFixed(2) ?? defPrice.toFixed(2)} ₽</button>
                     </div>
-                    {reviews.length !== 0 ? (
-                        <div className='reviews'>Отзывы</div>
-                    ) : (
-                        <div className='reviews'>Отзывов пока нет</div>
-                    )}
-                    {reviews.map(item => {
-                        return <div>
-                            <div className='reviewBlock'>
-                                <div className='promoLine'>
-                                    <div className='ratingAuthor'>User{item.reviewer_id}</div>
-                                    <div className='itemRating'>★{item.rate}</div>
-                                    <div className='ratingDate'>{new Date(item.create_date).toLocaleDateString(undefined, {year: 'numeric', month: '2-digit', day: '2-digit'})}</div>
+                    {myReviews.length !== 0 ? (
+                        <div>
+                            <div className='reviews'>Мои отзывы</div>
+                            {myReviews.map(item => (
+                                <div className='reviewBlock'>
+                                    <div className='promoLine'>
+                                        <div className='ratingAuthor'>User{item.reviewer_id}</div>
+                                        <div className='itemRating'>★{item.rate}</div>
+                                        <div className='ratingDate'>{new Date(item.create_date).toLocaleDateString(undefined, {year: 'numeric', month: '2-digit', day: '2-digit'})}</div>
+                                    </div>
+                                    {item.content !== '' ? (
+                                        <div className='ratingDesc'>{item.content}</div>
+                                    ) : (
+                                        <div></div>
+                                    )}
+                                    <div className='promoLine'>
+                                        <button className='review-btn' onClick={() => editReview(item.id)}>🖊️</button>
+                                        <button className='review-btn' onClick={() => deleteReview(item.id)}>❌</button>
+                                    </div>
                                 </div>
-                                <div className='ratingDesc'>{item.content}</div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div></div>
+                    )}
+                    {reviews.length !== 0 ? (
+                        <div>
+                            <div className='promoLine'>
+                                <div className='reviews'>Отзывы</div>
+                                <div className='allReviews' onClick={() => navigate('Reviews', { replace: false })}>Все ({reviews.length})</div>
+                            </div>
+                            <div>
+                                <div className='reviewBlock'>
+                                    <div className='promoLine'>
+                                        <div className='ratingAuthor'>User{reviews[0].reviewer_id}</div>
+                                        <div className='itemRating'>★{reviews[0].rate}</div>
+                                        <div className='ratingDate'>{new Date(reviews[0].create_date).toLocaleDateString(undefined, {year: 'numeric', month: '2-digit', day: '2-digit'})}</div>
+                                    </div>
+                                    {reviews[0].content !== '' ? (
+                                        <div className='ratingDesc'>{reviews[0].content}</div>
+                                    ) : (
+                                        <div></div>
+                                    )}
+                                </div>
                             </div>
                         </div>
-                    })}
+                    ) : (
+                        myReviews.length !== 0 ? (
+                            <div className='noReviews'>Других отзывов пока нет</div>
+                        ) : (
+                            <div className='noReviews'>Отзывов пока нет</div>
+                        )
+                    )}
                 </div>
             )}
         </div>
