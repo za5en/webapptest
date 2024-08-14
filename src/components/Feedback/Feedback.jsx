@@ -9,6 +9,8 @@ import { goodsOrder } from '../Profile/OrderCard/OrderCard.jsx';
 
 var goodsMarks = new Map()
 
+export var goodsReviews = new Map()
+
 const Feedback = () => {
     let navigate = useNavigate();
 
@@ -31,6 +33,10 @@ const Feedback = () => {
         goodsMarks.set(id, mark)
         setAppState(state)
     }
+
+    const addString = (id, str) => {
+        goodsReviews.set(id, str);
+    }
     
     function FeedbackHeader() {
         let navigate = useNavigate();
@@ -43,7 +49,26 @@ const Feedback = () => {
         )
     }
 
+    function MarksLine({id}) {
+        return (
+            <div className='markLine'>
+                {score.map((mark, index) =>
+                    <div className='deliveryButton'>
+                        <button className={`mark${goodsMarks.get(id) === index ? 'active' : ''}`} onClick={() => changeType(index, id)}>
+                            {mark.mark}
+                        </button>
+                    </div>
+                )}
+            </div>
+        )
+    }
+
     function ProdCard({item}) {
+        var element = document.getElementById('content' + item.id);
+        var str = ''
+        if (element != null) {
+            str = element.value;
+        }
         return (
             <div className='goodsFd'>
                 <div className='goodsInnerFd'>
@@ -59,15 +84,16 @@ const Feedback = () => {
                         {/* <div className='prodParam'>{item.order_quantity} шт.</div> */}
                     </div>
                 </div>
-                <div className='markLine'>
-                    {score.map((mark, index) =>
-                        <div className='deliveryButton'>
-                            <button className={`mark${goodsMarks.get(item.id) === index ? 'active' : ''}`} onClick={() => changeType(index, item.id)}>
-                                {mark.mark}
-                            </button>
-                        </div>
+                <MarksLine id={item.id} />
+                <form className='feedbackReview'>
+                    <div className='fieldHeader'>Отзыв</div>
+                    <textarea className='textFieldExt' type="text" id={'content' + item.id} placeholder='Краткий отзыв по товару' onChange={str !== '' ? addString(item.id, str) : null} defaultValue={goodsReviews.get(item.id)}></textarea>
+                    {isValidContent ? (
+                        <div></div>
+                    ) : (
+                        <div className='wrongPhone'>Отзыв должен содержать не более 200 символов</div>
                     )}
-                </div>
+                </form>
             </div>
         );
     }
@@ -75,38 +101,40 @@ const Feedback = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const sendFeedback = async () => {
-        var content = document.getElementById('content').value
         async function createReview() {
             for (let i = 0; i < goodsOrder.length; i++) {
-                var response  = await axios.post(`https://market-bot.org:8082/clients_api/reviews/create_review/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&product_id=${goodsOrder[i].id}&content=${content}&rate=${goodsMarks.get(goodsOrder[i].id) + 1}`)
-                setAppState(response);
+                goodsReviews.set(goodsOrder[i].id, document.getElementById('content' + goodsOrder[i].id).value)
+            }
+            for (let i = 0; i < goodsOrder.length; i++) {
+                if (goodsReviews.get(goodsOrder[i].id).length < 200) {
+                    setIsValidContent(true);
+                    var response = await axios.post(`https://market-bot.org:8082/clients_api/reviews/create_review/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&product_id=${goodsOrder[i].id}&content=${goodsReviews.get(goodsOrder[i].id)}&rate=${goodsMarks.get(goodsOrder[i].id) + 1}`)
+                } else {
+                    setIsValidContent(false);
+                }
             }
           }
 
           async function makeRequest() {
-            if (document.getElementById('content').value.length < 200) {
-                setIsValidContent(true);
-                let find = false;
-                for (let i = 0; i < goodsOrder.length && !find; i++) {
-                    if (!goodsMarks.has(goodsOrder[i].id)) {
-                        find = true;
-                    }
+            let find = false;
+            for (let i = 0; i < goodsOrder.length && !find; i++) {
+                if (!goodsMarks.has(goodsOrder[i].id)) {
+                    find = true;
                 }
-                if (find) {
-                    setIsValidMark(false);
-                } else {
-                    setIsValidMark(true);
-                    setIsLoading(true);
-                    try {
-                        await createReview();
-                    } catch (e) {
-                        console.log(e)
-                    }
-                    setIsLoading(false);
-                    navigate(-2)
-                }
+            }
+            if (find) {
+                setIsValidMark(false);
             } else {
-                setIsValidContent(false);
+                setIsValidMark(true);
+                setIsLoading(true);
+                try {
+                    await createReview();
+                    setAppState(appState + 1);
+                } catch (e) {
+                    // console.log(e)
+                }
+                setIsLoading(false);
+                navigate(-2)
             }
           }
         
@@ -132,16 +160,8 @@ const Feedback = () => {
                         ) : (
                             <div className='wrongPhone'>Необходимо установить оценки для всех продуктов</div>
                         )}
-                        <form className='payments'>
-                            <div className='fieldHeader'>Отзыв</div>
-                            <textarea className='textFieldExt' type="text" id='content' placeholder='Краткий отзыв по заказу'></textarea>
-                            {isValidContent ? (
-                                <div></div>
-                            ) : (
-                                <div className='wrongPhone'>Отзыв должен содержать не более 200 символов</div>
-                            )}
-                        </form>
                     </div>
+                    <div className='lowerPadding'></div>
                     <footer>
                         <button className='cart-btn' onClick={() => sendFeedback()}>{'Готово'}</button>
                     </footer>

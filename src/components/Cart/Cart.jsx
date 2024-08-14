@@ -105,7 +105,7 @@ const Cart = () => {
                 try {
                     await createCart()
                 } catch (e) {
-                    console.log(e)
+                    // console.log(e)
                 }
                 setIsLoading(false);
                 navigate('ConfirmOrder', { replace: false })

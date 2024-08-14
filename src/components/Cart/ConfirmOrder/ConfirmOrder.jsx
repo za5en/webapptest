@@ -130,7 +130,7 @@ const ConfirmOrder = () => {
                     try {
                         code = await makeRequest();
                     } catch (e) {
-                        console.log(e)
+                        // console.log(e)
                     }
                     setIsLoading(false);
                     if (code === 200) {

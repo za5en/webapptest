@@ -50,15 +50,15 @@
 }
 
 .orderCostInside {
-    margin-left: auto;
     font-weight: 500;
     font-size: 1.2em;
+    margin-left: 45px;
 }
 
 .orderAmount {
     font-weight: 200;
     font-size: 1.2em;
-    margin-right: 15px;
+    margin-left: 7px;
 }
 
 .orderPos {
@@ -68,7 +68,7 @@
 
 .multiple {
     display: flex;
-    margin: 5px 7px;
+    /* margin: 5px 7px; */
 }
 
 .posName {

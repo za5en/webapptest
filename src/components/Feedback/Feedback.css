@@ -56,7 +56,7 @@
     border-radius: 15px;
     margin: 15px;
     text-align: start;
-    padding-bottom: 10px;
+    padding-bottom: 1px;
 }
 
 .goodsInnerFd {
@@ -71,4 +71,17 @@
     display: flex;
     justify-content:space-around;
     margin-left: 10px;
+}
+
+.lowerPadding {
+    margin-bottom: 90px;
+}
+
+.feedbackReview {
+    background: white;
+    border-radius: 15px;
+    margin: 5px;
+    padding: 10px 5px 0 2px;
+    text-align: start;
+    display: block;
 }

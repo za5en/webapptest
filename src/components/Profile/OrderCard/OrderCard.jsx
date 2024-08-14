@@ -44,13 +44,15 @@ const OrderCard = ({order}) => {
             try {
                 var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_reviews/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&product_id=${prodId}`)
                 if (response.status === 200) {
-                    if (response.data[0].reviewer_id === userInfo[0].id) {
-                        review = response.data[0]
+                    for (let i = 0; i < response.data.length; i++) {
+                        if (response.data[i].reviewer_id === userInfo[0].id) {
+                            review = response.data[i]
+                        }
                     }
                 }
                 setAppState(response);
             } catch (e) {
-                console.log(e)
+                // console.log(e)
             }
             return review 
           }
@@ -65,7 +67,7 @@ const OrderCard = ({order}) => {
             try {
                 await getProducts();
             } catch (e) {
-                console.log(e)
+                // console.log(e)
             }
             setIsLoading(false);
           }

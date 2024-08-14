@@ -3,6 +3,7 @@ import './OrderPage.css'
 import OtherHeader from '../../OtherHeader/OtherHeader';
 import { useNavigate } from 'react-router-dom';
 import { goodsOrder } from '../OrderCard/OrderCard';
+import { goodsReviews } from '../../Feedback/Feedback';
 
 export var item = []
 export var product = []
@@ -29,6 +30,9 @@ const OrderPage = () => {
         // product.length = 0
         // product.push(prod)
         // product = prod
+        while (goodsReviews.length > 0) {
+            goodsReviews.pop()
+        }
         navigate('Feedback', { replace: false })
     }
 

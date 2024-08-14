@@ -87,7 +87,7 @@ function App() {
         await getUser();
         await getContacts();
       } catch (e) {
-        console.log(e)
+        // console.log(e)
       }
       setIsLoading(false);
     }

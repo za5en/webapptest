@@ -30,7 +30,7 @@ const Profile = () => {
           try {
             await getOrders();
           } catch (e) {
-            console.log(e)
+            // console.log(e)
           }          
           setIsLoading(false);
         }

@@ -149,7 +149,7 @@ const ProdInfo = () => {
           try {
             await getReviews();
           } catch (e) {
-            console.log(e)
+            // console.log(e)
           }
           setIsLoading(false);
         }
@@ -164,7 +164,7 @@ const ProdInfo = () => {
                 await getReviews();
             }
         } catch (e) {
-            console.log(e)
+            // console.log(e)
         }
         setAppState(response);
     }
