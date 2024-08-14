@@ -52,7 +52,7 @@ const Profile = () => {
                     <div className='user'>
                         {/* <img src={user?.photo_url ?? Avatar} className='avatar' /> */}
                         <span className='usernameProfile'>
-                            {user?.username ?? 'Username'}
+                            {user?.first_name ?? 'Username'}
                         </span>
                     </div>
                     <div className='block' onClick={() => navigate('Orders', { replace: false })}>Заказы &gt;</div>

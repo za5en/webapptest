@@ -54,7 +54,7 @@ const Header = () => {
                 <button className='menuButton' onClick={() => navigate('Profile', { replace: false })}>
                     {/* <img src={user?.photo_url ?? Avatar} className='menuIcon' /> */}
                     <span className='username'>
-                        {user?.username ?? 'Username'}
+                        {user?.first_name ?? 'Username'}
                     </span>
                 </button>
             </div>
