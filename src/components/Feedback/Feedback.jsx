@@ -103,12 +103,12 @@ const Feedback = () => {
     const sendFeedback = async () => {
         async function createReview() {
             for (let i = 0; i < goodsOrder.length; i++) {
-                goodsReviews.set(goodsOrder[i].id, document.getElementById('content' + goodsOrder[i].id).value)
+                goodsReviews.set(goodsOrder[i].product_id, document.getElementById('content' + goodsOrder[i].product_id).value)
             }
             for (let i = 0; i < goodsOrder.length; i++) {
                 if (goodsReviews.get(goodsOrder[i].id).length < 200) {
                     setIsValidContent(true);
-                    var response = await axios.post(`https://market-bot.org:8082/clients_api/reviews/create_review/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&product_id=${goodsOrder[i].id}&content=${goodsReviews.get(goodsOrder[i].id)}&rate=${goodsMarks.get(goodsOrder[i].id) + 1}`)
+                    var response = await axios.post(`https://market-bot.org:8082/clients_api/reviews/create_review/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&product_id=${goodsOrder[i].product_id}&content=${goodsReviews.get(goodsOrder[i].product_id)}&rate=${goodsMarks.get(goodsOrder[i].product_id) + 1}`)
                 } else {
                     setIsValidContent(false);
                 }
@@ -118,7 +118,7 @@ const Feedback = () => {
           async function makeRequest() {
             let find = false;
             for (let i = 0; i < goodsOrder.length && !find; i++) {
-                if (!goodsMarks.has(goodsOrder[i].id)) {
+                if (!goodsMarks.has(goodsOrder[i].product_id)) {
                     find = true;
                 }
             }

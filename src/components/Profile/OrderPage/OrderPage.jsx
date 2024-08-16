@@ -54,7 +54,7 @@ const OrderPage = () => {
                                     <div className='prodText'>
                                         <div className='prodName1'>{prod.name}</div>
                                         <div className='multiple'>
-                                            <div className='orderAmount'>{prod.weight + ' г'}</div>
+                                            <div className='orderAmount'>{prod.count + ' шт'}</div>
                                             <div className='orderCostInside'>{prod.price + ' ₽'}</div>
                                         </div>
                                         {prod.review.length === 0 ? (
@@ -77,13 +77,13 @@ const OrderPage = () => {
                         <div className='orderMain'>{item[0].delivery_address}</div>
                         <div className='orderSub'>{'Дата и время заказа'}</div>
                         <div className='orderMain'>{new Date(item[0].start_time+'Z').toLocaleDateString(undefined, {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})}</div>
-                        {!reviews ? (
+                        {/* {!reviews ? ( */}
                             <div className='promoLine'>
                                 <button className='rate-btn' onClick={() => rateProduct()}>Оценить заказ</button>
                             </div>
-                        ) : (
+                        {/* ) : (
                             <div></div>
-                        )}
+                        )} */}
                     </div>
                     <button className='repeat-btn' onClick={() => navigate(-3)}>Повторить заказ</button>
                 </div>

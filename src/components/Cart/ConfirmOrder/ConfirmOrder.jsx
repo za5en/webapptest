@@ -11,6 +11,7 @@ import ReactLoading from "react-loading";
 export var promo = []
 export var deliveryAddress = []
 export var deliveryType = []
+var paymentSelect = ['Онлайн']
 
 const ConfirmOrder = () => {
     let navigate = useNavigate();
@@ -47,10 +48,10 @@ const ConfirmOrder = () => {
     // }, [setAppState]);
 
     const confirm = async () => {
-        var paymentType = paymentMethod[activeButton] === 'Банковской картой' ? 'card' : 'cash';
+        var paymentType = paymentSelect[0] === 'Банковской картой' ? 'card' : 'cash';
         var delType = deliveryType[0] === 'Самовывоз' ? 'pickup': 'delivery';
       
-          async function createOrder() {
+        async function createOrder() {
             var response = await axios.post('https://market-bot.org:8082/clients_api/clients_orders/create_order', {
               "client_id": userInfo[0].id,
               "bot_id": userInfo[0].bot_id,
@@ -67,33 +68,35 @@ const ConfirmOrder = () => {
             })
             setAppState(response);
             return response.status
-          }
+        }
   
-          async function payForCart() {
-              if (promo[0] !== null && promo[0] !== "" && typeof promo[0] !== "undefined") {
+        async function payForCart() {
+            if (promo[0] !== null && promo[0] !== "" && typeof promo[0] !== "undefined") {
                 var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/pay_for_cart/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&cart_id=${cartId[0]}&promo_code=${promo[0]}`, {
                     "client_id": userInfo[0].id,
                     "bot_id": userInfo[0].bot_id,
-                    "cart_id": cartId,
+                    "cart_id": cartId[0],
                     "pay_type": paymentType,
                     "delivery_type": delType,
                     "delivery_address": deliveryAddress[0],
                     "comment": document.getElementById('comment').value,
                     "phone": document.getElementById('phone').value
-                  }, {
+                    }, {
                     headers: {
                         'Content-Type': 'application/json'
                     }
-                  })
+                })
+                console.log(response)
+                console.log(response.data)
                 var json = response.data
                 json.query_id = queryId
                 setAppState(response);
                 return response.status
-              } else {
-                response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/pay_for_cart/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&cart_id=${cartId[0]}`, {
+            } else {
+                var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/pay_for_cart/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&cart_id=${cartId[0]}`, {
                   "client_id": userInfo[0].id,
                   "bot_id": userInfo[0].bot_id,
-                  "cart_id": cartId,
+                  "cart_id": cartId[0],
                   "pay_type": paymentType,
                   "delivery_type": delType,
                   "delivery_address": deliveryAddress[0],
@@ -104,20 +107,22 @@ const ConfirmOrder = () => {
                       'Content-Type': 'application/json'
                   }
                 })
+                console.log(response)
+                console.log(response.data)
                 var json = response.data
                 json.query_id = queryId
                 setAppState(response);
                 return response.status
-              }
-          }
+            }
+        }
       
-          async function makeRequest() {
-            if (paymentMethod[activeButton] === "Онлайн") {
+        async function makeRequest() {
+            if (paymentSelect[0] === "Онлайн") {
                 return await payForCart()
             } else {
                 return await createOrder()
             }
-          }
+        }
 
         if (document.getElementById('phone').value.length === 11) {
             setIsValidPhone(true);
@@ -148,6 +153,10 @@ const ConfirmOrder = () => {
     }
 
     const changeType = (type) => {
+        while (paymentSelect.length > 0) {
+            paymentSelect.pop()
+        }
+        paymentSelect.push(type)
         setActiveButton(type)
     }
     
