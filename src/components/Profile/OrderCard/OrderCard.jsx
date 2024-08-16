@@ -37,7 +37,6 @@ const OrderCard = ({order}) => {
                 goodsOrder[i].review = await getReviews(goodsOrder[i].product_id)
                 goodsOrder[i].photoFile = await getPhoto(goodsOrder[i].product_id)
                 let find = false;
-                console.log(goodsInfo)
                 for (let j = 0; j < goodsInfo.length && !find; j++) {
                     if (goodsOrder[i].product_id === goodsInfo[j].id) {
                         find = true;

@@ -86,8 +86,8 @@ const ConfirmOrder = () => {
                         'Content-Type': 'application/json'
                     }
                 })
-                console.log(response)
-                console.log(response.data)
+                // console.log(response)
+                // console.log(response.data)
                 var json = response.data
                 json.query_id = queryId
                 setAppState(response);
@@ -107,8 +107,8 @@ const ConfirmOrder = () => {
                       'Content-Type': 'application/json'
                   }
                 })
-                console.log(response)
-                console.log(response.data)
+                // console.log(response)
+                // console.log(response.data)
                 var json = response.data
                 json.query_id = queryId
                 setAppState(response);

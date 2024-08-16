@@ -40,16 +40,22 @@ const ProductItem = ({product, className, onAdd, changePrice, link}) => {
     }
 
     function Button() {
-        if (!goodsAmount.has(product.id)) {
-            return  <button className={'add-btn'} onClick={onAddHandler}>
+        if (product.options.length > 0) {
+            return  <button className={'add-btn'} onClick={() => toInfo()}>
                         <p className={'toCart'}>В корзину</p>
                     </button>
         } else {
-            return  <div className='addToCartButtons'>
-                        <button className='minus-cart-btn' onClick={() => onChange('-')}>-</button>
-                        <div className='amountCart'>{goodsAmount.get(product.id) ?? 1}</div>
-                        <button className='plus-cart-btn' onClick={() => onChange('+')}>+</button>
-                    </div>
+            if (!goodsAmount.has(product.id)) {
+                return  <button className={'add-btn'} onClick={onAddHandler}>
+                            <p className={'toCart'}>В корзину</p>
+                        </button>
+            } else {
+                return  <div className='addToCartButtons'>
+                            <button className='minus-cart-btn' onClick={() => onChange('-')}>-</button>
+                            <div className='amountCart'>{goodsAmount.get(product.id) ?? 1}</div>
+                            <button className='plus-cart-btn' onClick={() => onChange('+')}>+</button>
+                        </div>
+            }
         }
     }
 
