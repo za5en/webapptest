@@ -36,15 +36,15 @@ function App() {
     botId = params.get("bot_id"); //by inline button
   }
 
-  // botId = 60
-  // let userId = 649105595
+  botId = 60
+  let userId = 649105595
 
   const [appState, setAppState] = useState();
   const [isLoading, setIsLoading] = useState(false);
   
   useEffect(() => {
     async function getUser() {
-      var response  = await axios.get(`https://market-bot.org:8082/clients_api/user/get_user/?bot_id=${botId}&client_tg_id=${user.id}`)
+      var response  = await axios.get(`https://market-bot.org:8082/clients_api/user/get_user/?bot_id=${botId}&client_tg_id=${userId}`)
       userInfo = response.data
       setAppState(response);
       if (response.status === 200) {
@@ -118,7 +118,7 @@ function App() {
             <Route path={'Cart'} element={<Cart />} />
             <Route path={'BannerPage/:id'} element={<BannerPage />} />
             <Route path={'Cart/ConfirmOrder'} element={<ConfirmOrder />} />
-            <Route path={'Cart/ConfirmOrder/OrderConfirmed'} element={<OrderConfirmed />} />
+            <Route path={'Cart/ConfirmOrder/OrderConfirmed/:type'} element={<OrderConfirmed />} />
             <Route path={'Profile/Orders/OrderPage/Feedback'} element={<Feedback />} />
           </Routes>
         )

@@ -86,8 +86,6 @@ const ConfirmOrder = () => {
                         'Content-Type': 'application/json'
                     }
                 })
-                // console.log(response)
-                // console.log(response.data)
                 var json = response.data
                 json.query_id = queryId
                 setAppState(response);
@@ -107,8 +105,6 @@ const ConfirmOrder = () => {
                       'Content-Type': 'application/json'
                   }
                 })
-                // console.log(response)
-                // console.log(response.data)
                 var json = response.data
                 json.query_id = queryId
                 setAppState(response);
@@ -139,7 +135,7 @@ const ConfirmOrder = () => {
                     }
                     setIsLoading(false);
                     if (code === 200) {
-                        navigate('OrderConfirmed', { replace: false })
+                        navigate(`OrderConfirmed/${type}`, { replace: false, state: {type: paymentSelect[0]} })
                     }
                 } else {
                     setIsValidComment(false);

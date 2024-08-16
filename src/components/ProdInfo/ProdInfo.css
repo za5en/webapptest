@@ -18,7 +18,7 @@
 }
 
 .title1 {
-    padding: 0 0 5px 0;
+    padding: 0 0 0 0;
     font-size: 1.6em;
     font-weight: 500;
 }
@@ -29,7 +29,7 @@
 }
 
 .price1 {
-    padding: 2px 0 0 0;
+    padding: 7px 0 0 0;
     font-weight: 500;
     font-size: 1.6em;
     color: rgb(65 159 217);
@@ -64,6 +64,7 @@
 .prodOptions {
     padding: 0 0 0 5px;
     font-size: 1em;
+    font-weight: 600;
 }
 
 .buy-btn {
@@ -222,4 +223,35 @@
 
 .review-btn:hover {
     background-color: rgb(171, 223, 255);
+}
+
+.optionButton {
+    width: 100%;
+    display: flex;
+    padding-bottom: 5px;
+}
+
+.option {
+    background-color: lightgray;
+    border-radius: 10px;
+    border-color: lightgray;
+    border-style: solid;
+    font-size: 1em;
+    padding: 5px;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+}
+
+.optionactive {
+    background-color: rgb(65 159 217);
+    border-radius: 10px;
+    border-color: rgb(65 159 217);
+    border-style: solid;
+    font-size: 1em;
+    padding: 5px;
+    cursor: pointer;
+    color: white;
+    display: block;
+    width: 100%;
 }

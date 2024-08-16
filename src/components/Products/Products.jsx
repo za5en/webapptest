@@ -70,7 +70,7 @@ const Products = () => {
     for (var [key, value] of goodsAmount) {
         let find = false;
         for (let i = 0; i < products.length && !find; i++) {
-            if (products[i].id === key) {
+            if (`${products[i].id}` === key) {
                 find = true;
                 if (nullPrice === 0) {
                     nullPrice = products[i].price * value;

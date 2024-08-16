@@ -24,7 +24,7 @@ const Reviews = () => {
                                 <div className='promoLine'>
                                     <div className='ratingAuthor'>User{item.reviewer_id}</div>
                                     <div className='itemRating'>★{item.rate}</div>
-                                    <div className='ratingDate'>{new Date(item.create_date).toLocaleDateString(undefined, {year: 'numeric', month: '2-digit', day: '2-digit'})}</div>
+                                    <div className='ratingDate'>{new Date(item.create_date+'Z').toLocaleDateString(undefined, {year: 'numeric', month: '2-digit', day: '2-digit'})}</div>
                                 </div>
                                 {item.content !== '' ? (
                                     <div className='ratingDesc'>{item.content}</div>
