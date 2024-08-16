@@ -64,7 +64,7 @@ const Feedback = () => {
     }
 
     function ProdCard({item}) {
-        var element = document.getElementById('content' + item.id);
+        var element = document.getElementById('content' + item.product_id);
         var str = ''
         if (element != null) {
             str = element.value;
@@ -84,10 +84,10 @@ const Feedback = () => {
                         {/* <div className='prodParam'>{item.order_quantity} шт.</div> */}
                     </div>
                 </div>
-                <MarksLine id={item.id} />
+                <MarksLine id={item.product_id} />
                 <form className='feedbackReview'>
                     <div className='fieldHeader'>Отзыв</div>
-                    <textarea className='textFieldExt' type="text" id={'content' + item.id} placeholder='Краткий отзыв по товару' onChange={str !== '' ? addString(item.id, str) : null} defaultValue={goodsReviews.get(item.id)}></textarea>
+                    <textarea className='textFieldExt' type="text" id={'content' + item.product_id} placeholder='Краткий отзыв по товару' onChange={str !== '' ? addString(item.product_id, str) : null} defaultValue={goodsReviews.get(item.product_id)}></textarea>
                     {isValidContent ? (
                         <div></div>
                     ) : (
@@ -106,7 +106,7 @@ const Feedback = () => {
                 goodsReviews.set(goodsOrder[i].product_id, document.getElementById('content' + goodsOrder[i].product_id).value)
             }
             for (let i = 0; i < goodsOrder.length; i++) {
-                if (goodsReviews.get(goodsOrder[i].id).length < 200) {
+                if (goodsReviews.get(goodsOrder[i].product_id).length < 200) {
                     setIsValidContent(true);
                     var response = await axios.post(`https://market-bot.org:8082/clients_api/reviews/create_review/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&product_id=${goodsOrder[i].product_id}&content=${goodsReviews.get(goodsOrder[i].product_id)}&rate=${goodsMarks.get(goodsOrder[i].product_id) + 1}`)
                 } else {

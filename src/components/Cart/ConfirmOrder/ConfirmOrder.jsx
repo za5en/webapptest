@@ -35,10 +35,8 @@ const ConfirmOrder = () => {
 
     let goods = []
 
-    let json = {}
-
     for (let i = 0; i < Object.keys(products).length && !find; i++) {
-        if (goodsAmount.has(products[i].id)) {
+        if (goodsAmount.has(`${products[i].id}`)) {
             goods.push(products[i])
         }
     }

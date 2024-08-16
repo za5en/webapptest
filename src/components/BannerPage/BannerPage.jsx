@@ -54,7 +54,7 @@ const BannerPage = () => {
         } else {
             newItems = [...addedItems, product];
             addPrice += product.price;
-            goodsAmount.set(product.id, 1);
+            goodsAmount.set(`${product.id}`, 1);
         }
 
         setPrice(addPrice)

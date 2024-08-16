@@ -10,7 +10,7 @@ const ProductItem = ({product, className, onAdd, changePrice, link}) => {
 
     const onAddHandler = () => {
         onAdd(product);
-        goodsAmount.set(product.id, 1);
+        goodsAmount.set(`${product.id}`, 1);
     }
 
     const changePriceHandler = (editType) => {
@@ -19,22 +19,22 @@ const ProductItem = ({product, className, onAdd, changePrice, link}) => {
 
     const onChange = (edit) => {
         if (edit === '-') {
-            if (goodsAmount.has(product.id)) {
+            if (goodsAmount.has(`${product.id}`)) {
                 changePriceHandler(edit);
-                if (goodsAmount.get(product.id) == 1) {
-                    goodsAmount.delete(product.id);
+                if (goodsAmount.get(`${product.id}`) == 1) {
+                    goodsAmount.delete(`${product.id}`);
                 }
                 else {
-                    goodsAmount.set(product.id, goodsAmount.get(product.id) - 1)
+                    goodsAmount.set(`${product.id}`, goodsAmount.get(`${product.id}`) - 1)
                 }
             }
         } else {
-            if (goodsAmount.has(product.id)) {
+            if (goodsAmount.has(`${product.id}`)) {
                 changePriceHandler(edit);
-                goodsAmount.set(product.id, goodsAmount.get(product.id) + 1)
+                goodsAmount.set(`${product.id}`, goodsAmount.get(`${product.id}`) + 1)
             } else {                
                 changePriceHandler(edit);
-                goodsAmount.set(product.id, 2)
+                goodsAmount.set(`${product.id}`, 2)
             }
         }
     }
@@ -45,14 +45,14 @@ const ProductItem = ({product, className, onAdd, changePrice, link}) => {
                         <p className={'toCart'}>В корзину</p>
                     </button>
         } else {
-            if (!goodsAmount.has(product.id)) {
+            if (!goodsAmount.has(`${product.id}`)) {
                 return  <button className={'add-btn'} onClick={onAddHandler}>
                             <p className={'toCart'}>В корзину</p>
                         </button>
             } else {
                 return  <div className='addToCartButtons'>
                             <button className='minus-cart-btn' onClick={() => onChange('-')}>-</button>
-                            <div className='amountCart'>{goodsAmount.get(product.id) ?? 1}</div>
+                            <div className='amountCart'>{goodsAmount.get(`${product.id}`) ?? 1}</div>
                             <button className='plus-cart-btn' onClick={() => onChange('+')}>+</button>
                         </div>
             }

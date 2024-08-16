@@ -25,8 +25,20 @@ const ProdInfo = () => {
 
     const changeType = (groupName, name, itemPrice) => {
         optionsSelect.set(groupName, name)
-        
-        setPrice((product.price + itemPrice) * amount)
+        var key = `${product.id}`
+        for (let i = 0; i < product.options.length; i++) {
+            var index = 0;
+            var find = false;
+            for (let j = 0; j < product.options[i].options.length && !find; j++) {
+                if (optionsSelect.get(product.options[i].group_name) === product.options[i].options[j].name) {
+                    index = j;
+                    find = true;
+                }
+            }
+            key += `_${index}`
+        }
+        setAmount(typeof goodsAmount.get(key) !== 'undefined' ? goodsAmount.get(key) : 0)
+        setPrice(typeof goodsAmount.get(key) !== 'undefined' ? (product.price + itemPrice) * goodsAmount.get(key) : 0)
         setOptionType(optionType + 1)
     }
 
@@ -44,7 +56,35 @@ const ProdInfo = () => {
 
     const onExit = () => {
         if (typeof amount !== "undefined") {
-            goodsAmount.set(`${product.id}`, amount);
+            if (product?.options.length > 0) {
+                var key = `${product.id}`
+                for (let i = 0; i < product.options.length; i++) {
+                    var index = 0;
+                    var find = false;
+                    for (let j = 0; j < product.options[i].options.length && !find; j++) {
+                        if (optionsSelect.get(product.options[i].group_name) === product.options[i].options[j].name) {
+                            index = j;
+                            find = true;
+                        }
+                    }
+                    key += `_${index}`
+                }
+                if (amount === 0) {
+                    if (goodsAmount.has(key)) {
+                        goodsAmount.delete(key);
+                    }
+                } else {
+                    goodsAmount.set(key, amount);
+                }
+            } else {
+                if (amount === 0) {
+                    if (goodsAmount.has(`${product.id}`)) {
+                        goodsAmount.delete(`${product.id}`);
+                    }
+                } else {
+                    goodsAmount.set(`${product.id}`, amount);
+                }
+            }
         }
         navigate(-1);
     }
@@ -72,8 +112,19 @@ const ProdInfo = () => {
             }
         }
     }
-
-    const [amount, setAmount] = useState(goodsAmount.get(`${product.id}`) ?? 0);
+    var prodKey = `${product.id}`
+    for (let i = 0; i < product.options.length; i++) {
+        var index = 0;
+        find = false;
+        for (let j = 0; j < product.options[i].options.length && !find; j++) {
+            if (optionsSelect.get(product.options[i].group_name) === product.options[i].options[j].name) {
+                index = j;
+                find = true;
+            }
+        }
+        prodKey += `_${index}`
+    }
+    const [amount, setAmount] = useState(goodsAmount.get(prodKey) ?? 0);
     const [price, setPrice] = useState((product.price + optionPriceBoost) * amount);
 
     // function Variants() {

@@ -33,9 +33,9 @@ const Cart = () => {
 
     let find = false;
     for (let i = 0; i < Object.keys(products).length && !find; i++) {
-        if (goodsAmount.has(products[i].id)) {
+        if (goodsAmount.has(`${products[i].id}`)) {
             goods.push(products[i])
-            price += products[i].price * goodsAmount.get(products[i].id)
+            price += products[i].price * goodsAmount.get(`${products[i].id}`)
         }
     }
 
@@ -134,8 +134,8 @@ const Cart = () => {
             response = await axios.post('https://market-bot.org:8082/clients_api/clients_menu/add_to_cart', {
                 cart_id: cartId[0],
                 product_id: goods[i].id,
-                count: goodsAmount.get(goods[i].id),
-                price: goods[i].price * goodsAmount.get(goods[i].id),
+                count: goodsAmount.get(`${goods[i].id}`),
+                price: goods[i].price * goodsAmount.get(`${goods[i].id}`),
                 option: []
               }, {
                 headers: {
@@ -193,8 +193,8 @@ const Cart = () => {
                                         <div className='amountCart'>{goodsAmount.get(item.id) ?? 1}</div>
                                         <button className='plus-cart-btn' onClick={() => onChange('+', item.id)}>+</button>
                                     </div>                   */}
-                                    <div className='prodParam'>{goodsAmount.get(item.id)} шт.</div>
-                                    <div className='prodPrice'>{(item.price * goodsAmount.get(item.id)).toFixed(2)} ₽</div>
+                                    <div className='prodParam'>{goodsAmount.get(`${item.id}`)} шт.</div>
+                                    <div className='prodPrice'>{(item.price * goodsAmount.get(`${item.id}`)).toFixed(2)} ₽</div>
                                 </div>
                             </div>
                         ))}

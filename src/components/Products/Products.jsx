@@ -51,7 +51,7 @@ const Products = () => {
         } else {
             newItems = [...addedItems, product];
             addPrice += product.price;
-            goodsAmount.set(product.id, 1);
+            goodsAmount.set(`${product.id}`, 1);
         }
 
         setPrice(addPrice)
@@ -70,6 +70,37 @@ const Products = () => {
     for (var [key, value] of goodsAmount) {
         let find = false;
         for (let i = 0; i < products.length && !find; i++) {
+            if (products[i]?.options.length > 0) {
+                if (key.includes("_")) {
+                    if (`${products[i].id}` === key.substring(0, key.indexOf("_"))) {
+                        find = true;
+                    }
+                    var prodKey = key.substring(key.indexOf("_") + 1);
+                    var j = 0;
+                    var optionPriceBoost = 0;
+                    while (prodKey.length > 0) {
+                        var index = 0
+                        if (prodKey.includes("_")) {
+                            index = prodKey.substring(0, prodKey.indexOf("_"));
+                        } else {
+                            index = prodKey
+                        }
+                        optionPriceBoost += products[i].options[j].options[index].price;
+                        if (prodKey.includes("_")) {
+                            prodKey = prodKey.substring(prodKey.indexOf("_") + 1)
+                        } else {
+                            prodKey = ""
+                        }
+                        j++;
+                    }
+                    if (nullPrice === 0) {
+                        nullPrice = (products[i].price + optionPriceBoost) * value;
+                    } else {
+                        nullPrice = nullPrice + (products[i].price + optionPriceBoost) * value;
+                    }
+                }
+                
+            }
             if (`${products[i].id}` === key) {
                 find = true;
                 if (nullPrice === 0) {
