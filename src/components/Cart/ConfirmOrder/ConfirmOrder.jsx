@@ -133,7 +133,6 @@ const ConfirmOrder = () => {
                         try {
                             code = await makeRequest();
                         } catch (e) {
-                            console.log(e.response.data.detail)
                             if (e.response.data.detail === "Wrong promo code") {
                                 alert("Неверный промокод");
                             }
