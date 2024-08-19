@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Button from '../Button/Button';
 import { useTelegram } from '../../hooks/useTelegram';
 import './Header.css'
+import search from "../../assets/icons/search.svg"
 import { useNavigate } from 'react-router-dom';
 import { categories } from '../TestData/prod.jsx';
 
@@ -21,7 +22,9 @@ class HeaderComponent extends Component {
 
     onMove = (select) => {
         const getElement = document.getElementById(select);
-        getElement.scrollIntoView({behavior: "smooth"});
+        if (typeof select !== 'undefined') {
+            getElement.scrollIntoView({behavior: "smooth"});
+        }
     }
 
     render() {
@@ -30,11 +33,11 @@ class HeaderComponent extends Component {
         for (let i = 0; i < this.categories?.length ?? 0; i++) {
             if (this.state.selected === this.categories[i]) {
                 button = <div className='scroll-selected'>
-                            <span onClick={() => this.onMove(this.categories[i])}>{this.categories[i]}</span>
+                            <span onClick={() => this.onMove(this.categories[i])}>{typeof this.categories[i] !== "undefined" ? this.categories[i] : 'Без категории'}</span>
                         </div>
             } else {
                 button = <div className='scroll'>
-                            <span onClick={() => this.onSelectChange(this.categories[i])}>{this.categories[i]}</span>
+                            <span onClick={() => this.onSelectChange(this.categories[i])}>{typeof this.categories[i] !== "undefined" ? this.categories[i] : 'Без категории'}</span>
                         </div>
             }
             buttons.push(button)
@@ -58,7 +61,17 @@ const Header = () => {
                     </span>
                 </button>
             </div>
-            <HeaderComponent categories={categories} />
+            <div className='searchLine'>
+                <img className='searchIcon' src={search}></img>
+                <input className='searchField' type="text" id='search' onFocus={() => navigate('Search', { replace: false })} placeholder='Поиск товаров'></input>
+            </div>
+            {
+                categories.length > 0 ? (
+                    <HeaderComponent categories={categories} />
+                ) : (
+                    <div></div>
+                )
+            }
         </div>
     )
 }

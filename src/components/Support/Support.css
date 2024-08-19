@@ -1,0 +1,17 @@
+.supportCompleted {
+    margin-left: auto;
+    font-weight: 500;
+    font-size: 0.8em;
+    color: white;
+    padding: 10px 14px;
+    margin: 5px 0;
+    border-radius: 100px;
+    background-color: rgb(65 159 217);
+}
+
+.supportInfo {
+    margin-left: auto;
+    font-weight: 500;
+    font-size: 0.9em;
+    padding: 2px 12px;
+}

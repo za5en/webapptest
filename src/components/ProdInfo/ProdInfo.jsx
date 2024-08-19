@@ -98,7 +98,7 @@ const ProdInfo = () => {
     }
 
     let optionPriceBoost = 0;
-    if (product?.options.length > 0) {
+    if (typeof product?.options !== "undefined" && product?.options.length > 0) {
         for (let i = 0; i < product.options.length; i++) {
             if (!optionsSelect.has(product.options[i].group_name)) {
                 optionsSelect.set(product.options[i].group_name, product.options[i].options[0].name)
@@ -113,16 +113,18 @@ const ProdInfo = () => {
         }
     }
     var prodKey = `${product.id}`
-    for (let i = 0; i < product.options.length; i++) {
-        var index = 0;
-        find = false;
-        for (let j = 0; j < product.options[i].options.length && !find; j++) {
-            if (optionsSelect.get(product.options[i].group_name) === product.options[i].options[j].name) {
-                index = j;
-                find = true;
+    if (typeof product?.options !== "undefined" && product?.options.length > 0) {
+        for (let i = 0; i < product.options.length; i++) {
+            var index = 0;
+            find = false;
+            for (let j = 0; j < product.options[i].options.length && !find; j++) {
+                if (optionsSelect.get(product.options[i].group_name) === product.options[i].options[j].name) {
+                    index = j;
+                    find = true;
+                }
             }
+            prodKey += `_${index}`
         }
-        prodKey += `_${index}`
     }
     const [amount, setAmount] = useState(goodsAmount.get(prodKey) ?? 0);
     const [price, setPrice] = useState((product.price + optionPriceBoost) * amount);
@@ -145,7 +147,7 @@ const ProdInfo = () => {
     // }
 
     function Options() {
-        if (product?.options.length > 0) {
+        if (typeof product?.options !== "undefined" && product?.options.length > 0) {
             return product.options.map(option => ( 
                 <div className='prodBlock'>
                         <div className='prodOptions'>{option.group_name}</div>
@@ -226,7 +228,6 @@ const ProdInfo = () => {
         setAppState(response);
     }
 
-    
     return (
         <div>
             <OtherHeader />
@@ -262,7 +263,13 @@ const ProdInfo = () => {
                     </div>
                     <div className='prodBlock'>
                         <div className={'description1'}>{product.description}</div>
-                        <div className={'prodWeight'}><b>Вес:</b> {product.weight} гр</div>
+                        {
+                            typeof product.weight !== "undefined" ? (
+                            <div className={'prodWeight'}><b>Вес:</b> {product.weight} гр</div>
+                            ) : (
+                                <div></div>
+                            )
+                        }
                     </div>
                     {/* <Variants /> */}
                     <Options />
@@ -273,7 +280,7 @@ const ProdInfo = () => {
                             <button className='plus-btn' onClick={() => onChange('+')}>+</button>
                         </div>
                         {
-                            product?.options.length > 0 ? (
+                            typeof product?.options !== "undefined" && product?.options.length > 0 ? (
                                 <button className='buy-btn' onClick={() => onExit()}>{price?.toFixed(2)} ₽</button>
                             ) : (
                                 <button className='buy-btn' onClick={() => onExit()}>{price?.toFixed(2)} ₽</button>

@@ -3,15 +3,10 @@ import './Cart.css'
 import OtherHeader from '../OtherHeader/OtherHeader';
 import { useNavigate } from 'react-router-dom';
 import { goodsAmount } from '../Products/Products';
-import { deliveryAddress } from './ConfirmOrder/ConfirmOrder.jsx';
-import { deliveryType } from './ConfirmOrder/ConfirmOrder.jsx';
-import { promo } from './ConfirmOrder/ConfirmOrder.jsx';
 import axios from 'axios';
 import { userInfo } from '../TestData/user.jsx';
 import { contacts } from '../Profile/Profile.jsx';
 import ReactLoading from "react-loading";
-
-export var cartId = []
 
 const Cart = () => {
     let navigate = useNavigate();
@@ -21,7 +16,6 @@ const Cart = () => {
 
     const [courier, setCourier] = useState()
 
-    const [isValidPromo, setIsValidPromo] = useState(true);
     const [isValidAddress, setIsValidAddress] = useState(true);
 
     const {products} = require('../TestData/prod.jsx');
@@ -33,6 +27,37 @@ const Cart = () => {
 
     let find = false;
     for (let i = 0; i < Object.keys(products).length && !find; i++) {
+        if (typeof products[i]?.options !== "undefined" && products[i]?.options.length > 0) {
+            for (var [key, value] of goodsAmount) {
+                if (key.includes(`${products[i].id}`)) {
+                    goods.push(JSON.parse(JSON.stringify(products[i])));
+                    var prodKey = key.substring(key.indexOf("_") + 1);
+                    var j = 0;
+                    var optionPriceBoost = 0;
+                    var optionNames = []
+                    while (prodKey.length > 0) {
+                        var index = 0
+                        if (prodKey.includes("_")) {
+                            index = prodKey.substring(0, prodKey.indexOf("_"));
+                        } else {
+                            index = prodKey
+                        }
+                        optionPriceBoost += products[i].options[j].options[index].price;
+                        optionNames.push(products[i].options[j].options[index].name)
+                        if (prodKey.includes("_")) {
+                            prodKey = prodKey.substring(prodKey.indexOf("_") + 1)
+                        } else {
+                            prodKey = ""
+                        }
+                        j++;
+                    }
+                    goods[goods.length - 1].id = key;
+                    goods[goods.length - 1].names = optionNames;
+                    goods[goods.length - 1].boostPrice = products[i].price + optionPriceBoost;
+                    price += (products[i].price + optionPriceBoost) * value;
+                }
+            }            
+        }
         if (goodsAmount.has(`${products[i].id}`)) {
             goods.push(products[i])
             price += products[i].price * goodsAmount.get(`${products[i].id}`)
@@ -82,36 +107,31 @@ const Cart = () => {
     }
 
     const confirm = async () => {
-        while (promo.length > 0) {
-            promo.pop()
-        }
-        promo.push(document.getElementById('promo').value)
-        while (deliveryType.length > 0) {
-            deliveryType.pop()
-        }
-        deliveryType.push(deliveryMethod[activeButton].method)
-        while (deliveryAddress.length > 0) {
-            deliveryAddress.pop()
-        }
+        // while (deliveryType.length > 0) {
+        //     deliveryType.pop()
+        // }
+        // deliveryType.push(deliveryMethod[activeButton].method)
+        userInfo[0].deliveryType = deliveryMethod[activeButton].method
+        // while (deliveryAddress.length > 0) {
+        //     deliveryAddress.pop()
+        // }
         if (activeButton === 1) {
-            deliveryAddress.push(document.getElementById('deliveryAddress').value)
+            userInfo[0].deliveryAddress = document.getElementById('deliveryAddress').value
+            // deliveryAddress.push(document.getElementById('deliveryAddress').value)
+        } else {
+            userInfo[0].deliveryAddress = ""
         }
 
         if ((activeButton === 1 && document.getElementById('deliveryAddress').value.length > 0 && document.getElementById('deliveryAddress').value.length < 200) || (activeButton === 0)) {
             setIsValidAddress(true);
-            if (document.getElementById('promo').value.length < 50) {
-                setIsValidPromo(true);
-                setIsLoading(true);
-                try {
-                    await createCart()
-                } catch (e) {
-                    // console.log(e)
-                }
-                setIsLoading(false);
-                navigate('ConfirmOrder', { replace: false })
-            } else {
-                setIsValidPromo(false);
+            setIsLoading(true);
+            try {
+                await createCart()
+            } catch (e) {
+                // console.log(e)
             }
+            setIsLoading(false);
+            navigate('ConfirmOrder', { replace: false })
         } else {
             setIsValidAddress(false);
         }
@@ -119,10 +139,11 @@ const Cart = () => {
 
     async function createCart() {
         var response  = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/create_cart?client_id=${userInfo[0].id}`)
-        while (cartId.length > 0) {
-            cartId.pop()
-        }
-        cartId.push(response.data.data)
+        // while (cartId.length > 0) {
+        //     cartId.pop()
+        // }
+        // cartId.push(response.data.data)
+        userInfo[0].cartId = response.data.data
         setAppState(response);
 
         await addToCart();
@@ -131,17 +152,63 @@ const Cart = () => {
     async function addToCart() {
         var response = ''
         for (let i = 0; i < goods.length; i++) {
-            response = await axios.post('https://market-bot.org:8082/clients_api/clients_menu/add_to_cart', {
-                cart_id: cartId[0],
-                product_id: goods[i].id,
-                count: goodsAmount.get(`${goods[i].id}`),
-                price: goods[i].price * goodsAmount.get(`${goods[i].id}`),
-                option: []
-              }, {
-                headers: {
-                    'Content-Type': 'application/json'
+            if (typeof goods[i]?.options !== "undefined" && goods[i]?.options.length > 0) {
+                let find = false;
+                var options = []
+                for (let j = 0; j < products.length && !find; j++) {
+                    if (parseInt(goods[i].id.substring(0, goods[i].id.indexOf("_"))) === products[j].id) {
+                        find = true;
+                        var prodKey = key.substring(key.indexOf("_") + 1);
+                        var k = 0;
+                        while (prodKey.length > 0) {
+                            var index = 0
+                            if (prodKey.includes("_")) {
+                                index = prodKey.substring(0, prodKey.indexOf("_"));
+                            } else {
+                                index = prodKey
+                            }
+
+                            var option = {
+                                "group_name": products[j].options[k].group_name,
+                                options: [
+                                    products[j].options[k].options[index]
+                                ]
+                            }
+                            options.push(option)
+
+                            if (prodKey.includes("_")) {
+                                prodKey = prodKey.substring(prodKey.indexOf("_") + 1)
+                            } else {
+                                prodKey = ""
+                            }
+                            k++;
+                        }
+                    }
                 }
-              })
+                response = await axios.post('https://market-bot.org:8082/clients_api/clients_menu/add_to_cart', {
+                        cart_id: cartId[0],
+                        product_id: parseInt(goods[i].id.substring(0, goods[i].id.indexOf("_"))),
+                        count: goodsAmount.get(goods[i].id),
+                        price: goods[i].price * goodsAmount.get(goods[i].id),
+                        option: options
+                    }, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                })
+            } else {
+                response = await axios.post('https://market-bot.org:8082/clients_api/clients_menu/add_to_cart', {
+                        cart_id: cartId[0],
+                        product_id: parseInt(goods[i].id),
+                        count: goodsAmount.get(`${goods[i].id}`),
+                        price: goods[i].price * goodsAmount.get(`${goods[i].id}`),
+                        option: []
+                    }, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                })
+            }
         }
         // message = response.data.message
         // if (message === 'Product added to cart')
@@ -178,8 +245,8 @@ const Cart = () => {
                     </div>
         } else {
             return  <div>
-                        {[...Array.from(goods)].map(item => ( 
-                            <div className='goods'>
+                        {[...Array.from(goods)].map(item => {
+                            return <div className='goods'>
                                 <img
 			    		            src={item.photoFile}
                                     alt={item.name}
@@ -187,7 +254,20 @@ const Cart = () => {
                                 />
                                 <div className='prodText'>
                                     <div className='prodName'>{item.name}</div>
-                                    <div className='prodParam'>{item.weight} гр</div>
+                                    {
+                                        typeof item.weigth !== "undefined" ? (
+                                            <div className='prodParam'>{item.weight} гр</div>
+                                        ) : (
+                                            <div></div>
+                                        )
+                                    }
+                                    {typeof item?.options !== "undefined" && item?.options.length > 0 ? (
+                                        item.names.map(option => (
+                                            <div className='prodOption'>{option}</div>
+                                        ))
+                                    ) : (
+                                        <div></div>
+                                    )}
                                     {/* <div className='changeAmountButtons'>
                                         <button className='minus-cart-btn' onClick={() => onChange('-', item.id)}>-</button>
                                         <div className='amountCart'>{goodsAmount.get(item.id) ?? 1}</div>
@@ -197,7 +277,7 @@ const Cart = () => {
                                     <div className='prodPrice'>{(item.price * goodsAmount.get(`${item.id}`)).toFixed(2)} ₽</div>
                                 </div>
                             </div>
-                        ))}
+                        })}
                         <div className='payments'>
                             <div className='fieldHeader'>Выберите способ доставки:</div>
                             <div className='deliveryLine'>
@@ -231,18 +311,6 @@ const Cart = () => {
                             </div>
                             <PaidDelivery />
                         </div>
-                        <form className='payments'>
-                            <div className='fieldHeader'>Промокод</div>
-                            <div className='promoLine'>
-                                <input className='textFieldPromo' type="text" id='promo'></input>
-                                {/* <button className='promo-btn' onClick={ClearText}>ОК</button> */}
-                            </div>
-                            { isValidPromo ? ( 
-                                <div></div> 
-                            ) : (
-                                <div className='wrongPhone'>Промокод должен содержать до 50 символов</div>
-                            )}
-                        </form>
                         <button className='shop-btn' onClick={() => confirm()}>Далее</button>
                     </div>
         }

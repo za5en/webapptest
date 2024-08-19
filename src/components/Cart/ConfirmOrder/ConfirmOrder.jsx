@@ -1,27 +1,27 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import './ConfirmOrder.css'
 import { useNavigate } from 'react-router-dom';
 import { useTelegram } from '../../../hooks/useTelegram';
 import { goodsAmount } from '../../Products/Products';
 import axios from 'axios';
 import { userInfo } from '../../TestData/user';
-import { cartId } from '../Cart.jsx';
 import ReactLoading from "react-loading";
 
-export var promo = []
-export var deliveryAddress = []
-export var deliveryType = []
+var promo = []
+// export var deliveryAddress = []
+// export var deliveryType = []
 var paymentSelect = ['Онлайн']
 
 const ConfirmOrder = () => {
     let navigate = useNavigate();
-    const {queryId, onClose} = useTelegram(); 
+    const {queryId} = useTelegram(); 
 
     const [appState, setAppState] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const [isValidPhone, setIsValidPhone] = useState(true);
     const [isValidName, setIsValidName] = useState(true);
     const [isValidComment, setIsValidComment] = useState(true);
+    const [isValidPromo, setIsValidPromo] = useState(true);
 
     const {products} = require('../../TestData/prod.jsx');
 
@@ -41,24 +41,25 @@ const ConfirmOrder = () => {
         }
     }
 
-    // useEffect(() => {
-
-    // }, [setAppState]);
-
     const confirm = async () => {
         var paymentType = paymentSelect[0] === 'Банковской картой' ? 'card' : 'cash';
-        var delType = deliveryType[0] === 'Самовывоз' ? 'pickup': 'delivery';
+        var delType = userInfo[0].deliveryType === 'Самовывоз' ? 'pickup': 'delivery';
+        while (promo.length > 0) {
+            promo.pop()
+        }
+        promo.push(document.getElementById('promo').value)
       
         async function createOrder() {
             var response = await axios.post('https://market-bot.org:8082/clients_api/clients_orders/create_order', {
               "client_id": userInfo[0].id,
               "bot_id": userInfo[0].bot_id,
-              "cart_id": cartId[0],
+              "cart_id": userInfo[0].cartId,
               "pay_type": paymentType,
               "delivery_type": delType,
-              "delivery_address": deliveryAddress[0],
+              "delivery_address": userInfo[0].deliveryAddress,
               "comment": document.getElementById('comment').value,
-              "phone": document.getElementById('phone').value
+              "phone": document.getElementById('phone').value,
+              "promo": promo[0]
             }, {
               headers: {
                   'Content-Type': 'application/json'
@@ -70,15 +71,16 @@ const ConfirmOrder = () => {
   
         async function payForCart() {
             if (promo[0] !== null && promo[0] !== "" && typeof promo[0] !== "undefined") {
-                var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/pay_for_cart/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&cart_id=${cartId[0]}&promo_code=${promo[0]}`, {
+                var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/pay_for_cart/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&cart_id=${userInfo[0].cartId}&promo_code=${promo[0]}`, {
                     "client_id": userInfo[0].id,
                     "bot_id": userInfo[0].bot_id,
-                    "cart_id": cartId[0],
+                    "cart_id": userInfo[0].cartId,
                     "pay_type": paymentType,
                     "delivery_type": delType,
-                    "delivery_address": deliveryAddress[0],
+                    "delivery_address": userInfo[0].deliveryAddress,
                     "comment": document.getElementById('comment').value,
-                    "phone": document.getElementById('phone').value
+                    "phone": document.getElementById('phone').value,
+                    "promo": promo[0]
                     }, {
                     headers: {
                         'Content-Type': 'application/json'
@@ -89,13 +91,13 @@ const ConfirmOrder = () => {
                 setAppState(response);
                 return response.status
             } else {
-                var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/pay_for_cart/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&cart_id=${cartId[0]}`, {
+                var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/pay_for_cart/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&cart_id=${userInfo[0].cartId}`, {
                   "client_id": userInfo[0].id,
                   "bot_id": userInfo[0].bot_id,
-                  "cart_id": cartId[0],
+                  "cart_id": userInfo[0].cartId,
                   "pay_type": paymentType,
                   "delivery_type": delType,
-                  "delivery_address": deliveryAddress[0],
+                  "delivery_address": userInfo[0].deliveryAddress,
                   "comment": document.getElementById('comment').value,
                   "phone": document.getElementById('phone').value
                 }, {
@@ -124,16 +126,25 @@ const ConfirmOrder = () => {
                 setIsValidName(true);
                 if (document.getElementById('comment').value.length < 200) {
                     setIsValidComment(true);
-                    setIsLoading(true);
-                    var code = 400
-                    try {
-                        code = await makeRequest();
-                    } catch (e) {
-                        // console.log(e)
-                    }
-                    setIsLoading(false);
-                    if (code === 200) {
-                        navigate(`OrderConfirmed/${type}`, { replace: false, state: {type: paymentSelect[0]} })
+                    if (document.getElementById('promo').value.length < 50) {
+                        setIsValidPromo(true);
+                        setIsLoading(true);
+                        var code = 400
+                        try {
+                            code = await makeRequest();
+                        } catch (e) {
+                            console.log(e.response.data.detail)
+                            if (e.response.data.detail === "Wrong promo code") {
+                                alert("Неверный промокод");
+                            }
+                        }
+                        setIsLoading(false);
+                        if (code === 200) {
+                            var type = paymentSelect[0] === "Онлайн" ? 'online' : 'courier'
+                            navigate(`OrderConfirmed/${type}`, { replace: false, state: {type: type} })
+                        }
+                    } else {
+                        setIsValidPromo(false);
                     }
                 } else {
                     setIsValidComment(false);
@@ -163,7 +174,6 @@ const ConfirmOrder = () => {
                 </div>
             ) : (
                 <div>
-                    {/* <SecondOtherHeader /> */}
                     <div className='cart'>
                         <p className='name'>Оформление заказа</p>
                         <div>
@@ -185,6 +195,16 @@ const ConfirmOrder = () => {
                                     <div></div> 
                                 ) : (
                                     <div className='wrongPhone'>Номер телефона должен содержать строго 11 цифр</div>
+                                )}
+                                <div className='fieldHeader'>Промокод</div>
+                                <div className='promoLine'>
+                                    <input className='textField' type="text" id='promo'></input>
+                                    {/* <button className='promo-btn' onClick={ClearText}>ОК</button> */}
+                                </div>
+                                { isValidPromo ? ( 
+                                    <div></div> 
+                                ) : (
+                                    <div className='wrongPhone'>Промокод должен содержать до 50 символов</div>
                                 )}
                                 {/* <div className='fieldHeader'>Ник в Telegram</div>
                                 <input className='textField' type="text" id='tg'></input> */}

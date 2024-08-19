@@ -36,6 +36,13 @@
     color: black;
 }
 
+.prodOption {
+    margin: 0 10px 5px;
+    font-weight: 300;
+    font-size: 0.8em;
+    color: gray;
+}
+
 .prodPrice {
     margin: 0 10px 0;
     font-weight: 600;

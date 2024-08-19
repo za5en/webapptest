@@ -32,19 +32,19 @@ const OrderCard = ({order}) => {
         async function getProducts() {
             var response  = await axios.get(`https://market-bot.org:8082/clients_api/clients_orders/get_orders?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&order_id=${item[0].id}`)
             goodsOrder = await getCart(response.data[0].cart_id);
-            var goodsInfo = await getProductInfo();
+            // var goodsInfo = await getProductInfo();
             for (let i = 0; i < goodsOrder.length; i++) {
                 goodsOrder[i].review = await getReviews(goodsOrder[i].product_id)
                 goodsOrder[i].photoFile = await getPhoto(goodsOrder[i].product_id)
-                let find = false;
-                for (let j = 0; j < goodsInfo.length && !find; j++) {
-                    if (goodsOrder[i].product_id === goodsInfo[j].id) {
-                        find = true;
-                        goodsOrder[i].name = goodsInfo[j].name;
-                        // goodsOrder[i].price = goodsInfo[j].price;
-                        goodsOrder[i].weight = goodsInfo[j].weight;
-                    }
-                }
+                // let find = false;
+                // for (let j = 0; j < goodsInfo.length && !find; j++) {
+                //     if (goodsOrder[i].product_id === goodsInfo[j].id) {
+                //         find = true;
+                //         // goodsOrder[i].name = goodsInfo[j].name;
+                //         // goodsOrder[i].price = goodsInfo[j].price;
+                //         // goodsOrder[i].weight = goodsInfo[j].weight;
+                //     }
+                // }
             }
             setAppState(goodsOrder);
         }
@@ -54,10 +54,10 @@ const OrderCard = ({order}) => {
             return response.data.data[0].products;
         }
 
-        async function getProductInfo() {
-            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_all_menu/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}`)
-            return response.data;
-        }
+        // async function getProductInfo() {
+        //     var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_all_menu/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}`)
+        //     return response.data;
+        // }
       
         async function getReviews(prodId) {
             var review = []

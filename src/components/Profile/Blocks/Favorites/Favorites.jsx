@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import '../Blocks.css'
 import OtherHeader from '../../../OtherHeader/OtherHeader';
 import { useNavigate } from 'react-router-dom';
@@ -7,42 +7,79 @@ import ProductItem from '../../../ProductItem/ProductItem.jsx';
 const Favorites = () => {
     let navigate = useNavigate();
 
-    let favorites = []
-
     const {products} = require('../../../TestData/prod.jsx');
 
+    const [appState, setAppState] = useState(0)
+
+    let newItems = [];
+
+    let goods = [];
+
+    let nullPrice = 0;
+
+    const [addedItems, setAddedItems] = useState([]);
+
+    const [price, setPrice] = useState();
+
+    for (let i = 0; i < Object.keys(products).length; i++) {
+        if (products[i].like) {
+            goods.push(products[i]);
+        }
+    }
+
     const onAdd = (product) => {
-        const added = addedItems.find(item => item.id === product.id);
+        let added = addedItems.find(item => item.id === product.id);
+
+        let addPrice = price ?? nullPrice;
 
         if (added) {
-            newItems = Object.values(added).filter(item => item.id !== product.id);
-            price[0] += product.price
+            newItems = addedItems;
+            addPrice += product.price;
         } else {
             newItems = [...addedItems, product];
-            price[0] += product.price
+            addPrice += product.price;
+            goodsAmount.set(`${product.id}`, 1);
         }
 
+        setPrice(addPrice)
         setAddedItems(newItems)
-
-        if (newItems.length === 0) {
-            tg.MainButton.hide();
+    }
+    
+    const changePrice = (edit, prodPrice) => {
+        if (edit === '+') {
+            if (typeof price === "undefined" && nullPrice != 0) {
+                setPrice(nullPrice + Number(prodPrice));
+            } else {
+                setPrice(price + Number(prodPrice));
+            }
         } else {
-            tg.MainButton.show();
-            tg.MainButton.setParams({
-                text: `Купить ${getTotalPrice(newItems)}`
-            })
+            if (typeof price === "undefined" && nullPrice != 0) {
+                if (nullPrice - Number(prodPrice) >= 0) { 
+                    setPrice(nullPrice - Number(prodPrice));
+                } else {
+                    setPrice(0);
+                }
+            } else {
+                if (price - Number(prodPrice) >= 0) { 
+                    setPrice(price - Number(prodPrice));
+                } else {
+                    setPrice(0);
+                }
+            }
         }
     }
 
     function FavList() {
-        if (favorites.length !== 0) {
+        if (goods.length !== 0) {
             return  <div className='list'>
                         <div className='cat'>
-                        {products.map(item => (
+                        {goods.map(item => (
                             <ProductItem 
                                 product={item}
                                 onAdd={onAdd}
                                 className={'item'}
+                                changePrice={changePrice}
+                                link={3}
                             />
                         ))}
                         </div>

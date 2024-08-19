@@ -21,6 +21,10 @@ import ReactLoading from "react-loading";
 import BannerPage from './components/BannerPage/BannerPage.jsx';
 import Reviews from './components/Reviews/Reviews.jsx';
 import EditReview from './components/EditReview/EditReview.jsx';
+import SearchPage from './components/SearchPage/SearchPage.jsx';
+import Support from './components/Support/Support.jsx';
+import CreateRequest from './components/Support/CreateRequest.jsx';
+import CheckRequest from './components/Support/CheckRequest.jsx';
 
 function App() {
   const {tg, user} = useTelegram(); 
@@ -48,7 +52,8 @@ function App() {
       userInfo = response.data
       setAppState(response);
       if (response.status === 200) {
-        await getMenu()
+        await getMenu();
+        await getContacts();
         // await createCart()
       }
     }
@@ -62,6 +67,7 @@ function App() {
           categories.push(products[i].category)
         }
         var photo = await getPhoto(products[i].id)
+        products[i].like = false;
         products[i].photoFile = photo;
       }
       setAppState(response);
@@ -85,7 +91,6 @@ function App() {
       setIsLoading(true);
       try {
         await getUser();
-        await getContacts();
       } catch (e) {
         // console.log(e)
       }
@@ -107,11 +112,15 @@ function App() {
           <Routes>
             <Route index element={<Products />} />
             <Route path={'Profile'} element={<Profile />} />
+            <Route path={'Search'} element={<SearchPage />} />
             <Route path={'Profile/Favorites'} element={<Favorites />} />
             <Route path={'Profile/Orders'} element={<Orders />} />
             <Route path={'Profile/Orders/OrderPage'} element={<OrderPage />} />
             <Route path={'Profile/Promo'} element={<Promo />} />
             <Route path={'Profile/Contacts'} element={<Contacts />} />
+            <Route path={'Profile/Support'} element={<Support />} />
+            <Route path={'Profile/Support/CreateRequest'} element={<CreateRequest />} />
+            <Route path={'Profile/Support/CheckRequest/:id'} element={<CheckRequest />} />
             <Route path={'ProdInfo/:id/:type'} element={<ProdInfo />} />
             <Route path={'ProdInfo/:id/:type/EditReview/:prodId/:revId'} element={<EditReview />} />
             <Route path={'ProdInfo/:id/:type/Reviews'} element={<Reviews />} />

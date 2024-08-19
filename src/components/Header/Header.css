@@ -9,16 +9,17 @@
     padding: 0 20px;
     background: white;
     overflow: hidden;
+    z-index: 1;
 }
 
 .firstLine {
     display: flex;
-    padding: 5px 0;
+    padding: 5px 0 0;
 }
 
 .secondLine {
     display: flex;
-    padding: 0 0 2px 0;
+    padding: 0 0 5px 0;
     white-space: nowrap;
     overflow-x: scroll;
     overflow-y: hidden;
@@ -78,7 +79,7 @@
     display: inline-block;
     color: black;
     text-align: center;
-    padding: 12px;
+    padding: 9px 12px;
     text-decoration: none;
 }
 
@@ -91,8 +92,53 @@
     cursor: pointer;
     font-size: 0.9em;
     font-weight: 500;
-    padding: 12px;
+    padding: 9px 12px;
     background-color: rgb(65 159 217);
     color: white;
     border-radius: 15px;
+}
+
+.searchLine {
+    display: flex;
+    margin: 10px 0;
+    background-color: rgb(219, 234, 240);
+    align-items: center;
+    border-radius: 15px;
+}
+
+.searchIcon {
+    padding-left: 10px;
+}
+
+.searchField {
+    margin: 2px 5px 2px 2px;
+    padding: 0 5px;
+    height: 30px;
+    width: 100%;
+    border-radius: 10px;
+    border-width: 1px;
+    border-color: rgb(219, 234, 240);
+    border-style: solid;
+    background-color: rgb(219, 234, 240);
+    outline: none;
+}
+
+.searchHeader {
+    position: sticky; 
+    top: 0;
+    width: 100%;
+    height: max-content;
+    display: block;
+    align-items: center;
+    text-align: justify;
+    padding: 10px 20px 0;
+    background: white;
+    overflow: hidden;
+}
+
+.backButton {
+    padding: 0;
+    padding-bottom: 11px;
+    margin-left: 0;
+    font-size: 1em;
 }

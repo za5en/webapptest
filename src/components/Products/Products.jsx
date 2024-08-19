@@ -56,21 +56,12 @@ const Products = () => {
 
         setPrice(addPrice)
         setAddedItems(newItems)
-
-        // if (newItems.length === 0) {
-        //     tg.MainButton.hide();
-        // } else {
-        //     tg.MainButton.show();
-        //     tg.MainButton.setParams({
-        //         text: `Корзина: ${price.toFixed(2)}₽`
-        //     })
-        // }
     }
 
     for (var [key, value] of goodsAmount) {
         let find = false;
         for (let i = 0; i < products.length && !find; i++) {
-            if (products[i]?.options.length > 0) {
+            if (typeof products[i]?.options !== "undefined" && products[i]?.options.length > 0) {
                 if (key.includes("_")) {
                     if (`${products[i].id}` === key.substring(0, key.indexOf("_"))) {
                         find = true;
@@ -168,7 +159,7 @@ const Products = () => {
                                         onAdd={onAdd}
                                         className={'item'}
                                         changePrice={changePrice}
-                                        link={true}
+                                        link={1}
                                     />
                                     )
                                 ))}

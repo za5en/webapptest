@@ -111,7 +111,7 @@ const BannerPage = () => {
                                     onAdd={onAdd}
                                     className={'item'}
                                     changePrice={changePrice}
-                                    link={false}
+                                    link={2}
                                 />
                             )
                         ))}

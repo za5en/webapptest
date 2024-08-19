@@ -13,7 +13,7 @@ const OrderConfirmed = () => {
             {/* <SecondOtherHeader /> */}
             <div className='blocks'>
                 {
-                    location.state.type === "Онлайн" ? (
+                    location.state.type === "online" ? (
                         <div className='confirmedText'>
                             Заказ успешно оформлен!
                             <br />

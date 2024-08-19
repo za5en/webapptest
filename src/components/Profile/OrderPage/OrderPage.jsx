@@ -4,6 +4,7 @@ import OtherHeader from '../../OtherHeader/OtherHeader';
 import { useNavigate } from 'react-router-dom';
 import { goodsOrder } from '../OrderCard/OrderCard';
 import { goodsReviews } from '../../Feedback/Feedback';
+import { contacts } from '../Profile';
 
 export var item = []
 export var product = []
@@ -48,15 +49,22 @@ const OrderPage = () => {
                                 <div className='goodsOrder'>
                                     <img
 			    		                src={prod.photoFile}
-                                        alt={prod.name}
+                                        alt={prod.product.name}
                                         className='prodImg1'
                                     />
                                     <div className='prodText'>
-                                        <div className='prodName1'>{prod.name}</div>
+                                        <div className='prodName1'>{prod.product.name}</div>
                                         <div className='multiple'>
                                             <div className='orderAmount'>{prod.count + ' шт'}</div>
                                             <div className='orderCostInside'>{prod.price + ' ₽'}</div>
                                         </div>
+                                        {prod?.option.length > 0 ? (
+                                            prod.option.map(item => (
+                                                <div className='orderOption'>{item.options[0].name}</div>
+                                            ))
+                                        ) : (
+                                            <div></div>
+                                        )}
                                         {prod.review.length === 0 ? (
                                             // <button className='rate-btn' onClick={() => rateProduct(prod)}>Оценить товар</button>
                                             <div></div>
@@ -73,8 +81,17 @@ const OrderPage = () => {
                         </div>
                         <div className='orderSub'>{'Статус'}</div>
                         <div className='orderMain'>{statuses.get(item[0].status)}</div>
-                        <div className='orderSub'>{'Адрес доставки'}</div>
-                        <div className='orderMain'>{item[0].delivery_address}</div>
+                        {typeof item[0].delivery_address !== "undefined" && item[0].delivery_address !== "" && item[0].delivery_address !== null ? (
+                            <div>
+                                <div className='orderSub'>{'Адрес доставки'}</div>
+                                <div className='orderMain'>{item[0].delivery_address}</div>
+                            </div>
+                        ) : (
+                            <div>
+                                <div className='orderSub'>{'Адрес самовывоза'}</div>
+                                <div className='orderMain'>{contacts[0].shop_address}</div>
+                            </div>
+                        )}
                         <div className='orderSub'>{'Дата и время заказа'}</div>
                         <div className='orderMain'>{new Date(item[0].start_time+'Z').toLocaleDateString(undefined, {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})}</div>
                         {/* {!reviews ? ( */}
