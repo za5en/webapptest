@@ -22,7 +22,7 @@ const Cart = () => {
 
     const deliveryMethod = [
         {method: 'Самовывоз'},
-        {method: 'Доставка'}
+        // {method: 'Доставка'}
     ];
 
     let find = false;

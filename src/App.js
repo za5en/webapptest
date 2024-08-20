@@ -90,6 +90,21 @@ function App() {
         contacts.pop()
       }
       contacts.push(response.data[0])
+      if (typeof contacts[0].schedule !== "undefined" && contacts[0].schedule !== null && contacts[0].schedule !== "") {
+        contacts[0].worktime = new Map()
+        var days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+        var dayNames = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
+        for (let i = 0; i < days.length; i++) {
+          if (contacts[0].schedule.indexOf(days[i]) !== -1) {
+            contacts[0].schedule = contacts[0].schedule.substring(contacts[0].schedule.indexOf(days[i]) + 5)
+            var start = contacts[0].schedule.substring(contacts[0].schedule.indexOf("start") + 8, contacts[0].schedule.indexOf("start") + 13)
+            var finish = contacts[0].schedule.substring(contacts[0].schedule.indexOf("finish") + 9, contacts[0].schedule.indexOf("finish") + 14)
+            contacts[0].worktime.set(dayNames[i], `${start} - ${finish}`)
+          } else {
+            contacts[0].worktime.set(dayNames[i], "Выходной")
+          }
+        }
+      }
       setAppState(response);
     }
 

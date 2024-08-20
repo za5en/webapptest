@@ -57,7 +57,7 @@ const Support = () => {
                     <div className='block' onClick={() => navigate('CreateRequest', { replace: false })}>Создать обращение &gt;</div>
                     <div className='ordersBlock'>
                         {requests.map(item => (
-                            <div className='orderCard' onClick={() => navigate(`CheckRequest/${item.id}`, {replace: false, state: {id: item.id}})}>
+                            <div className='supportCard' onClick={() => navigate(`CheckRequest/${item.id}`, {replace: false, state: {id: item.id}})}>
                                 <div className='firstOrderLine'>
                                     <div className='orderNum'>{'Обращение №' + item.id}</div>
                                     {item.completed ? (

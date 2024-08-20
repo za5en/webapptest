@@ -110,7 +110,7 @@ const Info = () => {
                                         <div className='profileTitle'>{'Имя'}</div>
                                         <div className='profileInfo'>{userInfo[0].name}</div>
                                     </div>
-                                    <hr class="solid"></hr>
+                                    <hr className="solid"></hr>
                                 </div>
                             ) : (
                                 <div></div>
@@ -125,7 +125,7 @@ const Info = () => {
                                         <div className='profileTitle'>{'ID'}</div>
                                         <div className='profileInfo'>{userInfo[0].id}</div>
                                     </div>
-                                    <hr class="solid"></hr>
+                                    <hr className="solid"></hr>
                                 </div>
                             ) : (
                                 <div></div>
@@ -140,7 +140,7 @@ const Info = () => {
                                     <div className='profileTitle'>{'Телефон'}</div>
                                     <div className='profileInfo'>{userInfo[0].phone}</div>
                                 </div>
-                                <hr class="solid"></hr>
+                                <hr className="solid"></hr>
                                 </div>
                             ) : (
                                 <div></div>
@@ -155,7 +155,7 @@ const Info = () => {
                                         <div className='profileTitle'>{'Приглашено друзей'}</div>
                                         <div className='profileInfo'>{userInfo[0].invites_num}</div>
                                     </div>
-                                    <hr class="solid"></hr>
+                                    <hr className="solid"></hr>
                                 </div>
                             ) : (
                                 <div></div>
@@ -170,7 +170,7 @@ const Info = () => {
                                         <div className='profileTitle'>{'Количество заказов'}</div>
                                         <div className='profileInfo'>{userInfo[0].orders_count}</div>
                                     </div>
-                                    <hr class="solid"></hr>
+                                    <hr className="solid"></hr>
                                 </div>
                             ) : (
                                 <div></div>
@@ -185,7 +185,7 @@ const Info = () => {
                                     <div className='profileTitle'>{'Бонусные баллы'}</div>
                                     <div className='profileInfo'>{userInfo[0].bonus_points}</div>
                                 </div>
-                                    <hr class="solid"></hr>
+                                    <hr className="solid"></hr>
                                     </div>
                             ) : (
                                 <div></div>

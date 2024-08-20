@@ -23,21 +23,35 @@ const CheckRequest = () => {
                 <OtherHeader />
                 <div className='blocks'>
                     <p className='name'>Обращение №{request.id}</p>
-                    <div className='orderViewCard'>
+                    <div className='profileCard'>
                         {/* <div className='firstOrderLineEdited'>
                             <div className='orderMainNoMargin'>{'Сумма заказа'}</div>
                             <div className='orderMainNoMarginColored'>{item[0].sum + '₽'}</div>
                         </div> */}
-                        <div className='contactsTitle'>{'Тема'}</div>
-                        <div className='supportInfo'>{request.title}</div>
-                        <div className='contactsTitle'>{'Email'}</div>
-                        <div className='supportInfo'>{request.email}</div>
-                        <div className='contactsTitle'>{'Дата обращения'}</div>
-                        <div className='supportInfo'>{new Date(request.create_date+'Z').toLocaleDateString(undefined, {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})}</div>
-                        <div className='contactsTitle'>{'Комментарий'}</div>
-                        <div className='supportInfo'>{request.content}</div>
-                        <div className='contactsTitle'>{'Вопрос решён?'}</div>
-                        <div className='supportInfo'>{request.completed ? "Да" : "Нет"}</div>
+                        <div className='profileLine'>
+                            <div className='profileTitle'>{'Тема'}</div>
+                            <div className='profileInfo'>{request.title}</div>
+                        </div>
+                        <hr className="solid"></hr>
+                        <div className='profileLine'>
+                            <div className='profileTitle'>{'Email'}</div>
+                            <div className='profileInfo'>{request.email}</div>
+                        </div>
+                        <hr className="solid"></hr>
+                        <div className='profileLine'>
+                            <div className='profileTitle'>{'Дата обращения'}</div>
+                            <div className='profileInfo'>{new Date(request.create_date+'Z').toLocaleDateString(undefined, {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})}</div>
+                        </div>
+                        <hr className="solid"></hr>
+                        <div className='profileLine'>
+                            <div className='profileTitle'>{'Комментарий'}</div>
+                            <div className='profileInfo'>{request.content}</div>
+                        </div>
+                        <hr className="solid"></hr>
+                        <div className='profileLine'>
+                            <div className='profileTitle'>{'Вопрос решён?'}</div>
+                            <div className='profileInfo'>{request.completed ? "Да" : "Нет"}</div>
+                        </div>
                     </div>
                 </div>
             </div>

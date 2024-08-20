@@ -7,6 +7,7 @@ import { userInfo } from '../TestData/user.jsx';
 import axios from 'axios';
 import ReactLoading from "react-loading";
 import { categories, products } from '../TestData/prod.jsx';
+import { goodsGlobal } from './OrderCard/OrderCard.jsx';
 
 export var orders = []
 export var contacts = []
@@ -37,7 +38,25 @@ const Profile = () => {
         async function getOrders() {
           var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_orders/get_orders?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}`)
           orders = response.data
+          for (let i = 0; i < orders.length; i++) {
+            await getProducts(orders[i].id);
+          }
           setAppState(response);
+        }
+
+        async function getProducts(id) {
+          var response  = await axios.get(`https://market-bot.org:8082/clients_api/clients_orders/get_orders?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&order_id=${id}`)
+          var thisGoods = await getCart(response.data[0].cart_id);
+          // for (let i = 0; i < thisGoods.length; i++) {
+          //     thisGoods[i].review = await getReviews(thisGoods[i].product_id)
+          //     thisGoods[i].photoFile = await getPhoto(thisGoods[i].product_id)
+          // }
+          goodsGlobal.set(id, thisGoods);
+        }
+  
+        async function getCart(cartId) {
+            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_carts?client_id=${userInfo[0].id}&cart_id=${cartId}`)
+            return response.data.data[0].products;
         }
 
         async function getUser() {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import '../Blocks.css'
 import OtherHeader from '../../../OtherHeader/OtherHeader';
 import { useNavigate } from 'react-router-dom';
-import OrderCard from '../../OrderCard/OrderCard';
+import OrderCard, { goodsGlobal } from '../../OrderCard/OrderCard';
 import { contacts, orders } from '../../Profile.jsx';
 import axios from 'axios';
 import { userInfo } from '../../../TestData/user.jsx';
@@ -39,9 +39,49 @@ const Orders = () => {
         async function getOrders() {
             var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_orders/get_orders?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}`)
             ordersTest = response.data
-            console.log(response.data)
+            for (let i = 0; i < ordersTest.length; i++) {
+                await getProducts(ordersTest[i].id);
+            }
             setAppState(response);
         }
+
+        async function getProducts(id) {
+            var response  = await axios.get(`https://market-bot.org:8082/clients_api/clients_orders/get_orders?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&order_id=${id}`)
+            var thisGoods = await getCart(response.data[0].cart_id);
+            // for (let i = 0; i < thisGoods.length; i++) {
+            //     thisGoods[i].review = await getReviews(thisGoods[i].product_id)
+            //     thisGoods[i].photoFile = await getPhoto(thisGoods[i].product_id)
+            // }
+            goodsGlobal.set(id, thisGoods);
+        }
+    
+        async function getCart(cartId) {
+            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_carts?client_id=${userInfo[0].id}&cart_id=${cartId}`)
+            return response.data.data[0].products;
+        }
+    
+        // async function getReviews(prodId) {
+        //     var review = []
+        //     try {
+        //         var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_reviews/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&product_id=${prodId}`)
+        //         if (response.status === 200) {
+        //             for (let i = 0; i < response.data.length; i++) {
+        //                 if (response.data[i].reviewer_id === userInfo[0].id) {
+        //                     review = response.data[i]
+        //                 }
+        //             }
+        //         }
+        //         setAppState(response);
+        //     } catch (e) {
+        //         // console.log(e)
+        //     }
+        //     return review 
+        // }
+    
+        // async function getPhoto(prodId) {
+        //     var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_photo?bot_id=${userInfo[0].bot_id}&product_id=${prodId}`, {responseType: 'blob'})
+        //     return URL.createObjectURL(response.data)
+        // }
 
         async function getUser() {
             var response  = await axios.get(`https://market-bot.org:8082/clients_api/user/get_user/?bot_id=${botId}&client_tg_id=${user.id}`)

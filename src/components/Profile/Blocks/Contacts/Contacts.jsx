@@ -113,7 +113,7 @@ const Contacts = () => {
                                     {contacts[0].shop_email === null || contacts[0].shop_email === "" ? (
                                         <div></div>
                                     ): (
-                                        <hr class="solid"></hr>
+                                        <hr className="solid"></hr>
                                     )}   
                                 </div>
                             ) : (
@@ -132,7 +132,7 @@ const Contacts = () => {
                                     {contacts[0].shop_tg === null || contacts[0].shop_tg === "" ? (
                                         <div></div>
                                     ): (
-                                        <hr class="solid"></hr>
+                                        <hr className="solid"></hr>
                                     )}   
                                 </div>
                             ) : (
@@ -151,7 +151,7 @@ const Contacts = () => {
                                     {contacts[0].shop_vk === null || contacts[0].shop_vk === "" ? (
                                         <div></div>
                                     ): (
-                                        <hr class="solid"></hr>
+                                        <hr className="solid"></hr>
                                     )}     
                                 </div>
                             ) : (
@@ -174,7 +174,7 @@ const Contacts = () => {
                                     {contacts[0].shop_site === null || contacts[0].shop_site === "" ? (
                                         <div></div>
                                     ): (
-                                        <hr class="solid"></hr>
+                                        <hr className="solid"></hr>
                                     )}                                    
                                 </div>
                             ) : (
@@ -198,6 +198,27 @@ const Contacts = () => {
                         </div> */}
                     </div>
                     <p className='contactsSubHeader'>Приём заказов осуществляется</p>
+                    { contacts.length > 0 ? (
+                        <div className='profileCard'>
+                            {
+                                [...Array.from(contacts[0].worktime.keys())].map(key => (
+                                    <div>
+                                        <div className='profileLine'>
+                                            <div className='profileTitle'>{key}</div>
+                                            <div className='profileInfo'>{contacts[0].worktime.get(key)}</div>
+                                        </div>
+                                        {key === "Воскресенье" ? (
+                                            <div></div>
+                                        ): (
+                                            <hr className="solid"></hr>
+                                        )}
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    ) : (
+                        <div></div>
+                    )}
                 </div>
                 )
             }
