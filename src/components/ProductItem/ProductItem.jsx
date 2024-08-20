@@ -3,8 +3,8 @@ import './ProductItem.css'
 import { useNavigate } from 'react-router-dom';
 import { goodsAmount } from '../Products/Products.jsx'
 import { reviews, reviewsId } from '../TestData/prod.jsx';
-import like1 from "../../assets/icons/like_blue.svg"
-import like2 from "../../assets/icons/like_red.svg"
+// import like1 from "../../assets/icons/like_blue.svg"
+// import like2 from "../../assets/icons/like_red.svg"
 
 const ProductItem = ({product, className, onAdd, changePrice, link}) => {
 
@@ -48,17 +48,17 @@ const ProductItem = ({product, className, onAdd, changePrice, link}) => {
     function Button() {
         if (typeof product?.options !== "undefined" && product?.options.length > 0) {
             return  <button className={'add-btn'} onClick={() => toInfo()}>
-                        <p className={'toCart'}>В корзину</p>
+                        <p className={'toCart'}>Добавить в корзину</p>
                     </button>
         } else {
             if (!goodsAmount.has(`${product.id}`)) {
                 return  <button className={'add-btn'} onClick={onAddHandler}>
-                            <p className={'toCart'}>В корзину</p>
+                            <p className={'toCart'}>Добавить в корзину</p>
                         </button>
             } else {
                 return  <div className='addToCartButtons'>
-                            <button className='minus-cart-btn' onClick={() => onChange('-')}>-</button>
-                            <div className='amountCart'>{goodsAmount.get(`${product.id}`) ?? 1}</div>
+                            <button className='minus-cart-btn' onClick={() => onChange('-')}>–</button>
+                            <div className='amountCart'>{goodsAmount.get(`${product.id}`) ?? 1} шт</div>
                             <button className='plus-cart-btn' onClick={() => onChange('+')}>+</button>
                         </div>
             }
@@ -79,35 +79,35 @@ const ProductItem = ({product, className, onAdd, changePrice, link}) => {
                     : `../../../ProdInfo/${product.id}/${className}` , { replace: false, state: {id: product.id, className: className}})
     }
 
-    const like = (id) => {
-        let find = false;
-        for (let i = 0; i < Object.keys(products).length && !find; i++) {
-            if (products[i].id === id) {
-                find = true;
-                products[i].like = !products[i].like;
-            }
-            console.log(products[i])
-        }
-        // product.like = !product.like;
-        //api method
-        setProdState(prodState + 1)
-    }
+    // const like = (id) => {
+    //     let find = false;
+    //     for (let i = 0; i < Object.keys(products).length && !find; i++) {
+    //         if (products[i].id === id) {
+    //             find = true;
+    //             products[i].like = !products[i].like;
+    //         }
+    //         console.log(products[i])
+    //     }
+    //     // product.like = !product.like;
+    //     //api method
+    //     setProdState(prodState + 1)
+    // }
     
     return (
         <div className={'product ' + className}>
-            <div className='toInfo'>
-                <div className='img' onClick={() => toInfo()}>
+            <div className='toInfo' onClick={() => toInfo()}>
+                <div className='img'>
                     <img
 			    		src={product.photoFile}
 			    		alt={product.name}
 			    		className='productIcon'
 			    	/>
                 </div>
-                <div className='title' onClick={() => toInfo()}>{product.name}</div>
-                <div className='description' onClick={() => toInfo()}>{product.description}</div>
+                <div className='title'>{product.name}</div>
+                <div className='description'>{product.description}</div>
                 {/* <div className={'oldPrice'}>{product.oldPrice}</div> */}
                 <div className='promoLine'>
-                    <div className='price' onClick={() => toInfo()}>
+                    <div className='price'>
                         {product.price} ₽
                         {/* <span className='discount'>
                             {typeof product.oldPrice === 'string' 
@@ -115,11 +115,11 @@ const ProductItem = ({product, className, onAdd, changePrice, link}) => {
                             : ''}
                         </span> */}                
                     </div>
-                    {product.like ? (
+                    {/* {product.like ? (
                         <img className='likeIcon' src={like2} onClick={() => like(product.id)}></img>
                     ) : (
                         <img className='likeIcon' src={like1} onClick={() => like(product.id)}></img>
-                    )}    
+                    )}     */}
                 </div>
             </div>
             <Button />

@@ -31,9 +31,12 @@ const Products = () => {
     }
 
     for (let i = 0; i < Object.keys(products).length; i++) {
-        let currentProd = productsByCat.get(products[i].category);
+        if (products[i].category_name === null) {
+            products[i].category_name = 'Без категории'
+        }
+        let currentProd = productsByCat.get(products[i].category_name);
         currentProd.push(products[i]);
-        productsByCat.set(products[i].category, currentProd);
+        productsByCat.set(products[i].category_name, currentProd);
         // if (currentProd.it_hidden) {
         //     let hidden = hiddenCats.get(products[i].categories);
         //     hiddenCats.set(products[i].categories, hidden + 1);

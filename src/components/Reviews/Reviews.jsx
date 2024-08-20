@@ -16,13 +16,13 @@ const Reviews = () => {
             ) : (
                 <div className='product1'>
                     <div className='user'>
-                        <div className='reviews'>Отзывы</div>
+                        <div className='name'>Отзывы</div>
                     </div>
                     {reviews.map(item => {
                         return <div>
                             <div className='reviewBlock'>
                                 <div className='promoLine'>
-                                    <div className='ratingAuthor'>User{item.reviewer_id}</div>
+                                    <div className='ratingAuthor'>{item.reviewer_name}</div>
                                     <div className='itemRating'>★{item.rate}</div>
                                     <div className='ratingDate'>{new Date(item.create_date+'Z').toLocaleDateString(undefined, {year: 'numeric', month: '2-digit', day: '2-digit'})}</div>
                                 </div>

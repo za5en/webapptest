@@ -4,21 +4,21 @@
     border-radius: 7px;
     border: none;
     padding: 0;
-    margin: 0 10px 10px 10px;
-    width: 150px;
+    margin: 0 3px 15px 3px;
+    width: 48%;
     background-color: white;
 }
 
 .img {
-    width: 88.25px;
-    height: 100px;
+    /* width: 100%; */
+    height: 20vh;
     text-align: center;
     align-content: center;
 }
 
 .productIcon {
-    width: 170%;
-    height: 140%;
+    width: 95%;
+    height: 100%;
     align-content: center;
     border-radius: 10px;
     border-width: 0px;
@@ -28,8 +28,8 @@
     text-align: start;
     padding: 5px;
     padding-left: 7px;
-    padding-top: 45px;
-    font-size: 1em;
+    padding-top: 5px;
+    font-size: 0.9em;
     font-weight: 500;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -38,19 +38,20 @@
     -webkit-line-clamp: 2;
     line-clamp: 2;
     line-height: 1.2em;
-    height: 5.3em;
+    height: 2.8em;
 }
 
 .toCart {
     color: white;
     font-weight: 500;
+    font-size: 0.9em;
 }
 
 .description {
     color: gray;
     padding-left: 7px;
     padding-right: 7px;
-    font-size: 0.75em;
+    font-size: 0.7em;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -62,8 +63,9 @@
 }
 
 .price {
-    padding: 5px 0 2px 7px;
-    font-weight: 500;
+    padding: 5px 0 0 7px;
+    font-weight: 600;
+    font-size: 1em;
 }
 
 .oldPrice {
@@ -88,10 +90,10 @@
     border-width: 5px;
     border-color: white;
     border-style: solid;
-    padding: 6px;
+    padding: 8px;
     cursor: pointer;
     text-align: center;
-    background-color: rgb(65 159 217); /* rgb(81, 52, 255); */ /* (--tg-theme-button-color); */
+    background-color: rgb(0 111 253); /* rgb(81, 52, 255); */ /* (--tg-theme-button-color); */
 }
 
 .toInfo {
@@ -100,44 +102,47 @@
 
 .addToCartButtons {
     display: flex;
-    align-items: baseline;
+    align-items: center;
+    border-style: solid;
+    border-color: lightgray;
+    border-width: 1px;
+    border-radius: 10px;
+    margin: 5px 5px 0 5px;
 }
 
 .amountCart {
-    font-size: 1.1em;
+    font-size: 0.7em;
     font-weight: 400;
 }
 
 .minus-cart-btn {
     margin-right: auto;
-    width: 30%;
-    border-radius: 15px;
+    width: 20%;
+    border-radius: 10px;
     border-width: 4px;
     border-color: white;
     border-style: solid;
-    padding: 6px;
+    /* padding: 6px; */
     text-align: center;
     cursor: pointer;
-    font-size: 0.9em;
-    font-weight: 500;
-    color: white;
-    background-color: rgb(65 159 217);
+    font-size: 1.1em;
+    font-weight: 300;
+    background-color: rgb(229, 240, 255);
 }
 
 .plus-cart-btn {
     margin-left: auto;
-    width: 30%;
-    padding: 6px;
-    border-radius: 15px;
+    width: 20%;
+    /* padding: 6px; */
+    border-radius: 10px;
     border-width: 4px;
     border-color: white;
     border-style: solid;
     text-align: center;
     cursor: pointer;
-    font-size: 0.9em;
-    font-weight: 500;
-    color: white;
-    background-color: rgb(65 159 217);
+    font-size: 1.1em;
+    font-weight: 300;
+    background-color: rgb(229, 240, 255);
 }
 
 .likeIcon {

@@ -9,7 +9,7 @@
     font-weight: 500;
     color: white;
     margin: 10px;
-    background-color: rgb(65 159 217); /* (--tg-theme-button-color); */
+    background-color: rgb(0 111 253); /* (--tg-theme-button-color); */
 }
 
 .repeat-btn:hover {
@@ -28,7 +28,7 @@
 }
 
 .orderMainRate {
-    margin: 5px 0 10px 15px;
+    margin: 5px 0 10px 7px;
     font-weight: 500;
 }
 
@@ -43,7 +43,7 @@
 .orderMainNoMarginColored {
     margin: 10px 5px 0 0;
     font-weight: 500;
-    background-color: rgb(65 159 217);
+    background-color: rgb(0 111 253);
     color: white;
     border-radius: 5px;
     padding: 5px;
@@ -89,7 +89,7 @@
     font-size: 0.9em;
     font-weight: 500;
     color: white;
-    background-color: rgb(65 159 217);
+    background-color: rgb(0 111 253);
 }
 
 .rate-btn:hover {
@@ -103,6 +103,10 @@
     color: black;
     margin: 15px 10px 0;
     text-align: start;
+    border-style: solid;
+    border-color: lightgray;
+    border-width: 1px;
+    border-radius: 15px;
 }
 
 .goodsOrder {
@@ -134,7 +138,7 @@
 }
 
 .orderOption {
-    margin: 0 7px 5px;
+    margin: 3px 7px 3px;
     font-weight: 300;
     font-size: 0.8em;
     color: gray;

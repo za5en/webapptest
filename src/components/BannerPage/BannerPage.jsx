@@ -93,11 +93,11 @@ const BannerPage = () => {
                     <img
 			    		src={BurgerIcon} //banner.image
 			    		alt={banner.header}
-			    		className='productIcon1'
+			    		className='productIconBanner'
 			    	/>
                 </div>
                 <div className='prodBlock'>
-                    <div className={'title1'}>{banner.header}</div>
+                    <div className={'titleBanner'}>{banner.header}</div>
                     <div className={'descriptionBanner'}>{banner.description}</div>
                 </div>
                 <div className='list'>

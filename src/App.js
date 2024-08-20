@@ -25,6 +25,7 @@ import SearchPage from './components/SearchPage/SearchPage.jsx';
 import Support from './components/Support/Support.jsx';
 import CreateRequest from './components/Support/CreateRequest.jsx';
 import CheckRequest from './components/Support/CheckRequest.jsx';
+import Info from './components/Profile/Blocks/Info/Info.jsx';
 
 function App() {
   const {tg, user} = useTelegram(); 
@@ -63,8 +64,13 @@ function App() {
       products = response.data
       categories = []
       for (let i = 0; i < products.length; i++) {
-        if (!categories.includes(products[i].category) && !products[i].it_hidden) {
-          categories.push(products[i].category)
+        if (products[i].category_name === null) {
+          if (!categories.includes('Без категории')) {
+            categories.push('Без категории')
+          }
+          products[i].category_name = 'Без категории'
+        } else if (products[i].category_name !== null && !categories.includes(products[i].category_name) && !products[i].it_hidden) {
+          categories.push(products[i].category_name)
         }
         var photo = await getPhoto(products[i].id)
         products[i].like = false;
@@ -117,6 +123,7 @@ function App() {
             <Route path={'Profile/Orders'} element={<Orders />} />
             <Route path={'Profile/Orders/OrderPage'} element={<OrderPage />} />
             <Route path={'Profile/Promo'} element={<Promo />} />
+            <Route path={'Profile/Info'} element={<Info />} />
             <Route path={'Profile/Contacts'} element={<Contacts />} />
             <Route path={'Profile/Support'} element={<Support />} />
             <Route path={'Profile/Support/CreateRequest'} element={<CreateRequest />} />

@@ -109,13 +109,14 @@ const Profile = () => {
                     <div className='user'>
                         {/* <img src={user?.photo_url ?? Avatar} className='avatar' /> */}
                         <span className='usernameProfile'>
-                            {user?.first_name ?? 'Username'}
+                            {user?.first_name ?? 'Username'} {user?.last_name}
                         </span>
                     </div>
+                    <div className='block' onClick={() => navigate('Info', { replace: false })}>Мой профиль &gt;</div>
                     <div className='block' onClick={() => navigate('Orders', { replace: false })}>Заказы &gt;</div>
                     {/* <div className='block' onClick={() => navigate('Promo', { replace: false })}>Акции &gt;</div> */}
                     <div className='block' onClick={() => navigate('Contacts', { replace: false })}>Контакты продавца &gt;</div>
-                    <div className='block' onClick={() => navigate('Favorites', { replace: false })}>Избранное &gt;</div>
+                    {/* <div className='block' onClick={() => navigate('Favorites', { replace: false })}>Избранное &gt;</div> */}
                     <div className='block' onClick={() => navigate('Support', { replace: false })}>Техническая поддержка &gt;</div>
                 </div>
                 )

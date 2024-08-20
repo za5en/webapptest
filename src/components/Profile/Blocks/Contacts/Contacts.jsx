@@ -98,27 +98,23 @@ const Contacts = () => {
                 </div>
             ) : (
                 <div className='blocks'>
-                    <p className='name'>Контактная информация</p>
-                    <div className='contactsCard'>
-                        { contacts.length > 0 ?
-                            contacts[0].shop_address === null || contacts[0].shop_address === "" ? (
-                            <div></div>
-                            ) : (
-                                <div>
-                                    <div className='contactsTitle'>{'Адрес:'}</div>
-                                    <div className='contactInfo'>{contacts[0].shop_address}</div>
-                                </div>
-                            ) : (
-                                <div></div>
-                            )
-                        }
+                    <div className='contactsMainHeader'>{contacts[0].shop_address}</div>
+                    <p className='contactsSubHeader'>Контактная информация</p>
+                    <div className='profileCard'>
                         { contacts.length > 0 ?
                             contacts[0].shop_phone === null || contacts[0].shop_phone === "" ? (
                             <div></div>
                             ) : (
                                 <div>
-                                    <div className='contactsTitle'>{'Телефон:'}</div>
-                                    <div className='contactInfo'>{contacts[0].shop_phone}</div>
+                                    <div className='profileLine'>
+                                        <div className='profileTitle'>{'Телефон'}</div>
+                                        <div className='profileInfo'>{contacts[0].shop_phone}</div>
+                                    </div>
+                                    {contacts[0].shop_email === null || contacts[0].shop_email === "" ? (
+                                        <div></div>
+                                    ): (
+                                        <hr class="solid"></hr>
+                                    )}   
                                 </div>
                             ) : (
                                 <div></div>
@@ -129,8 +125,15 @@ const Contacts = () => {
                             <div></div>
                             ) : (
                                 <div>
-                                    <div className='contactsTitle'>{'Email:'}</div>
-                                    <a className='contactLink' href={"mailto:" + contacts[0].shop_email} target="_blank" rel="noopener">{contacts[0].shop_email}</a>
+                                    <div className='profileLine'>
+                                        <div className='profileTitle'>{'Email'}</div>
+                                        <a className='contactLink' href={"mailto:" + contacts[0].shop_email} target="_blank" rel="noopener">{contacts[0].shop_email}</a>
+                                    </div>
+                                    {contacts[0].shop_tg === null || contacts[0].shop_tg === "" ? (
+                                        <div></div>
+                                    ): (
+                                        <hr class="solid"></hr>
+                                    )}   
                                 </div>
                             ) : (
                                 <div></div>
@@ -141,8 +144,15 @@ const Contacts = () => {
                             <div></div>
                             ) : (
                                 <div>
-                                    <div className='contactsTitle'>{'Telegram:'}</div>
-                                    <a className='contactLink' href={"https://telegram.org/" + contacts[0].shop_tg} target="_blank" rel="noopener">@{contacts[0].shop_tg}</a>
+                                    <div className='profileLine'>
+                                        <div className='profileTitle'>{'Telegram'}</div>
+                                        <a className='contactLink' href={"https://telegram.org/" + contacts[0].shop_tg} target="_blank" rel="noopener">@{contacts[0].shop_tg}</a>
+                                    </div>
+                                    {contacts[0].shop_vk === null || contacts[0].shop_vk === "" ? (
+                                        <div></div>
+                                    ): (
+                                        <hr class="solid"></hr>
+                                    )}     
                                 </div>
                             ) : (
                                 <div></div>
@@ -157,8 +167,15 @@ const Contacts = () => {
                             <div></div>
                             ) : (
                                 <div>
-                                    <div className='contactsTitle'>{'Вконтакте:'}</div>
-                                    <a className='contactLink' href={"https://vk.com/" + contacts[0].shop_vk} target="_blank" rel="noopener">@{contacts[0].shop_vk}</a>
+                                    <div className='profileLine'>
+                                        <div className='profileTitle'>{'Вконтакте'}</div>
+                                        <a className='contactLink' href={"https://vk.com/" + contacts[0].shop_vk} target="_blank" rel="noopener">@{contacts[0].shop_vk}</a>
+                                    </div>
+                                    {contacts[0].shop_site === null || contacts[0].shop_site === "" ? (
+                                        <div></div>
+                                    ): (
+                                        <hr class="solid"></hr>
+                                    )}                                    
                                 </div>
                             ) : (
                                 <div></div>
@@ -168,8 +185,8 @@ const Contacts = () => {
                             contacts[0].shop_site === null || contacts[0].shop_site === "" ? (
                             <div></div>
                             ) : (
-                                <div>
-                                    <div className='contactsTitle'>{'Веб-сайт:'}</div>
+                                <div className='profileLine'>
+                                    <div className='profileTitle'>{'Веб-сайт'}</div>
                                     <a className='contactLink' href={contacts[0].shop_site} target="_blank" rel="noopener">{contacts[0].shop_site}</a>
                                 </div>
                             ) : (
@@ -180,6 +197,7 @@ const Contacts = () => {
                             <a className='policyLink' href="http://market-bot.org/" target="_blank" rel="noopener">{'Политика конфиденциальности'}</a>
                         </div> */}
                     </div>
+                    <p className='contactsSubHeader'>Приём заказов осуществляется</p>
                 </div>
                 )
             }

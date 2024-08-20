@@ -150,22 +150,22 @@ const ProdInfo = () => {
         if (typeof product?.options !== "undefined" && product?.options.length > 0) {
             return product.options.map(option => ( 
                 <div className='prodBlock'>
-                        <div className='prodOptions'>{option.group_name}</div>
-                        <div className='radioButtons'>
-                            {[...Array.from(option.options.values())].map(item => (
-                                <div className='selectLine'>
-                                    <div className='optionButton'>
-                                        <button className={`option${optionsSelect.get(option.group_name) === item.name ? 'active' : ''}`} onClick={() => changeType(option.group_name, item.name, item.price)}>
-                                            <div className='promoLine'>
-                                                {item.name}
-                                                <span className='pricePoint'>+ {item.price} ₽</span>
-                                            </div>
-                                        </button>
-                                    </div>
+                    <div className='prodOptions'>{option.group_name}</div>
+                    <div className='radioButtons'>
+                        {[...Array.from(option.options.values())].map(item => (
+                            <div className='selectLine'>
+                                <div className='optionButton'>
+                                    <button className={`option${optionsSelect.get(option.group_name) === item.name ? 'active' : ''}`} onClick={() => changeType(option.group_name, item.name, item.price)}>
+                                        <div className='promoLine'>
+                                            {item.name}
+                                            <span className='pricePoint'>+ {item.price} ₽</span>
+                                        </div>
+                                    </button>
                                 </div>
-                            ))}
-                        </div>
+                            </div>
+                        ))}
                     </div>
+                </div>
                 )
             )
         }
@@ -245,8 +245,8 @@ const ProdInfo = () => {
 			        		className='productIcon1'
 			        	/>
                     </div>
-                    <div className='prodBlock'>
-                        <div className={'title1'}>{product.name}</div>
+                    <div className={'title1'}>{product.name}</div>
+                    <div className='prodBlockPrice'>
                         <div className={'price1'}>
                             {product.price} ₽
                         </div>
@@ -289,11 +289,14 @@ const ProdInfo = () => {
                     </div>
                     {myReviews.length !== 0 ? (
                         <div>
-                            <div className='reviews'>Мои отзывы</div>
+                            <div className='reviewBlock1'>
+                                <div className='reviewsLine'>
+                                    <div className='reviews'>Мои отзывы</div>
+                                </div>
                             {myReviews.map(item => (
-                                <div className='reviewBlock'>
+                                <div className='reviewBlock2'>
                                     <div className='promoLine'>
-                                        <div className='ratingAuthor'>User{item.reviewer_id}</div>
+                                        <div className='ratingAuthor'>User{item.reviewer_name}</div>
                                         <div className='itemRating'>★{item.rate}</div>
                                         <div className='ratingDate'>{new Date(item.create_date+'Z').toLocaleDateString(undefined, {year: 'numeric', month: '2-digit', day: '2-digit'})}</div>
                                     </div>
@@ -308,29 +311,28 @@ const ProdInfo = () => {
                                     </div>
                                 </div>
                             ))}
+                            </div>
                         </div>
                     ) : (
                         <div></div>
                     )}
                     {reviews.length !== 0 ? (
                         <div>
-                            <div className='promoLine'>
-                                <div className='reviews'>Отзывы</div>
-                                <div className='allReviews' onClick={() => navigate('Reviews', { replace: false })}>Все ({reviews.length})</div>
-                            </div>
-                            <div>
-                                <div className='reviewBlock'>
-                                    <div className='promoLine'>
-                                        <div className='ratingAuthor'>User{reviews[0].reviewer_id}</div>
-                                        <div className='itemRating'>★{reviews[0].rate}</div>
-                                        <div className='ratingDate'>{new Date(reviews[0].create_date+'Z').toLocaleDateString(undefined, {year: 'numeric', month: '2-digit', day: '2-digit'})}</div>
-                                    </div>
-                                    {reviews[0].content !== '' ? (
-                                        <div className='ratingDesc'>{reviews[0].content}</div>
-                                    ) : (
-                                        <div></div>
-                                    )}
+                            <div className='reviewBlock1'>
+                                <div className='reviewsLine'>
+                                    <div className='reviews'>Отзывы</div>
+                                    <div className='allReviews' onClick={() => navigate('Reviews', { replace: false })}>Все ({reviews.length})</div>
                                 </div>
+                                <div className='promoLine'>
+                                    <div className='ratingAuthor'>Uer{reviews[0].reviewer_name}</div>
+                                    <div className='itemRating'>★{reviews[0].rate}</div>
+                                    <div className='ratingDate'>{new Date(reviews[0].create_date+'Z').toLocaleDateString(undefined, {year: 'numeric', month: '2-digit', day: '2-digit'})}</div>
+                                </div>
+                                {reviews[0].content !== '' ? (
+                                    <div className='ratingDesc'>{reviews[0].content}</div>
+                                ) : (
+                                    <div></div>
+                                )}
                             </div>
                         </div>
                     ) : (

@@ -1,0 +1,32 @@
+.profileLine {
+    display: flex;
+    align-items: center;
+    margin: 10px 10px;
+}
+
+.profileTitle {
+    font-size: 0.9em;
+    margin-right: auto
+}
+
+.profileInfo {
+    font-size: 0.9em;
+    font-weight: 600;
+    color: rgb(75 159 214);
+    margin-left: auto
+}
+
+.profileCard {
+    background: rgb(246, 246, 246);
+    border-radius: 15px;
+    padding: 4px 0;
+    color: black;
+    margin: 10px 10px 0;
+    text-align: start;
+}
+
+.solid {
+    border: none;
+    background-color: lightgray;
+    height: 1px;
+}

@@ -6,10 +6,15 @@
     text-align: justify;
     padding: 0 20px;
     background: white;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: lightgray;
 }
 
 .cancel {
-    color: rgb(65 159 217); /* (--tg-theme-button-color); */
+    color: rgb(0 111 253); /* (--tg-theme-button-color); */
 }
 
 .cancelButton {
