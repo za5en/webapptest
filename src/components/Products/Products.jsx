@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Header from '../Header/Header';
 import { useNavigate } from 'react-router-dom';
 import Banner from '../Banner/Banner.jsx';
+import cart from "../../assets/icons/cart.svg"
 
 export var goodsAmount = new Map()
 
@@ -21,6 +22,8 @@ const Products = () => {
 
     let nullPrice = 0;
 
+    let amount = 0;
+
     let productsByCat = new Map();
 
     // let hiddenCats = new Map();
@@ -35,7 +38,9 @@ const Products = () => {
             products[i].category_name = 'Без категории'
         }
         let currentProd = productsByCat.get(products[i].category_name);
-        currentProd.push(products[i]);
+        if (typeof currentProd != 'undefined' && typeof products[i] != 'undefined') {
+            currentProd.push(products[i]);
+        }
         productsByCat.set(products[i].category_name, currentProd);
         // if (currentProd.it_hidden) {
         //     let hidden = hiddenCats.get(products[i].categories);
@@ -68,35 +73,37 @@ const Products = () => {
                 if (key.includes("_")) {
                     if (`${products[i].id}` === key.substring(0, key.indexOf("_"))) {
                         find = true;
-                    }
-                    var prodKey = key.substring(key.indexOf("_") + 1);
-                    var j = 0;
-                    var optionPriceBoost = 0;
-                    while (prodKey.length > 0) {
-                        var index = 0
-                        if (prodKey.includes("_")) {
-                            index = prodKey.substring(0, prodKey.indexOf("_"));
-                        } else {
-                            index = prodKey
+                        amount += value;
+                        var prodKey = key.substring(key.indexOf("_") + 1);
+                        var j = 0;
+                        var optionPriceBoost = 0;
+                        while (prodKey.length > 0) {
+                            var index = 0
+                            if (prodKey.includes("_")) {
+                                index = prodKey.substring(0, prodKey.indexOf("_"));
+                            } else {
+                                index = prodKey
+                            }
+                            optionPriceBoost += products[i].options[j].options[index].price;
+                            if (prodKey.includes("_")) {
+                                prodKey = prodKey.substring(prodKey.indexOf("_") + 1)
+                            } else {
+                                prodKey = ""
+                            }
+                            j++;
                         }
-                        optionPriceBoost += products[i].options[j].options[index].price;
-                        if (prodKey.includes("_")) {
-                            prodKey = prodKey.substring(prodKey.indexOf("_") + 1)
+                        if (nullPrice === 0) {
+                            nullPrice = (products[i].price + optionPriceBoost) * value;
                         } else {
-                            prodKey = ""
+                            nullPrice = nullPrice + (products[i].price + optionPriceBoost) * value;
                         }
-                        j++;
-                    }
-                    if (nullPrice === 0) {
-                        nullPrice = (products[i].price + optionPriceBoost) * value;
-                    } else {
-                        nullPrice = nullPrice + (products[i].price + optionPriceBoost) * value;
                     }
                 }
                 
             }
             if (`${products[i].id}` === key) {
                 find = true;
+                amount += value;
                 if (nullPrice === 0) {
                     nullPrice = products[i].price * value;
                 } else {
@@ -153,19 +160,22 @@ const Products = () => {
                             <div> */}
                                 <span id={key} className='catName'>{key}</span>
                                 <div className='cat'>
-                                {productsByCat.get(key).map(item => (
-                                    item.it_hidden ? (
-                                        <div></div>
-                                    ) : (
-                                        <ProductItem 
-                                        product={item}
-                                        onAdd={onAdd}
-                                        className={'item'}
-                                        changePrice={changePrice}
-                                        link={1}
-                                    />
-                                    )
-                                ))}
+                                {typeof productsByCat.get(key) !== 'undefined' ? (
+                                    productsByCat.get(key).map(item => (
+                                        item.it_hidden ? (
+                                            <div></div>
+                                        ) : (
+                                            <ProductItem 
+                                            product={item}
+                                            onAdd={onAdd}
+                                            className={'item'}
+                                            changePrice={changePrice}
+                                            link={1}
+                                        />
+                                        )
+                                    ))) : ( 
+                                    <div></div>
+                                )}
                                 </div>
                             {/* </div>
                         )} */}
@@ -184,7 +194,13 @@ const Products = () => {
             <footer>
                 {
                     goodsAmount.size > 0 ? (
-                        <button className='cart-btn' onClick={() => navigate('Cart', { replace: false })}>{`Корзина: ${price?.toFixed(2) ?? nullPrice.toFixed(2)} ₽`}</button>
+                        <div className='newCartButton'>
+                            <button className='cart-btn-floating' onClick={() => navigate('Cart', { replace: false })}>
+                                <div className='amountText'>{amount}</div>
+                                <img className='cartIcon' src={cart}></img>
+                            </button>
+                        </div>
+                        // {/* {`Корзина: ${price?.toFixed(2) ?? nullPrice.toFixed(2)} ₽`} */}
                     ) : (
                         <div></div>
                     )

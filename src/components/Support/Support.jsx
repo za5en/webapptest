@@ -58,16 +58,15 @@ const Support = () => {
                     <div className='ordersBlock'>
                         {requests.map(item => (
                             <div className='supportCard' onClick={() => navigate(`CheckRequest/${item.id}`, {replace: false, state: {id: item.id}})}>
-                                <div className='firstOrderLine'>
-                                    <div className='orderNum'>{'Обращение №' + item.id}</div>
+                                <div className='firstSupportLine'>
+                                <div className='orderDate'>{new Date(item.create_date+'Z').toLocaleDateString(undefined, {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit'})} {'#' + item.id}</div>
                                     {item.completed ? (
                                         <div className='supportCompleted'>{'✔'}</div>
                                     ) : (
                                         <div></div>
                                     )}                                    
                                 </div>
-                                <div className='orderStatus'>{item.title}</div>
-                                <div className='orderDate'>{new Date(item.create_date+'Z').toLocaleDateString(undefined, {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'})}</div>
+                                <div className='supportName'>{item.title}</div>
                             </div>
                         ))}
                     </div>                    

@@ -47,13 +47,25 @@ const OrderPage = () => {
                         {goodsOrder.map(prod => (
                             <div className='orderPositions'>
                                 <div className='goodsOrder'>
-                                    <img
-			    		                src={prod.photoFile}
-                                        alt={prod.product.name}
-                                        className='prodImg1'
-                                    />
+                                    {typeof prod.product !== 'undefined' && prod.product !== null ? (
+                                        <img
+			    		                    src={prod.photoFile}
+                                            alt={prod.product.name}
+                                            className='prodImg1'
+                                        /> 
+                                    ) : (
+                                        <img
+			    		                    src={prod.photoFile}
+                                            alt='ProductName'
+                                            className='prodImg1'
+                                        />
+                                    )}
                                     <div className='prodText'>
-                                        <div className='prodName1'>{prod.product.name}</div>
+                                        {typeof prod.product !== 'undefined' && prod.product !== null ? (
+                                            <div className='prodName1'>{prod.product.name}</div>
+                                        ) : (
+                                            <div className='prodName1'>Продукт</div>
+                                        )}
                                         <div className='multiple'>
                                             <div className='orderAmount'>{prod.count + ' шт'}</div>
                                             <div className='orderCostInside'>{prod.price + ' ₽'}</div>

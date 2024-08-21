@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import './BannerPage.css'
-import {useLocation} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import OtherHeader from '../OtherHeader/OtherHeader.jsx';
 import { goodsAmount } from '../Products/Products.jsx';
 import BurgerIcon from '../../assets/images/burger.png';
 import ProductItem from '../ProductItem/ProductItem.jsx';
+import cart from "../../assets/icons/cart.svg"
 
 const BannerPage = () => {
     const {products, banners} = require('../TestData/prod.jsx');
     
     const location = useLocation();
+
+    const navigate = useNavigate();
 
     let banner = {};
 
@@ -18,6 +21,8 @@ const BannerPage = () => {
     let newItems = [];
 
     let nullPrice = 0;
+
+    let amount = 0;
 
     const [addedItems, setAddedItems] = useState([]);
 
@@ -59,6 +64,53 @@ const BannerPage = () => {
 
         setPrice(addPrice)
         setAddedItems(newItems)
+    }
+
+    for (var [key, value] of goodsAmount) {
+        let find = false;
+        for (let i = 0; i < products.length && !find; i++) {
+            if (typeof products[i]?.options !== "undefined" && products[i]?.options.length > 0) {
+                if (key.includes("_")) {
+                    if (`${products[i].id}` === key.substring(0, key.indexOf("_"))) {
+                        find = true;
+                        amount += value;
+                        var prodKey = key.substring(key.indexOf("_") + 1);
+                        var j = 0;
+                        var optionPriceBoost = 0;
+                        while (prodKey.length > 0) {
+                            var index = 0
+                            if (prodKey.includes("_")) {
+                                index = prodKey.substring(0, prodKey.indexOf("_"));
+                            } else {
+                                index = prodKey
+                            }
+                            optionPriceBoost += products[i].options[j].options[index].price;
+                            if (prodKey.includes("_")) {
+                                prodKey = prodKey.substring(prodKey.indexOf("_") + 1)
+                            } else {
+                                prodKey = ""
+                            }
+                            j++;
+                        }
+                        if (nullPrice === 0) {
+                            nullPrice = (products[i].price + optionPriceBoost) * value;
+                        } else {
+                            nullPrice = nullPrice + (products[i].price + optionPriceBoost) * value;
+                        }
+                    }
+                }
+                
+            }
+            if (`${products[i].id}` === key) {
+                find = true;
+                amount += value;
+                if (nullPrice === 0) {
+                    nullPrice = products[i].price * value;
+                } else {
+                    nullPrice = nullPrice + products[i].price * value;
+                }
+            }
+        }
     }
 
     const changePrice = (edit, prodPrice) => {
@@ -118,6 +170,21 @@ const BannerPage = () => {
                     </div>
                 </div>
             </div>
+            <footer>
+                {
+                    goodsAmount.size > 0 ? (
+                        <div className='newCartButton'>
+                            <button className='cart-btn-floating' onClick={() => navigate('../../Cart', { replace: false })}>
+                                <div className='amountText'>{amount}</div>
+                                <img className='cartIcon' src={cart}></img>
+                            </button>
+                        </div>
+                        // {/* {`Корзина: ${price?.toFixed(2) ?? nullPrice.toFixed(2)} ₽`} */}
+                    ) : (
+                        <div></div>
+                    )
+                }                
+            </footer>
         </div>
     );
 };

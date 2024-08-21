@@ -24,45 +24,59 @@ const ProdInfo = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const changeType = (groupName, name, itemPrice) => {
-        optionsSelect.set(groupName, name)
+        optionsSelect.set(`${product.id}_${groupName}`, name)
+        var priceBoost = 0
         var key = `${product.id}`
         for (let i = 0; i < product.options.length; i++) {
             var index = 0;
             var find = false;
             for (let j = 0; j < product.options[i].options.length && !find; j++) {
-                if (optionsSelect.get(product.options[i].group_name) === product.options[i].options[j].name) {
+                if (optionsSelect.get(`${product.id}_${product.options[i].group_name}`) === product.options[i].options[j].name) {
                     index = j;
                     find = true;
+                    priceBoost += product.options[i].options[j].price
                 }
             }
             key += `_${index}`
         }
         setAmount(typeof goodsAmount.get(key) !== 'undefined' ? goodsAmount.get(key) : 0)
-        setPrice(typeof goodsAmount.get(key) !== 'undefined' ? (product.price + itemPrice) * goodsAmount.get(key) : 0)
+        setPrice(typeof goodsAmount.get(key) !== 'undefined' ? (product.price + priceBoost) * goodsAmount.get(key) : 0)
         setOptionType(optionType + 1)
     }
 
     const onChange = (edit) => {
+        let priceBoost = 0
+        if (typeof product?.options !== "undefined" && product?.options.length > 0) {
+            for (let i = 0; i < product.options.length; i++) {
+                var find = false;
+                for (let j = 0; j < product.options[i].options.length && !find; j++) {
+                    if (optionsSelect.get(`${product.id}_${product.options[i].group_name}`) === product.options[i].options[j].name) {
+                        find = true;
+                        priceBoost += product.options[i].options[j].price
+                    }
+                }
+            }
+        }
         if (edit === '-') {
             if (amount > 0) {
-                setPrice(price - product.price)
+                setPrice(price - product.price - priceBoost)
                 setAmount(amount - 1)
             }
         } else {
-            setPrice(price + product.price)            
+            setPrice(price + product.price + priceBoost)            
             setAmount(amount + 1)
         }
     }
 
     const onExit = () => {
         if (typeof amount !== "undefined") {
-            if (product?.options.length > 0) {
+            if (typeof product?.options !== "undefined" && product?.options.length > 0) {
                 var key = `${product.id}`
                 for (let i = 0; i < product.options.length; i++) {
                     var index = 0;
                     var find = false;
                     for (let j = 0; j < product.options[i].options.length && !find; j++) {
-                        if (optionsSelect.get(product.options[i].group_name) === product.options[i].options[j].name) {
+                        if (optionsSelect.get(`${product.id}_${product.options[i].group_name}`) === product.options[i].options[j].name) {
                             index = j;
                             find = true;
                         }
@@ -100,12 +114,14 @@ const ProdInfo = () => {
     let optionPriceBoost = 0;
     if (typeof product?.options !== "undefined" && product?.options.length > 0) {
         for (let i = 0; i < product.options.length; i++) {
-            if (!optionsSelect.has(product.options[i].group_name)) {
-                optionsSelect.set(product.options[i].group_name, product.options[i].options[0].name)
+            if (!optionsSelect.has(`${product.id}_${product.options[i].group_name}`)) {
+                // var selectedName = new Map()
+                // selectedName.set(product.options[i].group_name, product.options[i].options[0].name)
+                optionsSelect.set(`${product.id}_${product.options[i].group_name}`, product.options[i].options[0].name)
                 optionPriceBoost += product.options[i].options[0].price
             } else {
                 for (let j = 0; j < product.options[i].options.length; j++) {
-                    if (optionsSelect.get(product.options[i].group_name) === product.options[i].options[j].name) {
+                    if (optionsSelect.get(`${product.id}_${product.options[i].group_name}`) === product.options[i].options[j].name) {
                         optionPriceBoost += product.options[i].options[j].price
                     }
                 }
@@ -118,7 +134,7 @@ const ProdInfo = () => {
             var index = 0;
             find = false;
             for (let j = 0; j < product.options[i].options.length && !find; j++) {
-                if (optionsSelect.get(product.options[i].group_name) === product.options[i].options[j].name) {
+                if (optionsSelect.get(`${product.id}_${product.options[i].group_name}`) === product.options[i].options[j].name) {
                     index = j;
                     find = true;
                 }
@@ -155,10 +171,14 @@ const ProdInfo = () => {
                         {[...Array.from(option.options.values())].map(item => (
                             <div className='selectLine'>
                                 <div className='optionButton'>
-                                    <button className={`option${optionsSelect.get(option.group_name) === item.name ? 'active' : ''}`} onClick={() => changeType(option.group_name, item.name, item.price)}>
+                                    <button className={`option${optionsSelect.get(`${product.id}_${option.group_name}`) === item.name ? 'active' : ''}`} onClick={() => changeType(option.group_name, item.name, item.price)}>
                                         <div className='promoLine'>
                                             {item.name}
-                                            <span className='pricePoint'>+ {item.price} ₽</span>
+                                            {item.price >= 0 ? (
+                                                <span className='pricePoint'>+ {item.price} ₽</span>
+                                            ) : (
+                                                <span className='pricePoint'>- {item.price} ₽</span>
+                                            )}                                            
                                         </div>
                                     </button>
                                 </div>
@@ -332,7 +352,7 @@ const ProdInfo = () => {
                     <footer>
                         <div className='prodLineAmount'>
                             <div className='addToCartButtonsProd'>
-                                <button className='minus-cart-btn' onClick={() => onChange('-')}>-</button>
+                                <button className='minus-cart-btn' onClick={() => onChange('-')}>–</button>
                                 <div className='amountCart'>{amount}</div>
                                 <button className='plus-cart-btn' onClick={() => onChange('+')}>+</button>
                             </div>

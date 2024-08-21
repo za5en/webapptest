@@ -31,7 +31,7 @@ const Cart = () => {
                             index = prodKey
                         }
                         optionPriceBoost += products[i].options[j].options[index].price;
-                        optionNames.push(products[i].options[j].options[index].name)
+                        optionNames.push(products[i].options[j].options[index].name);
                         if (prodKey.includes("_")) {
                             prodKey = prodKey.substring(prodKey.indexOf("_") + 1)
                         } else {
@@ -41,7 +41,7 @@ const Cart = () => {
                     }
                     goods[goods.length - 1].id = key;
                     goods[goods.length - 1].names = optionNames;
-                    goods[goods.length - 1].boostPrice = products[i].price + optionPriceBoost;
+                    goods[goods.length - 1].price = products[i].price + optionPriceBoost;
                     price += (products[i].price + optionPriceBoost) * value;
                 }
             }            

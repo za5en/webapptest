@@ -124,6 +124,8 @@ const OrderCard = ({order}) => {
 
     var goods = goodsGlobal.get(order.id)
 
+    console.log(goods)
+
     return (
         <div>
             {isLoading ? (
@@ -144,7 +146,11 @@ const OrderCard = ({order}) => {
                         goods.map(item => (
                             <div onClick={() => openOrder()}>
                                 <div className='promoLine'>
+                                {typeof item.product !== 'undefined' && item.product !== null ? (
                                     <div className='prodValue'>{item.count} x {item.product.name}</div>
+                                    ) : (
+                                    <div className='prodValue'>{item.count} x</div>
+                                )}
                                     <div className='priceValue'>{item.price}</div>
                                 </div>
                                 {typeof item.option !== 'undefined' ?

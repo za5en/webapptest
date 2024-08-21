@@ -74,11 +74,11 @@ const Feedback = () => {
                 <div className='goodsInnerFd'>
                     <img
                         src={item.photoFile}
-                        alt={item.name}
+                        alt={item.product.name}
                         className='prodImg1'
                     />
                     <div className='prodText'>
-                        <div className='prodName'>{item.name}</div>
+                        <div className='prodName'>{item.product.name}</div>
                         <div className='prodName'>{item.price} ₽</div>
                         {/* <div className='prodParam'>{item.weight} гр</div> */}
                         {/* <div className='prodParam'>{item.order_quantity} шт.</div> */}

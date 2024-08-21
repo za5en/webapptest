@@ -8,6 +8,11 @@
     justify-content: space-between;
     padding: 0 20px;
     background: white;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: lightgray;
 }
 
 .feedbackHeaderName {
@@ -52,7 +57,7 @@
 
 .goodsFd {
     display: block;
-    background: white;
+    background: rgb(240, 246, 255);
     border-radius: 15px;
     margin: 15px;
     text-align: start;
@@ -60,7 +65,7 @@
 }
 
 .goodsInnerFd {
-    background: white;
+    background: rgb(240, 246, 255);
     border-radius: 15px;
     padding: 10px 10px;
     text-align: start;
@@ -78,7 +83,7 @@
 }
 
 .feedbackReview {
-    background: white;
+    background: rgb(240, 246, 255);
     border-radius: 15px;
     margin: 5px;
     padding: 10px 5px 0 2px;
