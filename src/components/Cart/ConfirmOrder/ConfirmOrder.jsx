@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './ConfirmOrder.css'
 import { useNavigate } from 'react-router-dom';
 import { useTelegram } from '../../../hooks/useTelegram';
@@ -43,7 +43,7 @@ const ConfirmOrder = () => {
 
     const deliveryMethod = [
         {method: 'Самовывоз'},
-        // {method: 'Доставка'}
+        {method: 'Доставка'}
     ];
 
     let goods = []
@@ -111,6 +111,24 @@ const ConfirmOrder = () => {
         }
     }
 
+    useEffect(() => {
+
+        async function deliveryInfo() {
+            var response  = await axios.get(`https://market-bot.org:8082/clients_api/info/get_bot_info?bot_id=${userInfo[0].bot_id}`)
+            userInfo[0].haveDelivery = response.data.have_delivery;
+        }
+
+        async function request() {
+            try {
+                await deliveryInfo();
+            } catch (e) {
+                //console.log(e)
+            }
+        }
+
+        request()
+    }, [setAppState]);
+
 
     const confirm = async () => {
         var paymentType = paymentSelect[0] === 'Банковской картой' ? 'card' : 'cash';
@@ -118,10 +136,36 @@ const ConfirmOrder = () => {
         var deliveryAddress = selection.get('delivery') === 0 ? '' : document.getElementById('deliveryAddress').value;
         var phone = document.getElementById('phone').value;
         var comment = document.getElementById('comment').value;
+        userInfo[0].latitude = 0
+        userInfo[0].longitude = 0
         while (promo.length > 0) {
             promo.pop()
         }
         promo.push(document.getElementById('promo').value)
+        
+        async function getCoords() {
+            try {
+                const response = await axios.get(
+			    	`https://geocode-maps.yandex.ru/1.x/?apikey=97e17441-c27d-4020-9b23-0b815499d385&geocode=${deliveryAddress}&format=json`,
+			    	{ withCredentials: false }
+			    )
+
+			    if (
+			    	response.data &&
+			    	response.data.response.GeoObjectCollection.featureMember.length > 0
+			    ) {
+			    	const coords =
+			    		response.data.response.GeoObjectCollection.featureMember[0].GeoObject.Point.pos
+			    			.split(' ')
+			    			.map(Number)
+                    console.log(coords)
+                    userInfo[0].latitude = coords[1]
+                    userInfo[0].longitude = coords[0]
+			    }
+            } catch (error) {
+                console.error('Failed to fetch coordinates:', error)
+            }
+        }
 
         async function createCart() {
             var response  = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/create_cart?client_id=${userInfo[0].id}`)
@@ -204,15 +248,17 @@ const ConfirmOrder = () => {
       
         async function createOrder() {
             var response = await axios.post('https://market-bot.org:8082/clients_api/clients_orders/create_order', {
-              "client_id": userInfo[0].id,
-              "bot_id": userInfo[0].bot_id,
-              "cart_id": userInfo[0].cartId,
-              "pay_type": paymentType,
-              "delivery_type": delType,
-              "delivery_address": deliveryAddress,
-              "comment": comment,
-              "phone": phone,
-              "promo": promo[0]
+                "client_id": userInfo[0].id,
+                "bot_id": userInfo[0].bot_id,
+                "cart_id": userInfo[0].cartId,
+                "pay_type": paymentType,
+                "delivery_type": delType,
+                "delivery_address": deliveryAddress,
+                "comment": comment,
+                "phone": phone,
+                "promo": promo[0],
+                "latitude": userInfo[0].latitude,
+                "longitude": userInfo[0].longitude
             }, {
               headers: {
                   'Content-Type': 'application/json'
@@ -233,7 +279,9 @@ const ConfirmOrder = () => {
                     "delivery_address": deliveryAddress,
                     "comment": comment,
                     "phone": phone,
-                    "promo": promo[0]
+                    "promo": promo[0],
+                    "latitude": userInfo[0].latitude,
+                    "longitude": userInfo[0].longitude
                     }, {
                     headers: {
                         'Content-Type': 'application/json'
@@ -252,7 +300,9 @@ const ConfirmOrder = () => {
                   "delivery_type": delType,
                   "delivery_address": deliveryAddress,
                   "comment": comment,
-                  "phone": phone
+                  "phone": phone,
+                  "latitude": userInfo[0].latitude,
+                  "longitude": userInfo[0].longitude
                 }, {
                   headers: {
                       'Content-Type': 'application/json'
@@ -267,6 +317,7 @@ const ConfirmOrder = () => {
       
         async function makeRequest() {
             await createCart();
+            await getCoords();
             if (paymentSelect[0] === "Онлайн") {
                 return await payForCart()
             } else {
@@ -294,6 +345,10 @@ const ConfirmOrder = () => {
                                         if (typeof e.response.data !== "undefined") {
                                             if (typeof e.response.data.detail !== "undefined" && e.response.data.detail === "Wrong promo code") {
                                                 alert("Неверный промокод");
+                                            } else if (typeof e.response.data.detail !== "undefined" && (e.response.data.detail === "Error with create order: 400: Can't find out where user is" || e.response.data.detail === "Can't find out where user is")) {
+                                                alert("Адрес указан неверно");
+                                            } else if (typeof e.response.data.detail !== "undefined" && (e.response.data.detail === "Error with create order: 400: User is too far from a shop" || e.response.data.detail === "User is too far from a shop")) {
+                                                alert("По указанному адресу доставка не осуществляется");
                                             }
                                         }
                                     }
@@ -363,13 +418,17 @@ const ConfirmOrder = () => {
                             <div className='payments'>
                                 <div className='fieldHeader'>Выберите способ доставки:</div>
                                 <div className='deliveryLine'>
-                                    {deliveryMethod.map((method, index) =>
-                                        <div className='deliveryButton'>
-                                            <button className={`method${selection.get('delivery') === index ? 'active' : ''}`} onClick={() => changeType(index)}>
-                                                {method.method}
-                                            </button>
-                                        </div>
-                                    )}
+                                    {deliveryMethod.map((method, index) => (
+                                        (method.method === "Самовывоз" || (method.method === "Доставка" && userInfo[0].haveDelivery)) ? (
+                                            <div className='deliveryButton'>
+                                                <button className={`method${selection.get('delivery') === index ? 'active' : ''}`} onClick={() => changeType(index)}>
+                                                    {method.method}
+                                                </button>
+                                            </div>
+                                            ) : (
+                                                <div></div>
+                                        )
+                                    ))}
                                 </div>
                                 <Address />
                             </div>

@@ -8,13 +8,16 @@ import { userInfo } from '../../../TestData/user.jsx';
 import ReactLoading from "react-loading";
 import { useTelegram } from '../../../../hooks/useTelegram.js';
 import { categories, products } from '../../../TestData/prod.jsx';
+import { GeoObject, Map, YMaps } from '@pbe/react-yandex-maps'
 
 const Contacts = () => {
 
     const [appState, setAppState] = useState();
     const [isLoading, setIsLoading] = useState(false);
 
-    const {tg, user} = useTelegram(); 
+    const [coordinates, setCoordinates] = useState([55.751574, 37.573856])
+
+    const {tg, user} = useTelegram();
 
     useEffect(() => {
       tg.ready();
@@ -31,6 +34,28 @@ const Contacts = () => {
     // let userId = 649105595
 
     useEffect(() => {
+
+        async function contactsAddress() {
+            try {
+                const response = await axios.get(
+                    `https://geocode-maps.yandex.ru/1.x/?apikey=97e17441-c27d-4020-9b23-0b815499d385&geocode=${contacts[0].shop_address}&format=json`,
+                    { withCredentials: false }
+                )
+    
+                if (
+                    response.data &&
+                    response.data.response.GeoObjectCollection.featureMember.length > 0
+                ) {
+                    const coords =
+                        response.data.response.GeoObjectCollection.featureMember[0].GeoObject.Point.pos
+                            .split(' ')
+                            .map(Number)
+                    setCoordinates([coords[1], coords[0]])
+                }
+            } catch (error) {
+                console.error('Failed to fetch coordinates:', error)
+            }
+        }
 
         async function getUser() {
             var response  = await axios.get(`https://market-bot.org:8082/clients_api/user/get_user/?bot_id=${botId}&client_tg_id=${user.id}`)
@@ -74,6 +99,7 @@ const Contacts = () => {
             if (userInfo[0].id === 1) {
                 await getUser();
             }
+            await contactsAddress();
           } catch (e) {
             // console.log(e)
           }          
@@ -82,6 +108,9 @@ const Contacts = () => {
     
         makeRequest()
     }, [setAppState]);
+
+    const isValidCoordinates =
+        coordinates.length === 2 && !isNaN(coordinates[0]) && !isNaN(coordinates[1])
 
     if (contacts.length > 0 && contacts[0].shop_vk.includes("/")) {
         contacts[0].shop_vk = contacts[0].shop_vk.substring(contacts[0].shop_vk.lastIndexOf("/") + 1)
@@ -98,6 +127,27 @@ const Contacts = () => {
                 </div>
             ) : (
                 <div className='blocks'>
+                    <div className='mapShop'>
+                        <YMaps query={{ apikey: '30a63ef2-9728-4aa2-b1f8-c8b716d577a8' }}>
+			            	<Map
+			            		state={{
+			            			center: isValidCoordinates ? coordinates : [55.751574, 37.573856],
+			            			zoom: 14
+			            		}}
+			            		width='99%'
+			            		height='300px'
+			            	>
+                                {isValidCoordinates && (
+					            	<GeoObject
+					            		geometry={{
+                                            type: "Point",
+                                            coordinates: coordinates
+                                        }}
+					            	/>
+					            )}
+                            </Map>
+			            </YMaps>
+                    </div>
                     <div className='contactsMainHeader'>{contacts[0].shop_address}</div>
                     <p className='contactsSubHeader'>Контактная информация</p>
                     <div className='profileCard'>

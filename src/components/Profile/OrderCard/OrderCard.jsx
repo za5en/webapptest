@@ -149,7 +149,7 @@ const OrderCard = ({order}) => {
                                 {typeof item.product !== 'undefined' && item.product !== null ? (
                                     <div className='prodValue'>{item.count} x {item.product.name}</div>
                                     ) : (
-                                    <div className='prodValue'>{item.count} x</div>
+                                    <div className='prodValue'>{item.count} x Продукт</div>
                                 )}
                                     <div className='priceValue'>{item.price}</div>
                                 </div>

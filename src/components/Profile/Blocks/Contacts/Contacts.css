@@ -19,7 +19,7 @@
     font-weight: 600;
     font-size: 0.9em;
     text-decoration: none;
-    color: rgb(75 159 214);
+    color: rgb(0 111 253); /* rgb(75 159 214); */
     cursor: pointer;
 }
 
@@ -67,4 +67,8 @@
     font-size: 1.1em;
     text-align: start;
     margin: 10px 10px 0;
+}
+
+.mapShop {
+    margin: 0 11px;
 }
