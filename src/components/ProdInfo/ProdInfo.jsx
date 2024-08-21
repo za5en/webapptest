@@ -273,20 +273,6 @@ const ProdInfo = () => {
                     </div>
                     {/* <Variants /> */}
                     <Options />
-                    <div className='prodBlock'>
-                        <div className='addToCartLine'>
-                            <button className='minus-btn' onClick={() => onChange('-')}>-</button>
-                            <div className='amount'>{amount}</div>
-                            <button className='plus-btn' onClick={() => onChange('+')}>+</button>
-                        </div>
-                        {
-                            typeof product?.options !== "undefined" && product?.options.length > 0 ? (
-                                <button className='buy-btn' onClick={() => onExit()}>{price?.toFixed(2)} ₽</button>
-                            ) : (
-                                <button className='buy-btn' onClick={() => onExit()}>{price?.toFixed(2)} ₽</button>
-                            )
-                        }
-                    </div>
                     {myReviews.length !== 0 ? (
                         <div>
                             <div className='reviewBlock1'>
@@ -296,7 +282,7 @@ const ProdInfo = () => {
                             {myReviews.map(item => (
                                 <div className='reviewBlock2'>
                                     <div className='promoLine'>
-                                        <div className='ratingAuthor'>User{item.reviewer_name}</div>
+                                        <div className='ratingAuthor'>{item.reviewer_name}</div>
                                         <div className='itemRating'>★{item.rate}</div>
                                         <div className='ratingDate'>{new Date(item.create_date+'Z').toLocaleDateString(undefined, {year: 'numeric', month: '2-digit', day: '2-digit'})}</div>
                                     </div>
@@ -324,7 +310,7 @@ const ProdInfo = () => {
                                     <div className='allReviews' onClick={() => navigate('Reviews', { replace: false })}>Все ({reviews.length})</div>
                                 </div>
                                 <div className='promoLine'>
-                                    <div className='ratingAuthor'>Uer{reviews[0].reviewer_name}</div>
+                                    <div className='ratingAuthor'>{reviews[0].reviewer_name}</div>
                                     <div className='itemRating'>★{reviews[0].rate}</div>
                                     <div className='ratingDate'>{new Date(reviews[0].create_date+'Z').toLocaleDateString(undefined, {year: 'numeric', month: '2-digit', day: '2-digit'})}</div>
                                 </div>
@@ -342,6 +328,23 @@ const ProdInfo = () => {
                             <div className='noReviews'>Отзывов пока нет</div>
                         )
                     )}
+                    <div className='additionalSpace'></div>
+                    <footer>
+                        <div className='prodLineAmount'>
+                            <div className='addToCartButtonsProd'>
+                                <button className='minus-cart-btn' onClick={() => onChange('-')}>-</button>
+                                <div className='amountCart'>{amount}</div>
+                                <button className='plus-cart-btn' onClick={() => onChange('+')}>+</button>
+                            </div>
+                            {
+                                typeof product?.options !== "undefined" && product?.options.length > 0 ? (
+                                    <button className='add-btn-prod' onClick={() => onExit()}><p className='toCart'>{price?.toFixed(2)} ₽</p></button>
+                                ) : (
+                                    <button className='add-btn-prod' onClick={() => onExit()}><p className='toCart'>{price?.toFixed(2)} ₽</p></button>
+                                )
+                            }
+                        </div>
+                    </footer>
                 </div>
             )}
         </div>

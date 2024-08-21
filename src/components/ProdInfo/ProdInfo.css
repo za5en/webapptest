@@ -280,3 +280,49 @@
     align-items: center;
     margin: 0 5px 7px;
 }
+
+.prodLineAmount {
+    display: flex;
+    background: white;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-top-style: solid;
+    border-top-color: lightgray;
+    border-top-width: 1px;
+    /* margin: 15px 10px 10px; */
+    padding: 10px;
+    position: fixed; 
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.additionalSpace {
+    height: 110px;
+}
+
+.add-btn-prod {
+    width: 48%;
+    border-radius: 10px;
+    border-width: 0;
+    border-style: solid;
+    padding: 8px;
+    cursor: pointer;
+    text-align: center;
+    /* margin: 5px 5px 0 5px; */
+    margin-left: auto;
+    background-color: rgb(0 111 253); /* rgb(81, 52, 255); */ /* (--tg-theme-button-color); */
+}
+
+.addToCartButtonsProd {
+    display: flex;
+    width: 48%;
+    align-items: center;
+    border-style: solid;
+    border-color: lightgray;
+    background-color: white;
+    border-width: 1px;
+    border-radius: 10px;
+    margin-right: auto;
+    /* margin: 5px 5px 0 5px; */
+}

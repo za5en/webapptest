@@ -1,29 +1,17 @@
-import React, { useState } from 'react'
+import React from 'react'
 import './Cart.css'
 import OtherHeader from '../OtherHeader/OtherHeader';
 import { useNavigate } from 'react-router-dom';
 import { goodsAmount } from '../Products/Products';
-import axios from 'axios';
-import { userInfo } from '../TestData/user.jsx';
-import { contacts } from '../Profile/Profile.jsx';
-import ReactLoading from "react-loading";
 
 const Cart = () => {
     let navigate = useNavigate();
     let goods = []
     let price = 0
-    const [delivery, setDelivery] = useState()
-
-    const [courier, setCourier] = useState()
-
-    const [isValidAddress, setIsValidAddress] = useState(true);
+    let delivery = 0
+    // const [delivery, setDelivery] = useState(200)
 
     const {products} = require('../TestData/prod.jsx');
-
-    const deliveryMethod = [
-        {method: 'Самовывоз'},
-        // {method: 'Доставка'}
-    ];
 
     let find = false;
     for (let i = 0; i < Object.keys(products).length && !find; i++) {
@@ -64,6 +52,10 @@ const Cart = () => {
         }
     }
 
+    if (price < 999) {
+        delivery = 200
+    }
+
     // const onChange = (edit, id) => {
     //     console.log(goodsAmount)
     //     if (edit === '-') {
@@ -88,152 +80,9 @@ const Cart = () => {
     //     console.log(goodsAmount)
     // }
 
-    const [activeButton, setActiveButton] = useState(0);
-
-    const [appState, setAppState] = useState();
-    const [isLoading, setIsLoading] = useState(false);
-
-    const changeType = (type) => {
-        setActiveButton(type)
-        if (type === 0) {
-            setCourier(false);
-            setDelivery(0);
-        } else {
-            setCourier(true);
-            if (price < 999) {
-                setDelivery(200);
-            }
-        }
-    }
-
-    const confirm = async () => {
-        // while (deliveryType.length > 0) {
-        //     deliveryType.pop()
-        // }
-        // deliveryType.push(deliveryMethod[activeButton].method)
-        userInfo[0].deliveryType = deliveryMethod[activeButton].method
-        // while (deliveryAddress.length > 0) {
-        //     deliveryAddress.pop()
-        // }
-        if (activeButton === 1) {
-            userInfo[0].deliveryAddress = document.getElementById('deliveryAddress').value
-            // deliveryAddress.push(document.getElementById('deliveryAddress').value)
-        } else {
-            userInfo[0].deliveryAddress = ""
-        }
-
-        if ((activeButton === 1 && document.getElementById('deliveryAddress').value.length > 0 && document.getElementById('deliveryAddress').value.length < 200) || (activeButton === 0)) {
-            setIsValidAddress(true);
-            setIsLoading(true);
-            try {
-                await createCart()
-            } catch (e) {
-                // console.log(e)
-            }
-            setIsLoading(false);
-            navigate('ConfirmOrder', { replace: false })
-        } else {
-            setIsValidAddress(false);
-        }
-    }
-
-    async function createCart() {
-        var response  = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/create_cart?client_id=${userInfo[0].id}`)
-        // while (cartId.length > 0) {
-        //     cartId.pop()
-        // }
-        // cartId.push(response.data.data)
-        userInfo[0].cartId = response.data.data
-        setAppState(response);
-
-        await addToCart();
-    }
-
-    async function addToCart() {
-        var response = ''
-        for (let i = 0; i < goods.length; i++) {
-            if (typeof goods[i]?.options !== "undefined" && goods[i]?.options.length > 0) {
-                let find = false;
-                var options = []
-                for (let j = 0; j < products.length && !find; j++) {
-                    if (parseInt(goods[i].id.substring(0, goods[i].id.indexOf("_"))) === products[j].id) {
-                        find = true;
-                        var prodKey = key.substring(key.indexOf("_") + 1);
-                        var k = 0;
-                        while (prodKey.length > 0) {
-                            var index = 0
-                            if (prodKey.includes("_")) {
-                                index = prodKey.substring(0, prodKey.indexOf("_"));
-                            } else {
-                                index = prodKey
-                            }
-
-                            var option = {
-                                "group_name": products[j].options[k].group_name,
-                                options: [
-                                    products[j].options[k].options[index]
-                                ]
-                            }
-                            options.push(option)
-
-                            if (prodKey.includes("_")) {
-                                prodKey = prodKey.substring(prodKey.indexOf("_") + 1)
-                            } else {
-                                prodKey = ""
-                            }
-                            k++;
-                        }
-                    }
-                }
-                response = await axios.post('https://market-bot.org:8082/clients_api/clients_menu/add_to_cart', {
-                        cart_id: userInfo[0].cartId,
-                        product_id: parseInt(goods[i].id.substring(0, goods[i].id.indexOf("_"))),
-                        count: goodsAmount.get(goods[i].id),
-                        price: goods[i].price * goodsAmount.get(goods[i].id),
-                        option: options
-                    }, {
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                })
-            } else {
-                response = await axios.post('https://market-bot.org:8082/clients_api/clients_menu/add_to_cart', {
-                        cart_id: userInfo[0].cartId,
-                        product_id: parseInt(goods[i].id),
-                        count: goodsAmount.get(`${goods[i].id}`),
-                        price: goods[i].price * goodsAmount.get(`${goods[i].id}`),
-                        option: []
-                    }, {
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                })
-            }
-        }
-        // message = response.data.message
-        // if (message === 'Product added to cart')
-        setAppState(response);
-      }
-
     function PaidDelivery() {
-        if (courier && price < 999) {
+        if (price < 999) { //courier && 
             return <div className='deliveryMin'>Минимальная сумма заказа для бесплатной доставки - 999 ₽</div>
-        }
-    }
-
-    function Address() {
-        if (courier) {
-            setIsValidAddress(true)
-            return  <form className='payments'>
-                        <div className='fieldHeader'>Адрес доставки</div>
-                        <textarea className='textFieldAddress' type="text" id='deliveryAddress'></textarea>
-                    </form>
-        } else {
-            setIsValidAddress(true)
-            return <div className='payments'>
-                <div className='fieldHeader'>Адрес самовывоза</div>
-                <textarea className='textFieldAddress' type="text" id='pickupAddress' defaultValue={contacts[0].shop_address} readOnly></textarea>
-            </div>
         }
     }
 
@@ -278,25 +127,8 @@ const Cart = () => {
                                 </div>
                             </div>
                         })}
-                        <div className='payments'>
-                            <div className='fieldHeader'>Выберите способ доставки:</div>
-                            <div className='deliveryLine'>
-                                {deliveryMethod.map((method, index) =>
-                                    <div className='deliveryButton'>
-                                        <button className={`method${activeButton === index ? 'active' : ''}`} label={activeButton === index ? 'ACTIVE' : 'inactive'} onClick={() => changeType(index)}>
-                                            {method.method}
-                                        </button>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                        <Address />
-                        { isValidAddress ? ( 
-                            <div></div> 
-                        ) : (
-                            <div className='wrongPhone'>Адрес должен быть заполнен (не боле 200 символов)</div>
-                        )}
                         <div className='moneyBlock'>
+                            <PaidDelivery />
                             <div className='cartLine'>
                                 <div className='cartName'>Сумма заказа</div>
                                 <div className='cartPrice'>{price.toFixed(2)} ₽</div>
@@ -309,21 +141,20 @@ const Cart = () => {
                                 <div className='cartName'>Общая сумма</div>
                                 <div className='cartPrice'>{(price + (delivery ?? 0)).toFixed(2)} ₽</div>
                             </div>
-                            <PaidDelivery />
                         </div>
-                        <button className='shop-btn' onClick={() => confirm()}>Далее</button>
+                        <button className='shop-btn' onClick={() => navigate('ConfirmOrder', { replace: false })}>Далее</button>
                     </div>
         }
     }
     
     return (
         <div>
-            {isLoading ? (
+            {/* {isLoading ? (
                 <div className='loadScreen'>
                     <ReactLoading type="bubbles" color="#419FD9"
                         height={100} width={50} />
                 </div>
-            ) : (
+            ) : ( */}
                 <div>
                     <OtherHeader />
                     <div className='cart'>
@@ -331,7 +162,7 @@ const Cart = () => {
                         <Goods />
                     </div>
                 </div>
-            )}
+            {/* )} */}
         </div>
     )
 }

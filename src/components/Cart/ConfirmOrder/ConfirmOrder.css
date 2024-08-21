@@ -33,7 +33,7 @@
 }
 
 .textFieldAddress {
-    margin: 0 5px 10px;
+    margin: 0 5px 5px;
     padding: 5px;
     height: 3.3em;
     resize: none;
@@ -96,7 +96,7 @@
 
 .paymentBlock {
     display: inline-block;
-    margin: 0 10px 5px;
+    margin: 0 5px 5px;
 }
 
 .paymentButton {
@@ -115,4 +115,8 @@
     margin: 40vh 0 15vh;
     font-weight: 600;
     font-size: 1.1em;
+}
+
+.deliveryConfirmOrderLine {
+    padding-top: 10px;
 }

@@ -174,9 +174,21 @@ const Products = () => {
                     <div className='null'>Владелец магазин пока не добавил ни одного товара</div>
                 )}
             </div>
-            <div className='space'/>
+            {
+                goodsAmount.size > 0 ? (
+                    <div className='space'/>
+                ) : (
+                    <div></div>
+                )
+            }            
             <footer>
-                <button className='cart-btn' onClick={() => navigate('Cart', { replace: false })}>{`Корзина: ${price?.toFixed(2) ?? nullPrice.toFixed(2)} ₽`}</button>
+                {
+                    goodsAmount.size > 0 ? (
+                        <button className='cart-btn' onClick={() => navigate('Cart', { replace: false })}>{`Корзина: ${price?.toFixed(2) ?? nullPrice.toFixed(2)} ₽`}</button>
+                    ) : (
+                        <div></div>
+                    )
+                }                
             </footer>
         </div>
     );

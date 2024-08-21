@@ -6,17 +6,21 @@ import { goodsAmount } from '../../Products/Products';
 import axios from 'axios';
 import { userInfo } from '../../TestData/user';
 import ReactLoading from "react-loading";
+import { contacts } from '../../Profile/Profile.jsx';
+import OtherHeader from '../../OtherHeader/OtherHeader.jsx';
 
 var promo = []
 // export var deliveryAddress = []
 // export var deliveryType = []
 var paymentSelect = ['Онлайн']
 
+var selection = new Map()
+
 const ConfirmOrder = () => {
     let navigate = useNavigate();
     const {queryId} = useTelegram(); 
 
-    const [appState, setAppState] = useState();
+    const [appState, setAppState] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [isValidPhone, setIsValidPhone] = useState(true);
     const [isValidName, setIsValidName] = useState(true);
@@ -31,23 +35,172 @@ const ConfirmOrder = () => {
         {method: 'Наличными'}
     ];
 
-    const [activeButton, setActiveButton] = useState(0);
+    // const [activeButton, setActiveButton] = useState(0);
+
+    const [courier, setCourier] = useState();
+
+    const [isValidAddress, setIsValidAddress] = useState(true);
+
+    const deliveryMethod = [
+        {method: 'Самовывоз'},
+        // {method: 'Доставка'}
+    ];
 
     let goods = []
-
+    let price = 0
+    let find = false;
+    
     for (let i = 0; i < Object.keys(products).length && !find; i++) {
+        if (typeof products[i]?.options !== "undefined" && products[i]?.options.length > 0) {
+            for (var [key, value] of goodsAmount) {
+                if (key.includes(`${products[i].id}`)) {
+                    goods.push(JSON.parse(JSON.stringify(products[i])));
+                    var prodKey = key.substring(key.indexOf("_") + 1);
+                    var j = 0;
+                    var optionPriceBoost = 0;
+                    var optionNames = []
+                    while (prodKey.length > 0) {
+                        var index = 0
+                        if (prodKey.includes("_")) {
+                            index = prodKey.substring(0, prodKey.indexOf("_"));
+                        } else {
+                            index = prodKey
+                        }
+                        optionPriceBoost += products[i].options[j].options[index].price;
+                        optionNames.push(products[i].options[j].options[index].name)
+                        if (prodKey.includes("_")) {
+                            prodKey = prodKey.substring(prodKey.indexOf("_") + 1)
+                        } else {
+                            prodKey = ""
+                        }
+                        j++;
+                    }
+                    goods[goods.length - 1].id = key;
+                    goods[goods.length - 1].names = optionNames;
+                    goods[goods.length - 1].boostPrice = products[i].price + optionPriceBoost;
+                    price += (products[i].price + optionPriceBoost) * value;
+                }
+            }            
+        }
         if (goodsAmount.has(`${products[i].id}`)) {
             goods.push(products[i])
+            price += products[i].price * goodsAmount.get(`${products[i].id}`)
         }
     }
 
+    if (typeof selection.get('delivery') === "undefined") {
+        selection.set('delivery', 0);
+    }
+
+    if (typeof selection.get('payment') === "undefined") {
+        selection.set('payment', 0);
+    }
+
+    const changeType = (type) => {
+        // setActiveButton(type)
+        selection.set('delivery', type);
+        setAppState(appState + 1)
+        if (type === 0) {
+            setCourier(false);
+            // setDelivery(0);
+        } else {
+            setCourier(true);
+            // if (price < 999) {
+            //     setDelivery(200);
+            // }
+        }
+    }
+
+
     const confirm = async () => {
         var paymentType = paymentSelect[0] === 'Банковской картой' ? 'card' : 'cash';
-        var delType = userInfo[0].deliveryType === 'Самовывоз' ? 'pickup': 'delivery';
+        var delType = selection.get('delivery') === 0 ? 'pickup': 'delivery';
+        var deliveryAddress = selection.get('delivery') === 0 ? '' : document.getElementById('deliveryAddress').value;
+        var phone = document.getElementById('phone').value;
+        var comment = document.getElementById('comment').value;
         while (promo.length > 0) {
             promo.pop()
         }
         promo.push(document.getElementById('promo').value)
+
+        async function createCart() {
+            var response  = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/create_cart?client_id=${userInfo[0].id}`)
+            // while (cartId.length > 0) {
+            //     cartId.pop()
+            // }
+            // cartId.push(response.data.data)
+            userInfo[0].cartId = response.data.data
+            // setAppState(response);
+    
+            await addToCart();
+        }
+    
+        async function addToCart() {
+            var response = ''
+            for (let i = 0; i < goods.length; i++) {
+                if (typeof goods[i]?.options !== "undefined" && goods[i]?.options.length > 0) {
+                    let find = false;
+                    var options = []
+                    for (let j = 0; j < products.length && !find; j++) {
+                        if (parseInt(goods[i].id.substring(0, goods[i].id.indexOf("_"))) === products[j].id) {
+                            find = true;
+                            var prodKey = goods[i].id.substring(goods[i].id.indexOf("_") + 1);
+                            var k = 0;
+                            while (prodKey.length > 0) {
+                                var index = 0
+                                if (prodKey.includes("_")) {
+                                    index = prodKey.substring(0, prodKey.indexOf("_"));
+                                } else {
+                                    index = prodKey
+                                }
+    
+                                var option = {
+                                    "group_name": products[j].options[k].group_name,
+                                    options: [
+                                        products[j].options[k].options[index]
+                                    ]
+                                }
+                                options.push(option)
+    
+                                if (prodKey.includes("_")) {
+                                    prodKey = prodKey.substring(prodKey.indexOf("_") + 1)
+                                } else {
+                                    prodKey = ""
+                                }
+                                k++;
+                            }
+                        }
+                    }
+                    response = await axios.post('https://market-bot.org:8082/clients_api/clients_menu/add_to_cart', {
+                            cart_id: userInfo[0].cartId,
+                            product_id: parseInt(goods[i].id.substring(0, goods[i].id.indexOf("_"))),
+                            count: goodsAmount.get(goods[i].id),
+                            price: goods[i].price * goodsAmount.get(goods[i].id),
+                            option: options
+                        }, {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                    })
+                    console.log(response)
+                } else {
+                    response = await axios.post('https://market-bot.org:8082/clients_api/clients_menu/add_to_cart', {
+                            cart_id: userInfo[0].cartId,
+                            product_id: parseInt(goods[i].id),
+                            count: goodsAmount.get(`${goods[i].id}`),
+                            price: goods[i].price * goodsAmount.get(`${goods[i].id}`),
+                            option: []
+                        }, {
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                    })
+                }
+            }
+            // message = response.data.message
+            // if (message === 'Product added to cart')
+            // setAppState(response);
+        }
       
         async function createOrder() {
             var response = await axios.post('https://market-bot.org:8082/clients_api/clients_orders/create_order', {
@@ -56,9 +209,9 @@ const ConfirmOrder = () => {
               "cart_id": userInfo[0].cartId,
               "pay_type": paymentType,
               "delivery_type": delType,
-              "delivery_address": userInfo[0].deliveryAddress,
-              "comment": document.getElementById('comment').value,
-              "phone": document.getElementById('phone').value,
+              "delivery_address": deliveryAddress,
+              "comment": comment,
+              "phone": phone,
               "promo": promo[0]
             }, {
               headers: {
@@ -77,9 +230,9 @@ const ConfirmOrder = () => {
                     "cart_id": userInfo[0].cartId,
                     "pay_type": paymentType,
                     "delivery_type": delType,
-                    "delivery_address": userInfo[0].deliveryAddress,
-                    "comment": document.getElementById('comment').value,
-                    "phone": document.getElementById('phone').value,
+                    "delivery_address": deliveryAddress,
+                    "comment": comment,
+                    "phone": phone,
                     "promo": promo[0]
                     }, {
                     headers: {
@@ -97,9 +250,9 @@ const ConfirmOrder = () => {
                   "cart_id": userInfo[0].cartId,
                   "pay_type": paymentType,
                   "delivery_type": delType,
-                  "delivery_address": userInfo[0].deliveryAddress,
-                  "comment": document.getElementById('comment').value,
-                  "phone": document.getElementById('phone').value
+                  "delivery_address": deliveryAddress,
+                  "comment": comment,
+                  "phone": phone
                 }, {
                   headers: {
                       'Content-Type': 'application/json'
@@ -113,6 +266,7 @@ const ConfirmOrder = () => {
         }
       
         async function makeRequest() {
+            await createCart();
             if (paymentSelect[0] === "Онлайн") {
                 return await payForCart()
             } else {
@@ -126,24 +280,35 @@ const ConfirmOrder = () => {
                 setIsValidName(true);
                 if (document.getElementById('comment').value.length < 200) {
                     setIsValidComment(true);
-                    if (document.getElementById('promo').value.length < 50) {
-                        setIsValidPromo(true);
-                        setIsLoading(true);
-                        var code = 400
-                        try {
-                            code = await makeRequest();
-                        } catch (e) {
-                            if (e.response.data.detail === "Wrong promo code") {
-                                alert("Неверный промокод");
+                    if ((selection.get('delivery') === 1 && document.getElementById('deliveryAddress').value.length > 0 && document.getElementById('deliveryAddress').value.length < 200) || (selection.get('delivery') === 0)) {
+                        setIsValidAddress(true);
+                        if (document.getElementById('promo').value.length < 50) {
+                            setIsValidPromo(true);
+                            setIsLoading(true);
+                            var code = 400
+                            try {
+                                code = await makeRequest();
+                            } catch (e) {
+                                if (typeof e !== "undefined") {
+                                    if (typeof e.response !== "undefined") {
+                                        if (typeof e.response.data !== "undefined") {
+                                            if (typeof e.response.data.detail !== "undefined" && e.response.data.detail === "Wrong promo code") {
+                                                alert("Неверный промокод");
+                                            }
+                                        }
+                                    }
+                                }
                             }
-                        }
-                        setIsLoading(false);
-                        if (code === 200) {
-                            var type = paymentSelect[0] === "Онлайн" ? 'online' : 'courier'
-                            navigate(`OrderConfirmed/${type}`, { replace: false, state: {type: type} })
+                            setIsLoading(false);
+                            if (code === 200) {
+                                var type = paymentSelect[0] === "Онлайн" ? 'online' : 'courier'
+                                navigate(`OrderConfirmed/${type}`, { replace: false, state: {type: type} })
+                            }
+                        } else {
+                            setIsValidPromo(false);
                         }
                     } else {
-                        setIsValidPromo(false);
+                        setIsValidAddress(false);
                     }
                 } else {
                     setIsValidComment(false);
@@ -156,16 +321,35 @@ const ConfirmOrder = () => {
         }
     }
 
-    const changeType = (type) => {
+    const changePaymentType = (type) => {
         while (paymentSelect.length > 0) {
             paymentSelect.pop()
         }
         paymentSelect.push(type)
-        setActiveButton(type)
+        selection.set('payment', type)
+        setAppState(appState - 1)
+        // setActiveButton(type)
+    }
+
+    function Address() {
+        if (courier) {
+            // setIsValidAddress(true)
+            return  <form className='deliveryConfirmOrderLine'>
+                        <div className='fieldHeader'>Адрес доставки</div>
+                        <textarea className='textFieldAddress' type="text" id='deliveryAddress'></textarea>
+                    </form>
+        } else {
+            // setIsValidAddress(true)
+            return <div className='deliveryConfirmOrderLine'>
+                <div className='fieldHeader'>Адрес самовывоза</div>
+                <textarea className='textFieldAddress' type="text" id='pickupAddress' defaultValue={contacts[0].shop_address} readOnly></textarea>
+            </div>
+        }
     }
     
     return (
         <div>
+            <OtherHeader />
             {isLoading ? (
                 <div className='loadScreen'>
                     <ReactLoading type="bubbles" color="#419FD9"
@@ -176,6 +360,36 @@ const ConfirmOrder = () => {
                     <div className='cart'>
                         <p className='name'>Оформление заказа</p>
                         <div>
+                            <div className='payments'>
+                                <div className='fieldHeader'>Выберите способ доставки:</div>
+                                <div className='deliveryLine'>
+                                    {deliveryMethod.map((method, index) =>
+                                        <div className='deliveryButton'>
+                                            <button className={`method${selection.get('delivery') === index ? 'active' : ''}`} onClick={() => changeType(index)}>
+                                                {method.method}
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                                <Address />
+                            </div>
+                            { isValidAddress ? ( 
+                                <div></div> 
+                            ) : (
+                                <div className='wrongPhone'>Адрес должен быть заполнен (не боле 200 символов)</div>
+                            )}
+                            <div className='payments'>
+                                <div className='fieldHeader'>Выберите способ оплаты:</div>
+                                <div className='paymentBlock'>
+                                        {paymentMethod.map((method, index) =>
+                                            <div className='paymentButton'>
+                                                <button className={`method${selection.get('payment') === index ? 'active' : ''}`} onClick={() => changePaymentType(index)}>
+                                                    {method.method}
+                                                </button>
+                                            </div>
+                                        )}
+                                </div>
+                            </div>
                             <form className='payments'>
                                 <div className='fieldHeader'>ФИО</div>
                                 <div className='promoLine'>
@@ -217,18 +431,6 @@ const ConfirmOrder = () => {
                                     <div className='wrongPhone'>Комментарий должен содержать до 200 символов</div>
                                 )}
                             </form>
-                            <div className='payments'>
-                                <div className='fieldHeader'>Выберите способ оплаты:</div>
-                                <div className='paymentBlock'>
-                                        {paymentMethod.map((method, index) =>
-                                            <div className='paymentButton'>
-                                                <button className={`method${activeButton === index ? 'active' : ''}`} label={activeButton === index ? 'ACTIVE' : 'inactive'} onClick={() => changeType(index)}>
-                                                    {method.method}
-                                                </button>
-                                            </div>
-                                        )}
-                                </div>
-                            </div>
                             <button className='shop-btn' onClick={() => confirm()}>Подтвердить оформление</button>
                         </div>
                     </div>
