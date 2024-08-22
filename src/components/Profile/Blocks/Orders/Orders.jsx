@@ -39,6 +39,7 @@ const Orders = () => {
         async function getOrders() {
             var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_orders/get_orders?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}`)
             ordersTest = response.data
+            ordersTest.sort((a, b) => a.id < b.id ? 1 : -1);
             for (let i = 0; i < ordersTest.length; i++) {
                 await getProducts(ordersTest[i].id);
             }

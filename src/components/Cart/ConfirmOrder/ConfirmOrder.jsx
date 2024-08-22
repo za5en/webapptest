@@ -16,6 +16,8 @@ var paymentSelect = ['Онлайн']
 
 var selection = new Map()
 
+var fieldFill = new Map()
+
 const ConfirmOrder = () => {
     let navigate = useNavigate();
     const {queryId} = useTelegram(); 
@@ -111,30 +113,12 @@ const ConfirmOrder = () => {
         }
     }
 
-    useEffect(() => {
-
-        async function deliveryInfo() {
-            var response  = await axios.get(`https://market-bot.org:8082/clients_api/info/get_bot_info?bot_id=${userInfo[0].bot_id}`)
-            userInfo[0].haveDelivery = response.data.have_delivery;
-        }
-
-        async function request() {
-            try {
-                await deliveryInfo();
-            } catch (e) {
-                //console.log(e)
-            }
-        }
-
-        request()
-    }, [setAppState]);
-
-
     const confirm = async () => {
-        var paymentType = paymentSelect[0] === 'Банковской картой' ? 'card' : 'cash';
+        var paymentType = paymentSelect[0] === 0 ? 'card' : 'cash';
         var delType = selection.get('delivery') === 0 ? 'pickup': 'delivery';
         var deliveryAddress = selection.get('delivery') === 0 ? '' : document.getElementById('deliveryAddress').value;
         var phone = document.getElementById('phone').value;
+        var name = document.getElementById('name').value;
         var comment = document.getElementById('comment').value;
         userInfo[0].latitude = 0
         userInfo[0].longitude = 0
@@ -142,6 +126,11 @@ const ConfirmOrder = () => {
             promo.pop()
         }
         promo.push(document.getElementById('promo').value)
+
+        fieldFill.set('address', deliveryAddress);
+        fieldFill.set('name', name);
+        fieldFill.set('phone', phone);
+        fieldFill.set('comment', comment);
         
         async function getCoords() {
             try {
@@ -256,9 +245,10 @@ const ConfirmOrder = () => {
                 "delivery_address": deliveryAddress,
                 "comment": comment,
                 "phone": phone,
-                "promo": promo[0],
+                "promo_code": promo[0],
                 "latitude": userInfo[0].latitude,
-                "longitude": userInfo[0].longitude
+                "longitude": userInfo[0].longitude,
+                "name": name,
             }, {
               headers: {
                   'Content-Type': 'application/json'
@@ -279,9 +269,10 @@ const ConfirmOrder = () => {
                     "delivery_address": deliveryAddress,
                     "comment": comment,
                     "phone": phone,
-                    "promo": promo[0],
+                    "promo_code": promo[0],
                     "latitude": userInfo[0].latitude,
-                    "longitude": userInfo[0].longitude
+                    "longitude": userInfo[0].longitude,
+                    "name": name
                     }, {
                     headers: {
                         'Content-Type': 'application/json'
@@ -302,7 +293,8 @@ const ConfirmOrder = () => {
                   "comment": comment,
                   "phone": phone,
                   "latitude": userInfo[0].latitude,
-                  "longitude": userInfo[0].longitude
+                  "longitude": userInfo[0].longitude,
+                  "name": name
                 }, {
                   headers: {
                       'Content-Type': 'application/json'
@@ -317,8 +309,10 @@ const ConfirmOrder = () => {
       
         async function makeRequest() {
             await createCart();
-            await getCoords();
-            if (paymentSelect[0] === "Онлайн") {
+            if (selection.get('delivery') === 1) {
+                await getCoords();
+            }
+            if (paymentSelect[0] === 0) {
                 return await payForCart()
             } else {
                 return await createOrder()
@@ -343,20 +337,28 @@ const ConfirmOrder = () => {
                                 if (typeof e !== "undefined") {
                                     if (typeof e.response !== "undefined") {
                                         if (typeof e.response.data !== "undefined") {
-                                            if (typeof e.response.data.detail !== "undefined" && e.response.data.detail === "Wrong promo code") {
+                                            if (typeof e.response.data.detail !== "undefined" && (e.response.data.detail === "Wrong promo code" || e.response.data.detail === "Error with create order: 400: Wrong promo code")) {
                                                 alert("Неверный промокод");
                                             } else if (typeof e.response.data.detail !== "undefined" && (e.response.data.detail === "Error with create order: 400: Can't find out where user is" || e.response.data.detail === "Can't find out where user is")) {
                                                 alert("Адрес указан неверно");
                                             } else if (typeof e.response.data.detail !== "undefined" && (e.response.data.detail === "Error with create order: 400: User is too far from a shop" || e.response.data.detail === "User is too far from a shop")) {
                                                 alert("По указанному адресу доставка не осуществляется");
+                                            } else {
+                                                alert('Ошибка при оформлении заказа, попробуйте ещё раз')
                                             }
+                                        } else {
+                                            alert('Ошибка при оформлении заказа, попробуйте ещё раз')
                                         }
+                                    } else {
+                                        alert('Ошибка при оформлении заказа, попробуйте ещё раз')
                                     }
+                                } else {
+                                    alert('Ошибка при оформлении заказа, попробуйте ещё раз')
                                 }
                             }
                             setIsLoading(false);
                             if (code === 200) {
-                                var type = paymentSelect[0] === "Онлайн" ? 'online' : 'courier'
+                                var type = paymentSelect[0] === 0 ? 'online' : 'courier'
                                 navigate(`OrderConfirmed/${type}`, { replace: false, state: {type: type} })
                             }
                         } else {
@@ -391,7 +393,7 @@ const ConfirmOrder = () => {
             // setIsValidAddress(true)
             return  <form className='deliveryConfirmOrderLine'>
                         <div className='fieldHeader'>Адрес доставки</div>
-                        <textarea className='textFieldAddress' type="text" id='deliveryAddress'></textarea>
+                        <textarea className='textFieldAddress' type="text" id='deliveryAddress' defaultValue={fieldFill.get('address')}></textarea>
                     </form>
         } else {
             // setIsValidAddress(true)
@@ -452,7 +454,7 @@ const ConfirmOrder = () => {
                             <form className='payments'>
                                 <div className='fieldHeader'>ФИО</div>
                                 <div className='promoLine'>
-                                    <input className='textField' type="text" id='name'></input>
+                                    <input className='textField' type="text" id='name' defaultValue={fieldFill.get('name')}></input>
                                 </div>
                                 { isValidName ? ( 
                                     <div></div> 
@@ -461,7 +463,7 @@ const ConfirmOrder = () => {
                                 )}
                                 <div className='fieldHeader'>Номер телефона</div>
                                 <div className='promoLine'>
-                                    <input className='textField' type="text" id='phone'></input>
+                                    <input className='textField' type="text" id='phone' defaultValue={fieldFill.get('phone')}></input>
                                 </div>
                                 { isValidPhone ? ( 
                                     <div></div> 
@@ -483,7 +485,7 @@ const ConfirmOrder = () => {
                                 {/* <div className='fieldHeader'>Адрес доставки</div>
                                 <input className='textField' type="text" id='address'></input> */}
                                 <div className='fieldHeader'>Комментарий</div>
-                                <textarea className='textFieldExt' type="text" id='comment' placeholder='Комментарий'></textarea>
+                                <textarea className='textFieldExt' type="text" id='comment' placeholder='Комментарий' defaultValue={fieldFill.get('comment')}></textarea>
                                 { isValidComment ? ( 
                                     <div></div> 
                                 ) : (

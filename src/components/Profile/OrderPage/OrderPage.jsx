@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { goodsOrder } from '../OrderCard/OrderCard';
 import { goodsReviews } from '../../Feedback/Feedback';
 import { contacts } from '../Profile';
+import { goodsAmount } from '../../Products/Products';
 
 export var item = []
 export var product = []
@@ -35,6 +36,30 @@ const OrderPage = () => {
             goodsReviews.pop()
         }
         navigate('Feedback', { replace: false })
+    }
+
+    const repeatOrder = () => {
+        if (goodsAmount.size > 0) {
+            goodsAmount.clear()
+        }
+        for (let i = 0; i < goodsOrder.length; i++) {
+            if (goodsOrder[i].option.length > 0) {
+                var key = `${goodsOrder[i].product_id}`;
+                for (let j = 0; j < goodsOrder[i].option.length; j++) {
+                    let find = false;
+                    for (let k = 0; k < goodsOrder[i].product.options[j].options.length && !find; k++) {
+                        if (goodsOrder[i].option[j].options[0].name === goodsOrder[i].product.options[j].options[k].name) {
+                            key += `_${k}`;
+                            find = true;
+                        }
+                    }
+                }
+                goodsAmount.set(key, goodsOrder[i].count);
+            } else {
+                goodsAmount.set(`${goodsOrder[i].product_id}`, goodsOrder[i].count);
+            }
+        }
+        navigate('../../../Cart', {replace: false})
     }
 
     return (
@@ -114,7 +139,7 @@ const OrderPage = () => {
                             <div></div>
                         )} */}
                     </div>
-                    <button className='repeat-btn' onClick={() => navigate(-3)}>Повторить заказ</button>
+                    <button className='repeat-btn' onClick={() => repeatOrder()}>Повторить заказ</button>
                 </div>
             </div>
         </div>

@@ -3,6 +3,8 @@ import './Cart.css'
 import OtherHeader from '../OtherHeader/OtherHeader';
 import { useNavigate } from 'react-router-dom';
 import { goodsAmount } from '../Products/Products';
+import axios from 'axios';
+import { userInfo } from '../TestData/user.jsx';
 
 const Cart = () => {
     let navigate = useNavigate();
@@ -86,6 +88,12 @@ const Cart = () => {
         }
     }
 
+    const toConfirm = async () => {
+        var response  = await axios.get(`https://market-bot.org:8082/clients_api/info/get_bot_info?bot_id=${userInfo[0].bot_id}`)
+        userInfo[0].haveDelivery = response.data.have_delivery;
+        navigate('ConfirmOrder', { replace: false })
+    }
+
     function Goods() {
         if (goods.length === 0) {
             return  <div>
@@ -142,7 +150,7 @@ const Cart = () => {
                                 <div className='cartPrice'>{(price + (delivery ?? 0)).toFixed(2)} ₽</div>
                             </div>
                         </div>
-                        <button className='shop-btn' onClick={() => navigate('ConfirmOrder', { replace: false })}>Далее</button>
+                        <button className='shop-btn' onClick={() => toConfirm()}>Далее</button>
                     </div>
         }
     }
