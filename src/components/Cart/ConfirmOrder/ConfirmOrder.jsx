@@ -393,7 +393,7 @@ const ConfirmOrder = () => {
             // setIsValidAddress(true)
             return  <form className='deliveryConfirmOrderLine'>
                         <div className='fieldHeader'>Адрес доставки</div>
-                        <textarea className='textFieldAddress' type="text" id='deliveryAddress' defaultValue={fieldFill.get('address')}></textarea>
+                        <textarea className='textFieldAddress' type="text" id='deliveryAddress' placeholder='город …, улица …, дом …, квартира …' defaultValue={fieldFill.get('address')}></textarea>
                     </form>
         } else {
             // setIsValidAddress(true)
