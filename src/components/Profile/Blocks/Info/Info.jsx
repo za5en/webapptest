@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import '../Blocks.css'
 import './Info.css'
 import OtherHeader from '../../../OtherHeader/OtherHeader';
-import { contacts } from '../../Profile.jsx';
+import { contacts, orders } from '../../Profile.jsx';
 // import axios from 'axios';
 // import { userInfo } from '../../../TestData/user.jsx';
 import ReactLoading from "react-loading";
@@ -168,7 +168,7 @@ const Info = () => {
                                 <div>
                                     <div className='profileLine'>
                                         <div className='profileTitle'>{'Количество заказов'}</div>
-                                        <div className='profileInfo'>{userInfo[0].orders_count}</div>
+                                        <div className='profileInfo'>{orders.length}</div>
                                     </div>
                                     <hr className="solid"></hr>
                                 </div>

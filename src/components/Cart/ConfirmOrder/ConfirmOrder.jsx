@@ -34,7 +34,8 @@ const ConfirmOrder = () => {
     const paymentMethod = [
         {method: 'Онлайн'},
         {method: 'Банковской картой'},
-        {method: 'Наличными'}
+        {method: 'Наличными'},
+        // {method: 'Оплатить бонусами'}
     ];
 
     // const [activeButton, setActiveButton] = useState(0);
@@ -314,7 +315,11 @@ const ConfirmOrder = () => {
             }
             if (paymentSelect[0] === 0) {
                 return await payForCart()
-            } else {
+            } 
+            // else if (paymentSelect[0] === 3) {
+            //     // метод для оплаты бонусами
+            // }             
+            else {
                 return await createOrder()
             }
         }
