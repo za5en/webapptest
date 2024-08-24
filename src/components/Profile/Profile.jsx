@@ -67,6 +67,8 @@ const Profile = () => {
             if (response.status === 200) {
               await getMenu();
               await getContacts();
+              await getBotInfo();
+              await getBanners();
             }
         }
 
@@ -97,6 +99,40 @@ const Profile = () => {
             }
             contacts.push(response.data[0])
             setAppState(response);
+        }
+
+        async function getBotInfo() {
+          try {
+            var response  = await axios.get(`https://market-bot.org:8082/clients_api/info/get_bot_info?bot_id=${botId}`)
+            userInfo[0].haveDelivery = response.data.have_delivery;
+            userInfo[0].limit_bonuses = response.data.limit_bonuses;
+            userInfo[0].cashback = response.data.cashback;
+            userInfo[0].delivery_cost = response.data.delivery_cost;
+          } catch (e) {
+            // console.log(e)
+          }
+        }
+    
+        async function getBanners() {
+          try {
+            var response  = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_banners/?bot_id=${botId}&client_id=${userInfo[0].id}`)
+            banners = response.data.banners;
+            for (let i = 0; i < banners.length; i++) {
+              var photo = await getBannerPhoto(banners[i].banner_id)
+              banners[i].photoFile = photo;
+            }
+          } catch (e) {
+            // console.log(e)
+          }
+        }
+    
+        async function getBannerPhoto(bannerId) {
+          try {
+            var response  = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_banner_photo?banner_id=${bannerId}`, {responseType: 'blob'})
+            return URL.createObjectURL(response.data)
+          } catch (e) {
+            // console.log(e)
+          }
         }
     
         async function makeRequest() {

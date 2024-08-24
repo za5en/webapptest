@@ -144,8 +144,8 @@ const Products = () => {
                 {banners.map(item => (
                     <div className='scroll'>
                         <Banner
-                            header={item.header}
-                            id={item.id}
+                            header={item.title}
+                            id={item.banner_id}
                         />
                     </div>
                 ))}

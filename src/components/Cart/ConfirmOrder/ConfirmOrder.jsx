@@ -28,6 +28,7 @@ const ConfirmOrder = () => {
     const [isValidName, setIsValidName] = useState(true);
     const [isValidComment, setIsValidComment] = useState(true);
     const [isValidPromo, setIsValidPromo] = useState(true);
+    const [isValidBonus, setIsValidBonus] = useState(true);
 
     const {products} = require('../../TestData/prod.jsx');
 
@@ -35,7 +36,6 @@ const ConfirmOrder = () => {
         {method: 'Онлайн'},
         {method: 'Банковской картой'},
         {method: 'Наличными'},
-        // {method: 'Оплатить бонусами'}
     ];
 
     // const [activeButton, setActiveButton] = useState(0);
@@ -91,12 +91,24 @@ const ConfirmOrder = () => {
         }
     }
 
+    const [finalPrice, setFinalPrice] = useState(price);
+
+
     if (typeof selection.get('delivery') === "undefined") {
         selection.set('delivery', 0);
     }
 
     if (typeof selection.get('payment') === "undefined") {
         selection.set('payment', 0);
+    }
+
+    if (typeof selection.get('bonuses') === "undefined") {
+        selection.set('bonuses', 0);
+    }
+
+    var maxBonusValue = (price + userInfo[0].delivery_cost * selection.get('delivery')) * userInfo[0].limit_bonuses / 100;
+    if (maxBonusValue > userInfo[0].bonus_points) {
+        maxBonusValue = userInfo[0].bonus_points;
     }
 
     const changeType = (type) => {
@@ -117,21 +129,30 @@ const ConfirmOrder = () => {
     const confirm = async () => {
         var paymentType = paymentSelect[0] === 0 ? 'card' : 'cash';
         var delType = selection.get('delivery') === 0 ? 'pickup': 'delivery';
-        var deliveryAddress = selection.get('delivery') === 0 ? '' : document.getElementById('deliveryAddress').value;
-        var phone = document.getElementById('phone').value;
-        var name = document.getElementById('name').value;
-        var comment = document.getElementById('comment').value;
+        var deliveryAddress = selection.get('delivery') === 0 ? '' : fieldFill.get('address');
+        var phone = fieldFill.get('phone');
+        var name = fieldFill.get('name');
+        var comment = fieldFill.get('comment');
+        var bonusPoints = fieldFill.get('bonus');
         userInfo[0].latitude = 0
         userInfo[0].longitude = 0
         while (promo.length > 0) {
             promo.pop()
         }
-        promo.push(document.getElementById('promo').value)
+        if (typeof fieldFill.get('promo') === "undefined") {
+            promo.push("")
+        } else {
+            promo.push(fieldFill.get('promo'))
+        }
 
-        fieldFill.set('address', deliveryAddress);
-        fieldFill.set('name', name);
-        fieldFill.set('phone', phone);
-        fieldFill.set('comment', comment);
+        // fieldFill.set('address', deliveryAddress);
+        // fieldFill.set('name', name);
+        // fieldFill.set('phone', phone);
+        // fieldFill.set('comment', comment);
+
+        if (typeof fieldFill.get('bonus') === "undefined" || selection.get("bonuses") === 0) {
+            bonusPoints = 0
+        }
         
         async function getCoords() {
             try {
@@ -148,7 +169,6 @@ const ConfirmOrder = () => {
 			    		response.data.response.GeoObjectCollection.featureMember[0].GeoObject.Point.pos
 			    			.split(' ')
 			    			.map(Number)
-                    console.log(coords)
                     userInfo[0].latitude = coords[1]
                     userInfo[0].longitude = coords[0]
 			    }
@@ -247,6 +267,7 @@ const ConfirmOrder = () => {
                 "comment": comment,
                 "phone": phone,
                 "promo_code": promo[0],
+                "bonus_points": bonusPoints,
                 "latitude": userInfo[0].latitude,
                 "longitude": userInfo[0].longitude,
                 "name": name,
@@ -255,13 +276,14 @@ const ConfirmOrder = () => {
                   'Content-Type': 'application/json'
               }
             })
+            console.log(response)
             setAppState(response);
             return response.status
         }
   
         async function payForCart() {
             if (promo[0] !== null && promo[0] !== "" && typeof promo[0] !== "undefined") {
-                var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/pay_for_cart/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&cart_id=${userInfo[0].cartId}&promo_code=${promo[0]}`, {
+                var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/pay_for_cart/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&cart_id=${userInfo[0].cartId}&promo_code=${promo[0]}&bonus_points=${bonusPoints}`, {
                     "client_id": userInfo[0].id,
                     "bot_id": userInfo[0].bot_id,
                     "cart_id": userInfo[0].cartId,
@@ -281,10 +303,11 @@ const ConfirmOrder = () => {
                 })
                 var json = response.data
                 json.query_id = queryId
+                console.log(response)
                 setAppState(response);
                 return response.status
             } else {
-                var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/pay_for_cart/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&cart_id=${userInfo[0].cartId}`, {
+                var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/pay_for_cart/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&cart_id=${userInfo[0].cartId}&bonus_points=${bonusPoints}`, {
                   "client_id": userInfo[0].id,
                   "bot_id": userInfo[0].bot_id,
                   "cart_id": userInfo[0].cartId,
@@ -303,6 +326,7 @@ const ConfirmOrder = () => {
                 })
                 var json = response.data
                 json.query_id = queryId
+                console.log(response)
                 setAppState(response);
                 return response.status
             }
@@ -315,10 +339,7 @@ const ConfirmOrder = () => {
             }
             if (paymentSelect[0] === 0) {
                 return await payForCart()
-            } 
-            // else if (paymentSelect[0] === 3) {
-            //     // метод для оплаты бонусами
-            // }             
+            }     
             else {
                 return await createOrder()
             }
@@ -339,6 +360,7 @@ const ConfirmOrder = () => {
                             try {
                                 code = await makeRequest();
                             } catch (e) {
+                                console.log(e);
                                 if (typeof e !== "undefined") {
                                     if (typeof e.response !== "undefined") {
                                         if (typeof e.response.data !== "undefined") {
@@ -393,12 +415,61 @@ const ConfirmOrder = () => {
         // setActiveButton(type)
     }
 
+    const changeBonusType = () => {
+        if (selection.get('bonuses') === 1) {
+            setFinalPrice(price);
+            setIsValidBonus(true);
+            selection.set('bonuses', 0)
+            fieldFill.delete('bonus');
+        } else {
+            selection.set('bonuses', 1)
+        }
+        setAppState(appState - 1)
+        // setActiveButton(type)
+    }
+
+    const bonusUpd = (value) => {
+        if (value > maxBonusValue) {
+            setFinalPrice(price);
+            setIsValidBonus(false);
+            fieldFill.delete('bonus');
+        } else {
+            setFinalPrice(price - value);
+            setIsValidBonus(true);
+            fieldFill.set('bonus', value);
+        }
+    }
+
+    const addressUpd = (value) => {
+        if (selection.get('delivery') === 0) {
+            fieldFill.delete('address');
+        } else {
+            fieldFill.set('address', value);
+        }
+    }
+
+    const nameUpd = (value) => {
+        fieldFill.set('name', value);
+    }
+
+    const phoneUpd = (value) => {
+        fieldFill.set('phone', value);
+    }
+
+    const commentUpd = (value) => {
+        fieldFill.set('comment', value);
+    }
+
+    const promoUpd = (value) => {
+        fieldFill.set('promo', value);
+    }
+
     function Address() {
         if (courier) {
             // setIsValidAddress(true)
             return  <form className='deliveryConfirmOrderLine'>
                         <div className='fieldHeader'>Адрес доставки</div>
-                        <textarea className='textFieldAddress' type="text" id='deliveryAddress' placeholder='город …, улица …, дом …, квартира …' defaultValue={fieldFill.get('address')}></textarea>
+                        <textarea className='textFieldAddress' type="text" id='deliveryAddress' placeholder='город …, улица …, дом …, квартира …' defaultValue={fieldFill.get('address')} onChange={() => addressUpd(document.getElementById('deliveryAddress').value)}></textarea>
                     </form>
         } else {
             // setIsValidAddress(true)
@@ -456,19 +527,76 @@ const ConfirmOrder = () => {
                                         )}
                                 </div>
                             </div>
+                            <div className='payments'>
+                                {/* <div className='fieldHeader'></div> */}
+                                <div className='bonusLine'>
+                                    <div className='deliveryButton'>
+                                        <button className={`method${selection.get('bonuses') === 1 ? 'active' : ''}`} onClick={() => changeBonusType()}>
+                                            Оплата бонусами
+                                        </button>
+                                    </div>
+                                    <div className='bonusText'>Бонусов: {userInfo[0].bonus_points.toFixed(0)}</div>
+                                </div>
+                                {selection.get('bonuses') === 1 ? (
+                                    <div className='promoLine'>
+                                        <input className='textField' type="text" id='bonus' defaultValue={fieldFill.get('bonus')} placeholder={`Можно списать бонусов: ${maxBonusValue}`} onChange={() => bonusUpd(document.getElementById('bonus').value)}></input>
+                                        {/* берём либо максимально доступное по вычету процента из суммы заказа либо максимально доступное */}
+                                    </div>
+                                ) : (
+                                    <div></div>
+                                )}
+                                { isValidBonus ? ( 
+                                    <div></div> 
+                                ) : (
+                                    <div className='wrongPhone'>Указано неверное количество бонусов для списания</div>
+                                )}
+                            </div>
+                            <div className='moneyBlock'>
+                                {/* <PaidDelivery /> */}
+                                <div className='cartLine'>
+                                    <div className='cartName'>Стоимость доставки</div>
+                                    {
+                                        selection.get('delivery') === 0 ? (
+                                            <div className='cartPrice'>0 ₽</div>
+                                        ) : (
+                                            <div className='cartPrice'>{userInfo[0].delivery_cost ?? 0} ₽</div>
+                                        )
+                                    }
+                                </div>                            
+                                <div className='cartLine'>
+                                    <div className='cartName'>Общая сумма к оплате</div>
+                                    {
+                                        selection.get('delivery') === 0 ? (
+                                            <div className='cartPrice'>{(finalPrice).toFixed(2)} ₽</div>
+                                        ) : (
+                                            <div className='cartPrice'>{(finalPrice + (userInfo[0].delivery_cost ?? 0)).toFixed(2)} ₽</div>
+                                        )
+                                    }
+                                </div>
+                                <div className='cartLine'>
+                                    <div className='cartName'>Вернётся бонусами</div>
+                                    {
+                                        selection.get('delivery') === 0 ? (
+                                            <div className='cartPrice'>{(userInfo[0].cashback * (finalPrice) / 100).toFixed(2)} ₽</div>
+                                        ) : (
+                                            <div className='cartPrice'>{(userInfo[0].cashback * (finalPrice + (userInfo[0].delivery_cost ?? 0)) / 100).toFixed(2)} ₽</div>
+                                        )
+                                    }
+                                </div>
+                            </div>
                             <form className='payments'>
                                 <div className='fieldHeader'>ФИО</div>
                                 <div className='promoLine'>
-                                    <input className='textField' type="text" id='name' defaultValue={fieldFill.get('name')}></input>
+                                    <input className='textField' type="text" id='name' defaultValue={fieldFill.get('name')} onChange={() => nameUpd(document.getElementById('name').value)}></input>
                                 </div>
                                 { isValidName ? ( 
                                     <div></div> 
                                 ) : (
                                     <div className='wrongPhone'>ФИО должно быть заполнено (не более 100 символов)</div>
                                 )}
-                                <div className='fieldHeader'>Номер телефона</div>
+                                <div className='fieldHeader'>Номер телефона *</div>
                                 <div className='promoLine'>
-                                    <input className='textField' type="text" id='phone' defaultValue={fieldFill.get('phone')}></input>
+                                    <input className='textField' type="text" id='phone' defaultValue={fieldFill.get('phone')} onChange={() => phoneUpd(document.getElementById('phone').value)}></input>
                                 </div>
                                 { isValidPhone ? ( 
                                     <div></div> 
@@ -477,7 +605,7 @@ const ConfirmOrder = () => {
                                 )}
                                 <div className='fieldHeader'>Промокод</div>
                                 <div className='promoLine'>
-                                    <input className='textField' type="text" id='promo'></input>
+                                    <input className='textField' type="text" id='promo' onChange={() => promoUpd(document.getElementById('promo').value)}></input>
                                     {/* <button className='promo-btn' onClick={ClearText}>ОК</button> */}
                                 </div>
                                 { isValidPromo ? ( 
@@ -490,7 +618,7 @@ const ConfirmOrder = () => {
                                 {/* <div className='fieldHeader'>Адрес доставки</div>
                                 <input className='textField' type="text" id='address'></input> */}
                                 <div className='fieldHeader'>Комментарий</div>
-                                <textarea className='textFieldExt' type="text" id='comment' placeholder='Комментарий' defaultValue={fieldFill.get('comment')}></textarea>
+                                <textarea className='textFieldExt' type="text" id='comment' placeholder='Комментарий' defaultValue={fieldFill.get('comment')} onChange={() => commentUpd(document.getElementById('comment').value)}></textarea>
                                 { isValidComment ? ( 
                                     <div></div> 
                                 ) : (

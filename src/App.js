@@ -14,7 +14,7 @@ import OrderPage from './components/Profile/OrderPage/OrderPage';
 import Feedback from './components/Feedback/Feedback';
 import Contacts from './components/Profile/Blocks/Contacts/Contacts';
 import { userInfo } from './components/TestData/user.jsx';
-import { products, categories } from './components/TestData/prod.jsx';
+import { products, categories, banners } from './components/TestData/prod.jsx';
 import axios from 'axios';
 import OrderConfirmed from './components/Cart/ConfirmOrder/OrderConfirmed.jsx';
 import ReactLoading from "react-loading";
@@ -49,72 +49,120 @@ function App() {
   
   useEffect(() => {
     async function getUser() {
-      var response  = await axios.get(`https://market-bot.org:8082/clients_api/user/get_user/?bot_id=${botId}&client_tg_id=${user.id}`)
-      userInfo = response.data
-      setAppState(response);
-      if (response.status === 200) {
-        await getMenu();
-        await getContacts();
-        // await createCart()
+      try {
+        var response  = await axios.get(`https://market-bot.org:8082/clients_api/user/get_user/?bot_id=${botId}&client_tg_id=${user.id}`)
+        userInfo = response.data
+        setAppState(response);
+        if (response.status === 200) {
+          await getMenu();
+          await getContacts();
+          await getBotInfo();
+          await getBanners();
+          // await createCart()
+        }
+      } catch (e) {
+        // console.log(e)
       }
     }
 
     async function getMenu() {
-      var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_all_menu/?bot_id=${botId}&client_id=${userInfo[0].id}`)
-      products = response.data
-      categories = []
-      for (let i = 0; i < products.length; i++) {
-        if (products[i].category_name === null) {
-          if (!categories.includes('Без категории')) {
-            categories.push('Без категории')
+      try {
+        var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_all_menu/?bot_id=${botId}&client_id=${userInfo[0].id}`)
+        products = response.data
+        categories = []
+        for (let i = 0; i < products.length; i++) {
+          if (products[i].category_name === null) {
+            if (!categories.includes('Без категории')) {
+              categories.push('Без категории')
+            }
+            products[i].category_name = 'Без категории'
+          } else if (products[i].category_name !== null && !categories.includes(products[i].category_name) && !products[i].it_hidden) {
+            categories.push(products[i].category_name)
           }
-          products[i].category_name = 'Без категории'
-        } else if (products[i].category_name !== null && !categories.includes(products[i].category_name) && !products[i].it_hidden) {
-          categories.push(products[i].category_name)
+          var photo = await getPhoto(products[i].id)
+          products[i].like = false;
+          products[i].photoFile = photo;
         }
-        var photo = await getPhoto(products[i].id)
-        products[i].like = false;
-        products[i].photoFile = photo;
+        setAppState(response);
+      } catch (e) {
+        // console.log(e)
       }
-      setAppState(response);
     }
 
     async function getPhoto(prodId) {
-      var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_photo?bot_id=${botId}&product_id=${prodId}`, {responseType: 'blob'})
-      return URL.createObjectURL(response.data)
+      try {
+        var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_photo?bot_id=${botId}&product_id=${prodId}`, {responseType: 'blob'})
+        return URL.createObjectURL(response.data)
+      } catch (e) {
+        // console.log(e)
+      }
     }
 
     async function getContacts() {
-      var response  = await axios.get(`https://market-bot.org:8082/clients_api/info/get_contacts/?bot_id=${botId}&client_id=${userInfo[0].id}`)
-      while (contacts.length > 0) {
-        contacts.pop()
-      }
-      contacts.push(response.data[0])
-      if (typeof contacts[0].schedule !== "undefined" && contacts[0].schedule !== null && contacts[0].schedule !== "") {
-        contacts[0].worktime = new Map()
-        var days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-        var dayNames = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
-        for (let i = 0; i < days.length; i++) {
-          if (contacts[0].schedule.indexOf(days[i]) !== -1) {
-            contacts[0].schedule = contacts[0].schedule.substring(contacts[0].schedule.indexOf(days[i]) + 5)
-            var start = contacts[0].schedule.substring(contacts[0].schedule.indexOf("start") + 8, contacts[0].schedule.indexOf("start") + 13)
-            var finish = contacts[0].schedule.substring(contacts[0].schedule.indexOf("finish") + 9, contacts[0].schedule.indexOf("finish") + 14)
-            contacts[0].worktime.set(dayNames[i], `${start} - ${finish}`)
-          } else {
-            contacts[0].worktime.set(dayNames[i], "Выходной")
+      try {
+        var response  = await axios.get(`https://market-bot.org:8082/clients_api/info/get_contacts/?bot_id=${botId}&client_id=${userInfo[0].id}`)
+        while (contacts.length > 0) {
+          contacts.pop()
+        }
+        contacts.push(response.data[0])
+        if (typeof contacts[0].schedule !== "undefined" && contacts[0].schedule !== null && contacts[0].schedule !== "") {
+          contacts[0].worktime = new Map()
+          var days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+          var dayNames = ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
+          for (let i = 0; i < days.length; i++) {
+            if (contacts[0].schedule.indexOf(days[i]) !== -1) {
+              contacts[0].schedule = contacts[0].schedule.substring(contacts[0].schedule.indexOf(days[i]) + 5)
+              var start = contacts[0].schedule.substring(contacts[0].schedule.indexOf("start") + 8, contacts[0].schedule.indexOf("start") + 13)
+              var finish = contacts[0].schedule.substring(contacts[0].schedule.indexOf("finish") + 9, contacts[0].schedule.indexOf("finish") + 14)
+              contacts[0].worktime.set(dayNames[i], `${start} - ${finish}`)
+            } else {
+              contacts[0].worktime.set(dayNames[i], "Выходной")
+            }
           }
         }
+        setAppState(response);
+      } catch (e) {
+        // console.log(e)
       }
-      setAppState(response);
+    }
+
+    async function getBotInfo() {
+      try {
+        var response  = await axios.get(`https://market-bot.org:8082/clients_api/info/get_bot_info?bot_id=${botId}`)
+        userInfo[0].haveDelivery = response.data.have_delivery;
+        userInfo[0].limit_bonuses = response.data.limit_bonuses;
+        userInfo[0].cashback = response.data.cashback;
+        userInfo[0].delivery_cost = response.data.delivery_cost;
+      } catch (e) {
+        // console.log(e)
+      }
+    }
+
+    async function getBanners() {
+      try {
+        var response  = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_banners/?bot_id=${botId}&client_id=${userInfo[0].id}`)
+        banners = response.data.banners;
+        for (let i = 0; i < banners.length; i++) {
+          var photo = await getBannerPhoto(banners[i].banner_id)
+          banners[i].photoFile = photo;
+        }
+      } catch (e) {
+        // console.log(e)
+      }
+    }
+
+    async function getBannerPhoto(bannerId) {
+      try {
+        var response  = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_banner_photo?banner_id=${bannerId}`, {responseType: 'blob'})
+        return URL.createObjectURL(response.data)
+      } catch (e) {
+        // console.log(e)
+      }
     }
 
     async function makeRequest() {
       setIsLoading(true);
-      try {
-        await getUser();
-      } catch (e) {
-        // console.log(e)
-      }
+      await getUser();
       setIsLoading(false);
     }
 

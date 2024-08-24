@@ -10,7 +10,6 @@ const Cart = () => {
     let navigate = useNavigate();
     let goods = []
     let price = 0
-    let delivery = 0
     // const [delivery, setDelivery] = useState(200)
 
     const {products} = require('../TestData/prod.jsx');
@@ -54,9 +53,9 @@ const Cart = () => {
         }
     }
 
-    if (price < 999) {
-        delivery = 200
-    }
+    // if (price < 999) {
+    //     delivery = 200
+    // }
 
     // const onChange = (edit, id) => {
     //     console.log(goodsAmount)
@@ -82,15 +81,13 @@ const Cart = () => {
     //     console.log(goodsAmount)
     // }
 
-    function PaidDelivery() {
-        if (price < 999) { //courier && 
-            return <div className='deliveryMin'>Минимальная сумма заказа для бесплатной доставки - 999 ₽</div>
-        }
-    }
+    // function PaidDelivery() {
+    //     if (price < 999) { //courier && 
+    //         return <div className='deliveryMin'>Минимальная сумма заказа для бесплатной доставки - 999 ₽</div>
+    //     }
+    // }
 
-    const toConfirm = async () => {
-        var response  = await axios.get(`https://market-bot.org:8082/clients_api/info/get_bot_info?bot_id=${userInfo[0].bot_id}`)
-        userInfo[0].haveDelivery = response.data.have_delivery;
+    const toConfirm = () => {
         navigate('ConfirmOrder', { replace: false })
     }
 
@@ -136,19 +133,19 @@ const Cart = () => {
                             </div>
                         })}
                         <div className='moneyBlock'>
-                            <PaidDelivery />
+                            {/* <PaidDelivery /> */}
                             <div className='cartLine'>
                                 <div className='cartName'>Сумма заказа</div>
                                 <div className='cartPrice'>{price.toFixed(2)} ₽</div>
                             </div>
-                            <div className='cartLine'>
+                            {/* <div className='cartLine'>
                                 <div className='cartName'>Стоимость доставки</div>
-                                <div className='cartPrice'>{delivery ?? 0} ₽</div>
+                                <div className='cartPrice'>{userInfo[0].delivery_cost ?? 0} ₽</div>
                             </div>                            
                             <div className='cartLine'>
                                 <div className='cartName'>Общая сумма</div>
-                                <div className='cartPrice'>{(price + (delivery ?? 0)).toFixed(2)} ₽</div>
-                            </div>
+                                <div className='cartPrice'>{(price + (userInfo[0].delivery_cost ?? 0)).toFixed(2)} ₽</div>
+                            </div> */}
                         </div>
                         <button className='shop-btn' onClick={() => toConfirm()}>Далее</button>
                     </div>

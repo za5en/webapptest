@@ -183,7 +183,7 @@ const Info = () => {
                                 <div>
                                 <div className='profileLine'>
                                     <div className='profileTitle'>{'Бонусные баллы'}</div>
-                                    <div className='profileInfo'>{userInfo[0].bonus_points}</div>
+                                    <div className='profileInfo'>{userInfo[0].bonus_points.toFixed(0)}</div>
                                 </div>
                                     <hr className="solid"></hr>
                                     </div>

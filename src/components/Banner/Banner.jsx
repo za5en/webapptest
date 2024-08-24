@@ -1,7 +1,6 @@
 import React from 'react';
 import './Banner.css'
 import { useNavigate } from 'react-router-dom';
-import BurgerIcon from '../../assets/images/burger.png';
 
 const Banner = ({header, id}) => {
     let navigate = useNavigate();
@@ -12,7 +11,7 @@ const Banner = ({header, id}) => {
 
     let find = false;
     for (let i = 0; i < Object.keys(banners).length && !find; i++) {
-        if (banners[i].id === id) {
+        if (banners[i].banner_id === id) {
             banner = banners[i];
             find = true;
         }
@@ -21,7 +20,7 @@ const Banner = ({header, id}) => {
     return (
         <div className='bannerImg' onClick={() => navigate(`BannerPage/${id}`, { replace: false, state: {id: id} })}>
             <img
-				src={BurgerIcon} //banner.image
+				src={banner.photoFile}
 				alt={header}
 				className='bannerIcon'
 			/>

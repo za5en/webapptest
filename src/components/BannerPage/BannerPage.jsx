@@ -30,17 +30,17 @@ const BannerPage = () => {
 
     let find = false;
     for (let i = 0; i < Object.keys(banners).length && !find; i++) {
-        if (banners[i].id === location.state.id) {
+        if (banners[i].banner_id === location.state.id) {
             banner = banners[i];
             find = true;
         }
     }
 
-    if (typeof banner.goods !== "undefined") {
-        for (let i = 0; i < banner.goods.length; i++) {
+    if (typeof banner.products !== "undefined") {
+        for (let i = 0; i < banner.products.length; i++) {
             find = false;
             for (let j = 0; j < Object.keys(products).length && !find; j++) {
-                if (products[j].id === banner.goods[i]) {
+                if (products[j].id === banner.products[i]) {
                     goods.push(products[j]);
                     find = true;
                 }
@@ -143,14 +143,14 @@ const BannerPage = () => {
             <div className='bannerPage'>
                 <div>
                     <img
-			    		src={BurgerIcon} //banner.image
-			    		alt={banner.header}
+			    		src={banner.photoFile}
+			    		alt={banner.title}
 			    		className='productIconBanner'
 			    	/>
                 </div>
                 <div className='prodBlock'>
-                    <div className={'titleBanner'}>{banner.header}</div>
-                    <div className={'descriptionBanner'}>{banner.description}</div>
+                    <div className={'titleBanner'}>{banner.title}</div>
+                    <div className={'descriptionBanner'}>{banner.text}</div>
                 </div>
                 <div className='list'>
                     <div className='cat'>
