@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './Cart.css'
 import OtherHeader from '../OtherHeader/OtherHeader';
 import { useNavigate } from 'react-router-dom';
@@ -53,39 +53,75 @@ const Cart = () => {
         }
     }
 
+    const [finalPrice, setFinalPrice] = useState(price);
+
     // if (price < 999) {
     //     delivery = 200
     // }
 
-    // const onChange = (edit, id) => {
-    //     console.log(goodsAmount)
-    //     if (edit === '-') {
-    //         if (goodsAmount.has(id)) {
-    //             // changePriceHandler(edit);
-    //             if (goodsAmount.get(id) == 1) {
-    //                 goodsAmount.delete(id);
-    //             }
-    //             else {
-    //                 goodsAmount.set(id, goodsAmount.get(id) - 1)
-    //             }
-    //         }
+    // const onAdd = (product) => {
+    //     let added = addedItems.find(item => item.id === product.id);
+
+    //     let addPrice = price ?? nullPrice;
+
+    //     if (added) {
+    //         newItems = addedItems;
+    //         addPrice += product.price;
     //     } else {
-    //         if (goodsAmount.has(id)) {
-    //             // changePriceHandler(edit);
-    //             goodsAmount.set(id, goodsAmount.get(id) + 1)
-    //         } else {                
-    //             // changePriceHandler(edit);
-    //             goodsAmount.set(id, 2)
-    //         }
+    //         newItems = [...addedItems, product];
+    //         addPrice += product.price;
+    //         goodsAmount.set(`${product.id}`, 1);
     //     }
-    //     console.log(goodsAmount)
+
+    //     setPrice(addPrice)
+    //     setAddedItems(newItems)
     // }
 
-    // function PaidDelivery() {
-    //     if (price < 999) { //courier && 
-    //         return <div className='deliveryMin'>Минимальная сумма заказа для бесплатной доставки - 999 ₽</div>
-    //     }
-    // }
+    const changePrice = (edit, prodPrice) => {
+        if (edit === '+') {
+            if (typeof finalPrice === "undefined" && price != 0) {
+                setFinalPrice(price + Number(prodPrice));
+            } else {
+                setFinalPrice(price + Number(prodPrice));
+            }
+        } else {
+            if (typeof finalPrice === "undefined" && price != 0) {
+                if (price - Number(prodPrice) >= 0) { 
+                    setFinalPrice(price - Number(prodPrice));
+                } else {
+                    setFinalPrice(0);
+                }
+            } else {
+                if (finalPrice - Number(prodPrice) >= 0) { 
+                    setFinalPrice(price - Number(prodPrice));
+                } else {
+                    setFinalPrice(0);
+                }
+            }
+        }
+    }
+
+    const onChange = (edit, price, id) => {
+        if (edit === '-') {
+            if (goodsAmount.has(`${id}`)) {
+                changePrice(edit, price);
+                if (goodsAmount.get(`${id}`) == 1) {
+                    goodsAmount.delete(`${id}`);
+                }
+                else {
+                    goodsAmount.set(`${id}`, goodsAmount.get(`${id}`) - 1)
+                }
+            }
+        } else {
+            if (goodsAmount.has(`${id}`)) {
+                changePrice(edit, price);
+                goodsAmount.set(`${id}`, goodsAmount.get(`${id}`) + 1)
+            } else {                
+                changePrice(edit, price);
+                goodsAmount.set(`${id}`, 2)
+            }
+        }
+    }
 
     const toConfirm = () => {
         navigate('ConfirmOrder', { replace: false })
@@ -122,12 +158,12 @@ const Cart = () => {
                                     ) : (
                                         <div></div>
                                     )}
-                                    {/* <div className='changeAmountButtons'>
-                                        <button className='minus-cart-btn' onClick={() => onChange('-', item.id)}>-</button>
-                                        <div className='amountCart'>{goodsAmount.get(item.id) ?? 1}</div>
-                                        <button className='plus-cart-btn' onClick={() => onChange('+', item.id)}>+</button>
-                                    </div>                   */}
-                                    <div className='prodParam'>{goodsAmount.get(`${item.id}`)} шт.</div>
+                                    {/* <div className='prodParam'>{goodsAmount.get(`${item.id}`)} шт.</div> */}
+                                    <div className='addToCartButtonsCart'>
+                                        <button className='minus-cart-btn' onClick={() => onChange('-', item.price, item.id)}>–</button>
+                                        <div className='amountCart'>{goodsAmount.get(`${item.id}`) ?? 1} шт</div>
+                                        <button className='plus-cart-btn' onClick={() => onChange('+', item.price, item.id)}>+</button>
+                                    </div>
                                     <div className='prodPrice'>{(item.price * goodsAmount.get(`${item.id}`)).toFixed(2)} ₽</div>
                                 </div>
                             </div>
@@ -136,7 +172,7 @@ const Cart = () => {
                             {/* <PaidDelivery /> */}
                             <div className='cartLine'>
                                 <div className='cartName'>Сумма заказа</div>
-                                <div className='cartPrice'>{price.toFixed(2)} ₽</div>
+                                <div className='cartPrice'>{finalPrice.toFixed(2)} ₽</div>
                             </div>
                             {/* <div className='cartLine'>
                                 <div className='cartName'>Стоимость доставки</div>
