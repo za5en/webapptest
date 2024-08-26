@@ -133,7 +133,7 @@ const ConfirmOrder = () => {
         var phone = fieldFill.get('phone');
         var name = fieldFill.get('name');
         var comment = fieldFill.get('comment');
-        var bonusPoints = fieldFill.get('bonus');
+        var bonusPoints = parseInt(fieldFill.get('bonus'));
         userInfo[0].latitude = 0
         userInfo[0].longitude = 0
         while (promo.length > 0) {
@@ -236,7 +236,7 @@ const ConfirmOrder = () => {
                                 'Content-Type': 'application/json'
                             }
                     })
-                    console.log(response)
+                    // console.log(response)
                 } else {
                     response = await axios.post('https://market-bot.org:8082/clients_api/clients_menu/add_to_cart', {
                             cart_id: userInfo[0].cartId,
@@ -276,7 +276,7 @@ const ConfirmOrder = () => {
                   'Content-Type': 'application/json'
               }
             })
-            console.log(response)
+            // console.log(response)
             setAppState(response);
             return response.status
         }
@@ -303,7 +303,7 @@ const ConfirmOrder = () => {
                 })
                 var json = response.data
                 json.query_id = queryId
-                console.log(response)
+                // console.log(response)
                 setAppState(response);
                 return response.status
             } else {
@@ -326,7 +326,7 @@ const ConfirmOrder = () => {
                 })
                 var json = response.data
                 json.query_id = queryId
-                console.log(response)
+                // console.log(response)
                 setAppState(response);
                 return response.status
             }
@@ -360,7 +360,7 @@ const ConfirmOrder = () => {
                             try {
                                 code = await makeRequest();
                             } catch (e) {
-                                console.log(e);
+                                // console.log(e);
                                 if (typeof e !== "undefined") {
                                     if (typeof e.response !== "undefined") {
                                         if (typeof e.response.data !== "undefined") {
@@ -539,7 +539,7 @@ const ConfirmOrder = () => {
                                 </div>
                                 {selection.get('bonuses') === 1 ? (
                                     <div className='promoLine'>
-                                        <input className='textField' type="text" id='bonus' defaultValue={fieldFill.get('bonus')} placeholder={`Можно списать бонусов: ${maxBonusValue}`} onChange={() => bonusUpd(document.getElementById('bonus').value)}></input>
+                                        <input className='textField' type="text" id='bonus' defaultValue={fieldFill.get('bonus')} placeholder={`Можно списать бонусов: ${maxBonusValue.toFixed(0)}`} onChange={() => bonusUpd(document.getElementById('bonus').value)}></input>
                                         {/* берём либо максимально доступное по вычету процента из суммы заказа либо максимально доступное */}
                                     </div>
                                 ) : (

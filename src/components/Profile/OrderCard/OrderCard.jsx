@@ -124,8 +124,6 @@ const OrderCard = ({order}) => {
 
     var goods = goodsGlobal.get(order.id)
 
-    console.log(goods)
-
     return (
         <div>
             {isLoading ? (

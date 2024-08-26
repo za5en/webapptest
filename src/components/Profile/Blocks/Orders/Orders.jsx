@@ -100,15 +100,45 @@ const Orders = () => {
             var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_all_menu/?bot_id=${botId}&client_id=${userInfo[0].id}`)
             products = response.data
             categories = []
+            await getCategories();
             for (let i = 0; i < products.length; i++) {
-              if (!categories.includes(products[i].category) && !products[i].it_hidden) {
-                categories.push(products[i].category)
-              }
+              if (products[i].category_name === null) {
+                if (!categories.includes('Без категории')) {
+                  categories.push('Без категории')
+                }
+                products[i].category_name = 'Без категории'
+              } 
               var photo = await getPhoto(products[i].id)
               products[i].like = false;
               products[i].photoFile = photo;
             }
             setAppState(response);
+        }
+
+        async function getCategories() {
+          try {
+            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_category/${botId}`)
+            var tmp = new Map()
+            if (response.status === 200) {
+              for (let i = 0; i < response.data.categories.length; i++) {
+                if (response.data.categories[i].position === i + 1) {
+                  if (!categories.includes(response.data.categories[i].name)) {
+                    categories.push(response.data.categories[i].name);
+                  }
+                } else {
+                  tmp.set(response.data.categories[i].position, response.data.categories[i].name);
+                  var current = tmp.get(i + 1)
+                  if (typeof current !== "undefined" && current !== null && current !== "") {
+                    if (!categories.includes(current)) {
+                      categories.push(current);
+                    }
+                  }
+                }
+              }
+          }
+          } catch (e) {
+            // console.log(e)
+          }
         }
       
         async function getPhoto(prodId) {
