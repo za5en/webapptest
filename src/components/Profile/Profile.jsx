@@ -7,7 +7,7 @@ import { userInfo } from '../TestData/user.jsx';
 import axios from 'axios';
 import ReactLoading from "react-loading";
 import { categories, products } from '../TestData/prod.jsx';
-import { goodsGlobal } from './OrderCard/OrderCard.jsx';
+import OrderCard, { goodsGlobal } from './OrderCard/OrderCard.jsx';
 
 export var orders = []
 export var contacts = []
@@ -18,6 +18,8 @@ const Profile = () => {
 
     const [appState, setAppState] = useState();
     const [isLoading, setIsLoading] = useState(false);
+    const [newOrderId, setNewOrderId] = useState(-1);
+    const [newOrderIndex, setNewOrderIndex] = useState(-1);
 
     useEffect(() => {
       tg.ready();
@@ -37,9 +39,14 @@ const Profile = () => {
     
         async function getOrders() {
           var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_orders/get_orders?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}`)
+          console.log(1)
           orders = response.data
           orders.sort((a, b) => a.id < b.id ? 1 : -1);
           for (let i = 0; i < orders.length; i++) {
+            if (orders[i].status === 'new' && orders[i].id > newOrderId) {
+              setNewOrderId(orders[i].id);
+              setNewOrderIndex(i);
+            }
             await getProducts(orders[i].id);
           }
           setAppState(response);
@@ -47,6 +54,7 @@ const Profile = () => {
 
         async function getProducts(id) {
           var response  = await axios.get(`https://market-bot.org:8082/clients_api/clients_orders/get_orders?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&order_id=${id}`)
+          console.log(1)
           var thisGoods = await getCart(response.data[0].cart_id);
           // for (let i = 0; i < thisGoods.length; i++) {
           //     thisGoods[i].review = await getReviews(thisGoods[i].product_id)
@@ -57,6 +65,7 @@ const Profile = () => {
   
         async function getCart(cartId) {
             var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_carts?client_id=${userInfo[0].id}&cart_id=${cartId}`)
+            console.log(1)
             return response.data.data[0].products;
         }
 
@@ -198,11 +207,20 @@ const Profile = () => {
                             {user?.first_name ?? 'Username'} {user?.last_name}
                         </span>
                     </div>
+                    {
+                      newOrderId !== -1 && newOrderIndex !== -1 ? (
+                        <OrderCard
+                          order={orders[newOrderIndex]}
+                        />
+                      ) : (
+                        <div></div>
+                      )
+                    }
                     <div className='block' onClick={() => navigate('Info', { replace: false })}>Мой профиль &gt;</div>
                     <div className='block' onClick={() => navigate('Orders', { replace: false })}>Заказы &gt;</div>
                     {/* <div className='block' onClick={() => navigate('Promo', { replace: false })}>Акции &gt;</div> */}
+                    <div className='block' onClick={() => navigate('Favorites', { replace: false })}>Избранное &gt;</div>
                     <div className='block' onClick={() => navigate('Contacts', { replace: false })}>Контакты продавца &gt;</div>
-                    {/* <div className='block' onClick={() => navigate('Favorites', { replace: false })}>Избранное &gt;</div> */}
                     <div className='block' onClick={() => navigate('Support', { replace: false })}>Техническая поддержка &gt;</div>
                 </div>
                 )

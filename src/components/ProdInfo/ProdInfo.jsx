@@ -6,12 +6,18 @@ import { goodsAmount } from '../Products/Products.jsx'
 import { userInfo } from '../TestData/user.jsx';
 import axios from 'axios';
 import ReactLoading from "react-loading";
+import BurgerIcon from '../../assets/images/burger.png';
+import like1 from "../../assets/icons/non_like.svg"
+import like2 from "../../assets/icons/like.svg"
+import Button from '../Button/Button.jsx';
 
 var optionsSelect = new Map()
 
 const ProdInfo = () => {
 
     let navigate = useNavigate();
+
+    var photoFiles = ["", ""]
 
     const {products, reviews, reviewsId, myReviews} = require('../TestData/prod.jsx');
     
@@ -22,6 +28,7 @@ const ProdInfo = () => {
     const [appState, setAppState] = useState();
     const [optionType, setOptionType] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
+    const [prodState, setProdState] = useState(0);
 
     const changeType = (groupName, name, itemPrice) => {
         optionsSelect.set(`${product.id}_${groupName}`, name)
@@ -248,9 +255,29 @@ const ProdInfo = () => {
         setAppState(response);
     }
 
+    const like = (id) => {
+        let find = false;
+        for (let i = 0; i < Object.keys(products).length && !find; i++) {
+            if (products[i].id === id) {
+                find = true;
+                products[i].like = !products[i].like;
+            }
+        }
+        // product.like = !product.like;
+        //api method
+        setProdState(prodState + 1)
+    }
+
     return (
         <div>
-            <OtherHeader />
+            <div className='otherHeader'>
+                <Button className='cancelButton' onClick={() => navigate(-1)}><b className='cancel'>Назад</b></Button>
+                {product.like ? (
+                    <img className='likeIconInfo' src={like2} onClick={() => like(product.id)}></img>
+                ) : (
+                    <img className='likeIconInfo' src={like1} onClick={() => like(product.id)}></img>
+                )}
+            </div>
             {isLoading ? (
                 <div className='loadScreen'>
                     <ReactLoading type="bubbles" color="#419FD9"
@@ -258,13 +285,39 @@ const ProdInfo = () => {
                 </div>
             ) : (
                 <div className={'product1 ' + location.state.className}>
-                    <div>
+                    <div className='bannerLine'>
+                        {product.photoFile.map(item => (
+                            <div className='scroll'>
+                                <div className='bannerImg'>
+                                    <img
+		                        		src={BurgerIcon} //item
+		                        		alt={product.name}
+		                        		className='productIcon1'
+		                        	/>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    {/* <div>
                         <img
-			        		src={product.photoFile}
+			        		src={BurgerIcon}
 			        		alt={product.name}
 			        		className='productIcon1'
 			        	/>
-                    </div>
+                    </div> */}
+                    {typeof product.stickers !== 'undefined' && product.stickers.length > 0 ? (
+                        <div className='bannerLine'>
+                            {product.stickers.map(item => (
+                                <div className='scroll'>
+                                    <div className='sticker'>
+                                        <div className='stickerTextProd'>{item}</div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div></div>
+                    )}
                     <div className={'title1'}>{product.name}</div>
                     <div className='prodBlockPrice'>
                         <div className={'price1'}>

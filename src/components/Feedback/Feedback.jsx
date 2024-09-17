@@ -73,7 +73,7 @@ const Feedback = () => {
             <div className='goodsFd'>
                 <div className='goodsInnerFd'>
                     <img
-                        src={item.photoFile}
+                        src={item.photoFile[0]}
                         alt={item.product.name}
                         className='prodImg1'
                     />

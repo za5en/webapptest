@@ -74,13 +74,13 @@ const OrderPage = () => {
                                 <div className='goodsOrder'>
                                     {typeof prod.product !== 'undefined' && prod.product !== null ? (
                                         <img
-			    		                    src={prod.photoFile}
+			    		                    src={prod.photoFile[0]}
                                             alt={prod.product.name}
                                             className='prodImg1'
                                         /> 
                                     ) : (
                                         <img
-			    		                    src={prod.photoFile}
+			    		                    src={prod.photoFile[0]}
                                             alt='ProductName'
                                             className='prodImg1'
                                         />

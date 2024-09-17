@@ -214,7 +214,16 @@ const Contacts = () => {
                             </Map>
 			            </YMaps>
                     </div>
-                    <div className='contactsMainHeader'>{contacts[0].shop_address}</div>
+                    {
+                        contacts.length > 0 ?
+                            contacts[0].shop_address === null || contacts[0].shop_address === "" ? (
+                                <div></div>
+                            ) : (
+                                <div className='contactsMainHeader'>{contacts[0].shop_address}</div>
+                            ) : (
+                                <div></div>
+                            )
+                    }
                     <p className='contactsSubHeader'>Контактная информация</p>
                     <div className='profileCard'>
                         { contacts.length > 0 ?
