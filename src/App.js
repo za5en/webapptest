@@ -73,6 +73,7 @@ function App() {
         console.log(1)
         categories = []
         await getCategories();
+        var favList = await getFavoritesProducts();
         for (let i = 0; i < products.length; i++) {
           if (products[i].category_name === null) {
             if (!categories.includes('Без категории')) {
@@ -84,10 +85,23 @@ function App() {
           //   categories.push(products[i].category_name)
           // }
           var photo = await getPhoto(products[i].id)
-          products[i].like = false;
+          if (favList.includes(products[i].id)) {
+            products[i].like = true;
+          } else {
+            products[i].like = false;
+          }
           products[i].photoFile = photo;
         }
         setAppState(response);
+      } catch (e) {
+        // console.log(e)
+      }
+    }
+
+    async function getFavoritesProducts() {
+      try {
+        var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_favorites_products/?client_id=${userInfo[0].id}&bot_id=${botId}`)
+        return response.data
       } catch (e) {
         // console.log(e)
       }
@@ -154,6 +168,18 @@ function App() {
           }
         }
         setAppState(response);
+      } catch (e) {
+        // console.log(e)
+      }
+    }
+
+    async function getStickers() {
+      try {
+        var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_sticker_products_by_bot/${botId}`)
+        console.log(1)
+        if (response.status === 200) {
+          products.stickers = response.data
+        }
       } catch (e) {
         // console.log(e)
       }
