@@ -74,6 +74,8 @@ const Contacts = () => {
             products = response.data
             categories = []
             await getCategories();
+            var favList = await getFavoritesProducts();
+            var stickers = await getStickers();
             for (let i = 0; i < products.length; i++) {
               if (products[i].category_name === null) {
                 if (!categories.includes('Без категории')) {
@@ -81,42 +83,81 @@ const Contacts = () => {
                 }
                 products[i].category_name = 'Без категории'
               } 
-              var photo = await getPhoto(products[i].id)
-              products[i].like = false;
+              for (var j = 0; j < 3 && message === ""; j++) {
+                var photo = await getPhoto(products[i].id, j)
+                products[i].photoFile.push(photo);
+              }
+              if (favList.includes(products[i].id)) {
+                products[i].like = true;
+              } else {
+                products[i].like = false;
+              }
+              if (stickers.includes(products[i].id)) {
+                products[i].stickers = stickers.get(products[i].id);
+              }
               products[i].photoFile = photo;
             }
             setAppState(response);
         }
 
-        async function getCategories() {
-            try {
-              var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_category/${botId}`)
-              var tmp = new Map()
-              if (response.status === 200) {
-                for (let i = 0; i < response.data.categories.length; i++) {
-                  if (response.data.categories[i].position === i + 1) {
-                    if (!categories.includes(response.data.categories[i].name)) {
-                      categories.push(response.data.categories[i].name);
-                    }
-                  } else {
-                    tmp.set(response.data.categories[i].position, response.data.categories[i].name);
-                    var current = tmp.get(i + 1)
-                    if (typeof current !== "undefined" && current !== null && current !== "") {
-                      if (!categories.includes(current)) {
-                        categories.push(current);
-                      }
-                    }
-                  }
-                }
+        async function getFavoritesProducts() {
+          try {
+            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_favorite_products/?client_id=${userInfo[0].id}&bot_id=${botId}`)
+            // console.log(1)
+            var favs = []
+            for (let i = 0; i < response.data.favorite_products.length; i++) {
+              favs.push(response.data.favorite_products[i].id);
             }
+            return favs;
+          } catch (e) {
+            // console.log(e)
+          }
+        }
+
+        async function getStickers() {
+            try {
+              var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_sticker_products_by_bot/${botId}`)
+              // console.log(1)
+              return response.data
             } catch (e) {
               // console.log(e)
             }
+        }
+
+        async function getCategories() {
+          try {
+            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_category/${botId}`)
+            var tmp = new Map()
+            if (response.status === 200) {
+              for (let i = 0; i < response.data.categories.length; i++) {
+                if (response.data.categories[i].position === i + 1) {
+                  if (!categories.includes(response.data.categories[i].name)) {
+                    categories.push(response.data.categories[i].name);
+                  }
+                } else {
+                  tmp.set(response.data.categories[i].position, response.data.categories[i].name);
+                  var current = tmp.get(i + 1)
+                  if (typeof current !== "undefined" && current !== null && current !== "") {
+                    if (!categories.includes(current)) {
+                      categories.push(current);
+                    }
+                  }
+                }
+              }
           }
+          } catch (e) {
+            // console.log(e)
+          }
+        }
       
-        async function getPhoto(prodId) {
-            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_photo?bot_id=${botId}&product_id=${prodId}`, {responseType: 'blob'})
+        async function getPhoto(prodId, photoNumber) {
+          try {
+            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_photo?bot_id=${botId}&product_id=${prodId}&photo_number=${photoNumber}`, {responseType: 'blob'})
+            // console.log(1)
             return URL.createObjectURL(response.data)
+          } catch (e) {
+            // console.log(e)
+          }
         }
       
         async function getContacts() {
@@ -194,25 +235,35 @@ const Contacts = () => {
             ) : (
                 <div className='blocks'>
                     <div className='mapShop'>
-                        <YMaps query={{ apikey: '30a63ef2-9728-4aa2-b1f8-c8b716d577a8' }}>
-			            	<Map
-			            		state={{
-			            			center: isValidCoordinates ? coordinates : [55.751574, 37.573856],
-			            			zoom: 14
-			            		}}
-			            		width='99%'
-			            		height='300px'
-			            	>
-                                {isValidCoordinates && (
-					            	<GeoObject
-					            		geometry={{
-                                            type: "Point",
-                                            coordinates: coordinates
-                                        }}
-					            	/>
-					            )}
-                            </Map>
-			            </YMaps>
+                    {
+                      contacts.length > 0 ?
+                            contacts[0].shop_address === null || contacts[0].shop_address === "" ? (
+                            <div></div>
+                            ) : (
+                              <YMaps query={{ apikey: '30a63ef2-9728-4aa2-b1f8-c8b716d577a8' }}>
+                                <Map
+                                  state={{
+                                    center: isValidCoordinates ? coordinates : [55.751574, 37.573856],
+                                    zoom: 14
+                                  }}
+                                  width='99%'
+                                  height='300px'
+                                >
+                                            {isValidCoordinates && (
+                                    <GeoObject
+                                      geometry={{
+                                                        type: "Point",
+                                                        coordinates: coordinates
+                                                    }}
+                                    />
+                                  )}
+                                </Map>
+                              </YMaps>
+                            ) : (
+                              <div></div>
+                            )
+                    }
+                        
                     </div>
                     {
                         contacts.length > 0 ?

@@ -5,7 +5,8 @@ import { goodsAmount } from '../Products/Products.jsx'
 import { reviews, reviewsId } from '../TestData/prod.jsx';
 import like1 from "../../assets/icons/non_like.svg"
 import like2 from "../../assets/icons/like.svg"
-import BurgerIcon from '../../assets/images/burger.png';
+import axios from 'axios';
+import { userInfo } from '../TestData/user.jsx';
 
 const ProductItem = ({ product, className, onAdd, changePrice, link }) => {
 
@@ -86,25 +87,9 @@ const ProductItem = ({ product, className, onAdd, changePrice, link }) => {
             if (products[i].id === id) {
                 find = true;
                 if (products[i].like) {
-                    try {
-                      var response = await axios.delete(`https://market-bot.org:8082/clients_api/clients_menu/remove_from_favorites/?product_id=${id}&client_id=${userInfo[0].id}`)
-                      console.log(1)
-                      if (response.status === 200) {
-                        // 
-                      }
-                    } catch (e) {
-                      // console.log(e)
-                    }
+                    await removeFromFav(id);
                 } else {
-                    try {
-                      var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/add_to_favorites/?product_id=${id}&bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}`)
-                      console.log(1)
-                      if (response.status === 200) {
-                        // 
-                      }
-                    } catch (e) {
-                      // console.log(e)
-                    }
+                    await addToFav(id);
                 }
                 products[i].like = !products[i].like;
             }
@@ -114,16 +99,44 @@ const ProductItem = ({ product, className, onAdd, changePrice, link }) => {
         setProdState(prodState + 1)
     }
 
+    async function addToFav(id) {
+        try {
+            var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/add_to_favorites/?product_id=${id}&bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}`)
+            // console.log(1)
+            if (response.status === 200) {
+              console.log(response)
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    async function removeFromFav(id) {
+        try {
+            var response = await axios.delete(`https://market-bot.org:8082/clients_api/clients_menu/remove_from_favorites/?product_id=${id}&client_id=${userInfo[0].id}`)
+            // console.log(1)
+            if (response.status === 200) {
+              console.log(response)
+            }
+        } catch (e) {
+            // console.log(e)
+        }
+    }
+
     return (
         <div className={'product ' + className}>
             <div className='toInfo'>
                 <div className='img'>
-                    <img
-                        src={BurgerIcon}
+                    {typeof product.photoFile !== 'undefined' ? (
+                        <img
+                        src={product.photoFile[0]}
                         alt={product.name}
                         className='productIcon'
                         onClick={() => toInfo()}
                     />
+                    ) : (
+                        <div></div>
+                    )}                    
                     {product.like ? (
                         <img className='likeIcon' src={like2} onClick={() => like(product.id)}></img>
                     ) : (

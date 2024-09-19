@@ -12,7 +12,7 @@ const Products = () => {
 
     let navigate = useNavigate();
 
-    const {products, categories, banners} = require('../TestData/prod.jsx');
+    const {products, categories, banners, catNames} = require('../TestData/prod.jsx');
 
     const [addedItems, setAddedItems] = useState([]);
 
@@ -46,6 +46,16 @@ const Products = () => {
         //     let hidden = hiddenCats.get(products[i].categories);
         //     hiddenCats.set(products[i].categories, hidden + 1);
         // }
+    }
+
+    var values = catNames.values()
+    for (let i = 0; i < catNames.size; i++) {
+        var val = values.next().value
+        if (typeof productsByCat.get(val) !== 'undefined') {
+            if (productsByCat.get(val).length === 0) {
+                productsByCat.delete(val)
+            }
+        }
     }
 
     const onAdd = (product) => {

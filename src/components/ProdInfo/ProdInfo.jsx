@@ -6,7 +6,6 @@ import { goodsAmount } from '../Products/Products.jsx'
 import { userInfo } from '../TestData/user.jsx';
 import axios from 'axios';
 import ReactLoading from "react-loading";
-import BurgerIcon from '../../assets/images/burger.png';
 import like1 from "../../assets/icons/non_like.svg"
 import like2 from "../../assets/icons/like.svg"
 import Button from '../Button/Button.jsx';
@@ -16,8 +15,6 @@ var optionsSelect = new Map()
 const ProdInfo = () => {
 
     let navigate = useNavigate();
-
-    var photoFiles = ["", ""]
 
     const {products, reviews, reviewsId, myReviews} = require('../TestData/prod.jsx');
     
@@ -261,25 +258,9 @@ const ProdInfo = () => {
             if (products[i].id === id) {
                 find = true;
                 if (products[i].like) {
-                    try {
-                      var response = await axios.delete(`https://market-bot.org:8082/clients_api/clients_menu/remove_from_favorites/?product_id=${id}&client_id=${userInfo[0].id}`)
-                      console.log(1)
-                      if (response.status === 200) {
-                        // 
-                      }
-                    } catch (e) {
-                      // console.log(e)
-                    }
+                    await removeToFav(id);
                 } else {
-                    try {
-                      var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/add_to_favorites/?product_id=${id}&bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}`)
-                      console.log(1)
-                      if (response.status === 200) {
-                        // 
-                      }
-                    } catch (e) {
-                      // console.log(e)
-                    }
+                    await addToFav(id);
                 }
                 products[i].like = !products[i].like;
             }
@@ -287,6 +268,30 @@ const ProdInfo = () => {
         // product.like = !product.like;
         //api method
         setProdState(prodState + 1)
+    }
+
+    async function addToFav(id) {
+        try {
+            var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/add_to_favorites/?product_id=${id}&bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}`)
+            // console.log(1)
+            if (response.status === 200) {
+            //   console.log(response)
+            }
+        } catch (e) {
+            // console.log(e)
+        }
+    }
+
+    async function removeToFav(id) {
+        try {
+            var response = await axios.delete(`https://market-bot.org:8082/clients_api/clients_menu/remove_from_favorites/?product_id=${id}&client_id=${userInfo[0].id}`)
+            // console.log(1)
+            if (response.status === 200) {
+            //   console.log(response)
+            }
+        } catch (e) {
+            // console.log(e)
+        }
     }
 
     return (
@@ -311,7 +316,7 @@ const ProdInfo = () => {
                             <div className='scroll'>
                                 <div className='bannerImg'>
                                     <img
-		                        		src={BurgerIcon} //item
+		                        		src={item}
 		                        		alt={product.name}
 		                        		className='productIcon1'
 		                        	/>
@@ -319,13 +324,6 @@ const ProdInfo = () => {
                             </div>
                         ))}
                     </div>
-                    {/* <div>
-                        <img
-			        		src={BurgerIcon}
-			        		alt={product.name}
-			        		className='productIcon1'
-			        	/>
-                    </div> */}
                     {typeof product.stickers !== 'undefined' && product.stickers.length > 0 ? (
                         <div className='bannerLine'>
                             {product.stickers.map(item => (

@@ -14,7 +14,7 @@ import OrderPage from './components/Profile/OrderPage/OrderPage';
 import Feedback from './components/Feedback/Feedback';
 import Contacts from './components/Profile/Blocks/Contacts/Contacts';
 import { userInfo } from './components/TestData/user.jsx';
-import { products, categories, banners } from './components/TestData/prod.jsx';
+import { products, categories, banners, catNames } from './components/TestData/prod.jsx';
 import axios from 'axios';
 import OrderConfirmed from './components/Cart/ConfirmOrder/OrderConfirmed.jsx';
 import ReactLoading from "react-loading";
@@ -42,8 +42,8 @@ function App() {
     botId = params.get("bot_id"); //by inline button
   }
 
-  botId = 60
-  let userId = 649105595
+  // botId = 83
+  // let userId = 649105595
 
   const [appState, setAppState] = useState();
   const [isLoading, setIsLoading] = useState(false);
@@ -51,11 +51,11 @@ function App() {
   useEffect(() => {
     async function getUser() {
       try {
-        var response  = await axios.get(`https://market-bot.org:8082/clients_api/user/get_user/?bot_id=${botId}&client_tg_id=${userId}`)
+        var response  = await axios.get(`https://market-bot.org:8082/clients_api/user/get_user/?bot_id=${botId}&client_tg_id=${user.id}`)
         userInfo = response.data
         setAppState(response);
         if (response.status === 200) {
-          // await getMenu();
+          await getMenu();
           await getContacts();
           await getBotInfo();
           await getBanners();
@@ -70,27 +70,38 @@ function App() {
       try {
         var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_all_menu/?bot_id=${botId}&client_id=${userInfo[0].id}`)
         products = response.data
-        console.log(1)
+        // console.log(1)
         categories = []
+        catNames = new Map()
         await getCategories();
         var favList = await getFavoritesProducts();
+        var stickers = await getStickers();
         for (let i = 0; i < products.length; i++) {
-          if (products[i].category_name === null) {
+          if (typeof products[i].category_id === 'undefined' || products[i].category_id === null) {
             if (!categories.includes('Без категории')) {
               categories.push('Без категории')
             }
             products[i].category_name = 'Без категории'
-          } 
+          } else {
+            products[i].category_name = catNames.get(products[i].category_id)
+          }
           // else if (products[i].category_name !== null && !categories.includes(products[i].category_name) && !products[i].it_hidden) {
           //   categories.push(products[i].category_name)
           // }
-          var photo = await getPhoto(products[i].id)
+          products[i].photoFile = [];
+          var message = "";
+          for (var j = 0; j < 3 && message === ""; j++) {
+            var photo = await getPhoto(products[i].id, j)
+            products[i].photoFile.push(photo);
+          }
           if (favList.includes(products[i].id)) {
             products[i].like = true;
           } else {
             products[i].like = false;
           }
-          products[i].photoFile = photo;
+          if (stickers.includes(products[i].id)) {
+            products[i].stickers = stickers.get(products[i].id);
+          }
         }
         setAppState(response);
       } catch (e) {
@@ -100,8 +111,13 @@ function App() {
 
     async function getFavoritesProducts() {
       try {
-        var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_favorites_products/?client_id=${userInfo[0].id}&bot_id=${botId}`)
-        return response.data
+        var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_favorite_products/?client_id=${userInfo[0].id}&bot_id=${botId}`)
+        // console.log(1)
+        var favs = []
+        for (let i = 0; i < response.data.favorite_products.length; i++) {
+          favs.push(response.data.favorite_products[i].id);
+        }
+        return favs;
       } catch (e) {
         // console.log(e)
       }
@@ -110,13 +126,14 @@ function App() {
     async function getCategories() {
       try {
         var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_category/${botId}`)
-        console.log(1)
+        // console.log(1)
         var tmp = new Map()
         if (response.status === 200) {
           for (let i = 0; i < response.data.categories.length; i++) {
             if (response.data.categories[i].position === i + 1) {
               if (!categories.includes(response.data.categories[i].name)) {
                 categories.push(response.data.categories[i].name);
+                catNames.set(response.data.categories[i].id, response.data.categories[i].name);
               }
             } else {
               tmp.set(response.data.categories[i].position, response.data.categories[i].name);
@@ -134,10 +151,10 @@ function App() {
       }
     }
 
-    async function getPhoto(prodId) {
+    async function getPhoto(prodId, photoNumber) {
       try {
-        var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_photo?bot_id=${botId}&product_id=${prodId}`, {responseType: 'blob'})
-        console.log(1)
+        var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_photo?bot_id=${botId}&product_id=${prodId}&photo_number=${photoNumber}`, {responseType: 'blob'})
+        // console.log(1)
         return URL.createObjectURL(response.data)
       } catch (e) {
         // console.log(e)
@@ -147,7 +164,7 @@ function App() {
     async function getContacts() {
       try {
         var response  = await axios.get(`https://market-bot.org:8082/clients_api/info/get_contacts/?bot_id=${botId}&client_id=${userInfo[0].id}`)
-        console.log(1)
+        // console.log(1)
         while (contacts.length > 0) {
           contacts.pop()
         }
@@ -176,10 +193,8 @@ function App() {
     async function getStickers() {
       try {
         var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_sticker_products_by_bot/${botId}`)
-        console.log(1)
-        if (response.status === 200) {
-          products.stickers = response.data
-        }
+        // console.log(1)
+        return response.data
       } catch (e) {
         // console.log(e)
       }
@@ -188,7 +203,7 @@ function App() {
     async function getBotInfo() {
       try {
         var response  = await axios.get(`https://market-bot.org:8082/clients_api/info/get_bot_info?bot_id=${botId}`)
-        console.log(1)
+        // console.log(1)
         userInfo[0].haveDelivery = response.data.have_delivery;
         userInfo[0].limit_bonuses = response.data.limit_bonuses;
         userInfo[0].cashback = response.data.cashback;
@@ -201,7 +216,7 @@ function App() {
     async function getBanners() {
       try {
         var response  = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_banners/?bot_id=${botId}&client_id=${userInfo[0].id}`)
-        console.log(1)
+        // console.log(1)
         banners = response.data.banners;
         for (let i = 0; i < banners.length; i++) {
           var photo = await getBannerPhoto(banners[i].banner_id)
@@ -215,7 +230,7 @@ function App() {
     async function getBannerPhoto(bannerId) {
       try {
         var response  = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_banner_photo?banner_id=${bannerId}`, {responseType: 'blob'})
-        console.log(1)
+        // console.log(1)
         return URL.createObjectURL(response.data)
       } catch (e) {
         // console.log(e)

@@ -3,7 +3,6 @@ import './BannerPage.css'
 import {useLocation, useNavigate} from 'react-router-dom';
 import OtherHeader from '../OtherHeader/OtherHeader.jsx';
 import { goodsAmount } from '../Products/Products.jsx';
-import BurgerIcon from '../../assets/images/burger.png';
 import ProductItem from '../ProductItem/ProductItem.jsx';
 import cart from "../../assets/icons/cart.svg"
 
