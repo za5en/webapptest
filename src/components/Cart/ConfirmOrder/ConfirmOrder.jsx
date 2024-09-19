@@ -106,7 +106,7 @@ const ConfirmOrder = () => {
         selection.set('bonuses', 0);
     }
 
-    var maxBonusValue = (price + userInfo[0].delivery_cost * selection.get('delivery')) * userInfo[0].limit_bonuses / 100;
+    var maxBonusValue = (price + (userInfo[0].delivery_cost ?? 0) * selection.get('delivery')) * (userInfo[0].limit_bonuses ?? 0) / 100;
     if (maxBonusValue > userInfo[0].bonus_points) {
         maxBonusValue = userInfo[0].bonus_points;
     }
@@ -464,6 +464,13 @@ const ConfirmOrder = () => {
         fieldFill.set('promo', value);
     }
 
+    var shop_address = ""
+    if (typeof contacts !== 'undefined') {
+        if (typeof contacts[0] !== 'undefined') {
+            shop_address = contacts[0].shop_address
+        }
+    }
+
     function Address() {
         if (courier) {
             // setIsValidAddress(true)
@@ -475,7 +482,7 @@ const ConfirmOrder = () => {
             // setIsValidAddress(true)
             return <div className='deliveryConfirmOrderLine'>
                 <div className='fieldHeader'>Адрес самовывоза</div>
-                <textarea className='textFieldAddress' type="text" id='pickupAddress' defaultValue={contacts[0].shop_address} readOnly></textarea>
+                <textarea className='textFieldAddress' type="text" id='pickupAddress' defaultValue={shop_address} readOnly></textarea>
             </div>
         }
     }
@@ -540,7 +547,6 @@ const ConfirmOrder = () => {
                                 {selection.get('bonuses') === 1 ? (
                                     <div className='promoLine'>
                                         <input className='textField' type="text" id='bonus' defaultValue={fieldFill.get('bonus')} placeholder={`Можно списать бонусов: ${maxBonusValue.toFixed(0)}`} onChange={() => bonusUpd(document.getElementById('bonus').value)}></input>
-                                        {/* берём либо максимально доступное по вычету процента из суммы заказа либо максимально доступное */}
                                     </div>
                                 ) : (
                                     <div></div>
@@ -577,9 +583,9 @@ const ConfirmOrder = () => {
                                     <div className='cartName'>Вернётся бонусами</div>
                                     {
                                         selection.get('delivery') === 0 ? (
-                                            <div className='cartPrice'>{(userInfo[0].cashback * (finalPrice) / 100).toFixed(2)} ₽</div>
+                                            <div className='cartPrice'>{((userInfo[0].cashback ?? 0) * (finalPrice) / 100).toFixed(2)} ₽</div>
                                         ) : (
-                                            <div className='cartPrice'>{(userInfo[0].cashback * (finalPrice + (userInfo[0].delivery_cost ?? 0)) / 100).toFixed(2)} ₽</div>
+                                            <div className='cartPrice'>{((userInfo[0].cashback ?? 0) * (finalPrice + (userInfo[0].delivery_cost ?? 0)) / 100).toFixed(2)} ₽</div>
                                         )
                                     }
                                 </div>
@@ -625,6 +631,12 @@ const ConfirmOrder = () => {
                                     <div className='wrongPhone'>Комментарий должен содержать до 200 символов</div>
                                 )}
                             </form>
+                            <div className='payments'>
+                                <div className='policyText'>
+                                    Нажимая на кнопку "Подтвердить оформление" Вы даете согласие на обработку и хранение персональных данных в соответствии с Политикой конфиденциальности и условиями.
+                                    <span className='policyLinkConfirm' onClick={() => navigate('PolicyPage', { replace: false })}> Подробнее</span>
+                                </div>
+                            </div>
                             <button className='shop-btn' onClick={() => confirm()}>Подтвердить оформление</button>
                         </div>
                     </div>

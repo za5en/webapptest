@@ -72,9 +72,9 @@ const OrderPage = () => {
                         {goodsOrder.map(prod => (
                             <div className='orderPositions'>
                                 <div className='goodsOrder'>
-                                    {typeof prod.product !== 'undefined' && prod.product !== null ? (
+                                    {typeof prod.product !== 'undefined' && typeof prod.photoFile !== 'undefined' && prod.product !== null ? (
                                         <img
-			    		                    src={prod.photoFile}
+			    		                    src={prod.photoFile[0]}
                                             alt={prod.product.name}
                                             className='prodImg1'
                                         /> 

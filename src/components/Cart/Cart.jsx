@@ -138,7 +138,7 @@ const Cart = () => {
                         {[...Array.from(goods)].map(item => {
                             return <div className='goods'>
                                 <img
-			    		            src={item.photoFile}
+			    		            src={item.photoFile[0]}
                                     alt={item.name}
                                     className='prodImg'
                                 />

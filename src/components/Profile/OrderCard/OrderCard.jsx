@@ -37,7 +37,11 @@ const OrderCard = ({order}) => {
             // var goodsInfo = await getProductInfo();
             for (let i = 0; i < goodsOrder.length; i++) {
                 goodsOrder[i].review = await getReviews(goodsOrder[i].product_id)
-                goodsOrder[i].photoFile = await getPhoto(goodsOrder[i].product_id)
+                goodsOrder[i].photoFile = []
+                for (var j = 0; j < 3; j++) {
+                    var photo = await getPhoto(goodsOrder[i].product_id, j)
+                    goodsOrder[i].photoFile.push(photo);
+                }
                 // let find = false;
                 // for (let j = 0; j < goodsInfo.length && !find; j++) {
                 //     if (goodsOrder[i].product_id === goodsInfo[j].id) {
@@ -74,9 +78,14 @@ const OrderCard = ({order}) => {
             return review 
         }
     
-        async function getPhoto(prodId) {
-            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_photo?bot_id=${userInfo[0].bot_id}&product_id=${prodId}`, {responseType: 'blob'})
-            return URL.createObjectURL(response.data)
+        async function getPhoto(prodId, photoNumber) {
+            try {
+              var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_photo?bot_id=${userInfo[0].bot_id}&product_id=${prodId}&photo_number=${photoNumber}`, {responseType: 'blob'})
+            //   console.log(1)
+              return URL.createObjectURL(response.data)
+            } catch (e) {
+            //   console.log(e)
+            }
         }
 
         // async function getProductInfo() {

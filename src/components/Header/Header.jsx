@@ -4,7 +4,7 @@ import { useTelegram } from '../../hooks/useTelegram';
 import './Header.css'
 import search from "../../assets/icons/search.svg"
 import { useNavigate } from 'react-router-dom';
-import { categories } from '../TestData/prod.jsx';
+import { products, categories, catNames } from '../TestData/prod.jsx';
 
 class HeaderComponent extends Component {
     constructor(props) {
@@ -50,6 +50,41 @@ const Header = () => {
     const {user, onClose} = useTelegram(); 
     let navigate = useNavigate();
 
+    let productsByCat = new Map();
+    var cats = [];
+    cats = categories;
+    for (let i = 0; i < cats.length; i++) {
+        productsByCat.set(cats[i], []);
+        // hiddenCats.set(cats[i], 0);
+    }
+    for (let i = 0; i < Object.keys(products).length; i++) {
+      if (products[i].category_name === null) {
+          products[i].category_name = 'Без категории'
+      }
+      let currentProd = productsByCat.get(products[i].category_name);
+      if (typeof currentProd != 'undefined' && typeof products[i] != 'undefined') {
+          currentProd.push(products[i]);
+      }
+      productsByCat.set(products[i].category_name, currentProd);
+      // if (currentProd.it_hidden) {
+      //     let hidden = hiddenCats.get(products[i].categories);
+      //     hiddenCats.set(products[i].categories, hidden + 1);
+      // }
+    }  
+    var values = catNames.values()
+    for (let i = 0; i < catNames.size; i++) {
+        var val = values.next().value
+        if (typeof productsByCat.get(val) !== 'undefined') {
+            if (productsByCat.get(val).length === 0) {
+                productsByCat.delete(val);
+                var index = cats.indexOf(val);
+                if (index > -1) {
+                    cats.splice(index, 1);
+                }
+            }
+        }
+    }
+
     return (
         <div className='header'>
             <div className='firstLine'>
@@ -66,8 +101,8 @@ const Header = () => {
                 <input className='searchField' type="text" id='search' onFocus={() => navigate('Search', { replace: false })} placeholder='Поиск товаров'></input>
             </div>
             {
-                categories.length > 0 ? (
-                    <HeaderComponent categories={categories} />
+                cats.length > 0 ? (
+                    <HeaderComponent categories={cats} />
                 ) : (
                     <div></div>
                 )

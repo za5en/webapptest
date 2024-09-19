@@ -101,6 +101,8 @@ const Orders = () => {
             products = response.data
             categories = []
             await getCategories();
+            var favList = await getFavoritesProducts();
+            var stickers = await getStickers();
             for (let i = 0; i < products.length; i++) {
               if (products[i].category_name === null) {
                 if (!categories.includes('Без категории')) {
@@ -108,11 +110,45 @@ const Orders = () => {
                 }
                 products[i].category_name = 'Без категории'
               } 
-              var photo = await getPhoto(products[i].id)
-              products[i].like = false;
+              for (var j = 0; j < 3 && message === ""; j++) {
+                var photo = await getPhoto(products[i].id, j)
+                products[i].photoFile.push(photo);
+              }
+              if (favList.includes(products[i].id)) {
+                products[i].like = true;
+              } else {
+                products[i].like = false;
+              }
+              if (stickers.includes(products[i].id)) {
+                products[i].stickers = stickers.get(products[i].id);
+              }
               products[i].photoFile = photo;
             }
             setAppState(response);
+        }
+
+        async function getFavoritesProducts() {
+          try {
+            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_favorite_products/?client_id=${userInfo[0].id}&bot_id=${botId}`)
+            // console.log(1)
+            var favs = []
+            for (let i = 0; i < response.data.favorite_products.length; i++) {
+              favs.push(response.data.favorite_products[i].id);
+            }
+            return favs;
+          } catch (e) {
+            // console.log(e)
+          }
+        }
+
+        async function getStickers() {
+          try {
+            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_sticker_products_by_bot/${botId}`)
+            // console.log(1)
+            return response.data
+          } catch (e) {
+            // console.log(e)
+          }
         }
 
         async function getCategories() {
@@ -141,9 +177,14 @@ const Orders = () => {
           }
         }
       
-        async function getPhoto(prodId) {
-            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_photo?bot_id=${botId}&product_id=${prodId}`, {responseType: 'blob'})
+        async function getPhoto(prodId, photoNumber) {
+          try {
+            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_photo?bot_id=${botId}&product_id=${prodId}&photo_number=${photoNumber}`, {responseType: 'blob'})
+            // console.log(1)
             return URL.createObjectURL(response.data)
+          } catch (e) {
+            // console.log(e)
+          }
         }
       
         async function getContacts() {

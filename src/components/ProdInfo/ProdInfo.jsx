@@ -6,6 +6,9 @@ import { goodsAmount } from '../Products/Products.jsx'
 import { userInfo } from '../TestData/user.jsx';
 import axios from 'axios';
 import ReactLoading from "react-loading";
+import like1 from "../../assets/icons/non_like.svg"
+import like2 from "../../assets/icons/like.svg"
+import Button from '../Button/Button.jsx';
 
 var optionsSelect = new Map()
 
@@ -22,6 +25,7 @@ const ProdInfo = () => {
     const [appState, setAppState] = useState();
     const [optionType, setOptionType] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
+    const [prodState, setProdState] = useState(0);
 
     const changeType = (groupName, name, itemPrice) => {
         optionsSelect.set(`${product.id}_${groupName}`, name)
@@ -248,9 +252,58 @@ const ProdInfo = () => {
         setAppState(response);
     }
 
+    const like = async (id) => {
+        let find = false;
+        for (let i = 0; i < Object.keys(products).length && !find; i++) {
+            if (products[i].id === id) {
+                find = true;
+                if (products[i].like) {
+                    await removeToFav(id);
+                } else {
+                    await addToFav(id);
+                }
+                products[i].like = !products[i].like;
+            }
+        }
+        // product.like = !product.like;
+        //api method
+        setProdState(prodState + 1)
+    }
+
+    async function addToFav(id) {
+        try {
+            var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/add_to_favorites/?product_id=${id}&bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}`)
+            // console.log(1)
+            if (response.status === 200) {
+            //   console.log(response)
+            }
+        } catch (e) {
+            // console.log(e)
+        }
+    }
+
+    async function removeToFav(id) {
+        try {
+            var response = await axios.delete(`https://market-bot.org:8082/clients_api/clients_menu/remove_from_favorites/?product_id=${id}&client_id=${userInfo[0].id}`)
+            // console.log(1)
+            if (response.status === 200) {
+            //   console.log(response)
+            }
+        } catch (e) {
+            // console.log(e)
+        }
+    }
+
     return (
         <div>
-            <OtherHeader />
+            <div className='otherHeader'>
+                <Button className='cancelButton' onClick={() => navigate(-1)}><b className='cancel'>Назад</b></Button>
+                {product.like ? (
+                    <img className='likeIconInfo' src={like2} onClick={() => like(product.id)}></img>
+                ) : (
+                    <img className='likeIconInfo' src={like1} onClick={() => like(product.id)}></img>
+                )}
+            </div>
             {isLoading ? (
                 <div className='loadScreen'>
                     <ReactLoading type="bubbles" color="#419FD9"
@@ -258,13 +311,32 @@ const ProdInfo = () => {
                 </div>
             ) : (
                 <div className={'product1 ' + location.state.className}>
-                    <div>
-                        <img
-			        		src={product.photoFile}
-			        		alt={product.name}
-			        		className='productIcon1'
-			        	/>
+                    <div className='bannerLine'>
+                        {product.photoFile.map(item => (
+                            <div className='scroll'>
+                                <div className='bannerImg'>
+                                    <img
+		                        		src={item}
+		                        		alt={product.name}
+		                        		className='productIcon1'
+		                        	/>
+                                </div>
+                            </div>
+                        ))}
                     </div>
+                    {typeof product.stickers !== 'undefined' && product.stickers.length > 0 ? (
+                        <div className='bannerLine'>
+                            {product.stickers.map(item => (
+                                <div className='scroll'>
+                                    <div className='sticker'>
+                                        <div className='stickerTextProd'>{item}</div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div></div>
+                    )}
                     <div className={'title1'}>{product.name}</div>
                     <div className='prodBlockPrice'>
                         <div className={'price1'}>

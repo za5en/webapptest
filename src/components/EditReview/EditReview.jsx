@@ -71,7 +71,7 @@ const EditReview = () => {
             <div className='goodsFd'>
                 <div className='goodsInnerFd'>
                     <img
-                        src={item.photoFile}
+                        src={item.photoFile[0]}
                         alt={item.name}
                         className='prodImg1'
                     />

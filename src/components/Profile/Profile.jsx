@@ -7,10 +7,11 @@ import { userInfo } from '../TestData/user.jsx';
 import axios from 'axios';
 import ReactLoading from "react-loading";
 import { categories, products } from '../TestData/prod.jsx';
-import { goodsGlobal } from './OrderCard/OrderCard.jsx';
+import OrderCard, { goodsGlobal } from './OrderCard/OrderCard.jsx';
 
 export var orders = []
 export var contacts = []
+var newOrderId1 = -1
 
 const Profile = () => {
     const {tg, user} = useTelegram();
@@ -18,6 +19,8 @@ const Profile = () => {
 
     const [appState, setAppState] = useState();
     const [isLoading, setIsLoading] = useState(false);
+    const [newOrderId, setNewOrderId] = useState(-1);
+    const [newOrderIndex, setNewOrderIndex] = useState(-1);
 
     useEffect(() => {
       tg.ready();
@@ -37,9 +40,16 @@ const Profile = () => {
     
         async function getOrders() {
           var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_orders/get_orders?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}`)
+          // console.log(1)
           orders = response.data
           orders.sort((a, b) => a.id < b.id ? 1 : -1);
+          newOrderId1 = -1
           for (let i = 0; i < orders.length; i++) {
+            if (orders[i].status === 'new' && orders[i].id > newOrderId1) {
+              setNewOrderId(orders[i].id);
+              newOrderId1 = orders[i].id;
+              setNewOrderIndex(i);
+            }
             await getProducts(orders[i].id);
           }
           setAppState(response);
@@ -47,6 +57,7 @@ const Profile = () => {
 
         async function getProducts(id) {
           var response  = await axios.get(`https://market-bot.org:8082/clients_api/clients_orders/get_orders?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&order_id=${id}`)
+          // console.log(1)
           var thisGoods = await getCart(response.data[0].cart_id);
           // for (let i = 0; i < thisGoods.length; i++) {
           //     thisGoods[i].review = await getReviews(thisGoods[i].product_id)
@@ -57,6 +68,7 @@ const Profile = () => {
   
         async function getCart(cartId) {
             var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_carts?client_id=${userInfo[0].id}&cart_id=${cartId}`)
+            // console.log(1)
             return response.data.data[0].products;
         }
 
@@ -77,18 +89,54 @@ const Profile = () => {
             products = response.data
             categories = []
             await getCategories();
+            var favList = await getFavoritesProducts();
+            var stickers = await getStickers();
             for (let i = 0; i < products.length; i++) {
               if (products[i].category_name === null) {
                 if (!categories.includes('Без категории')) {
                   categories.push('Без категории')
                 }
                 products[i].category_name = 'Без категории'
-              } 
-              var photo = await getPhoto(products[i].id)
-              products[i].like = false;
+              }
+              for (var j = 0; j < 3 && message === ""; j++) {
+                var photo = await getPhoto(products[i].id, j)
+                products[i].photoFile.push(photo);
+              }
+              if (favList.includes(products[i].id)) {
+                products[i].like = true;
+              } else {
+                products[i].like = false;
+              }
+              if (stickers.includes(products[i].id)) {
+                products[i].stickers = stickers.get(products[i].id);
+              }
               products[i].photoFile = photo;
             }
             setAppState(response);
+        }
+
+        async function getFavoritesProducts() {
+          try {
+            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_favorite_products/?client_id=${userInfo[0].id}&bot_id=${botId}`)
+            // console.log(1)
+            var favs = []
+            for (let i = 0; i < response.data.favorite_products.length; i++) {
+              favs.push(response.data.favorite_products[i].id);
+            }
+            return favs;
+          } catch (e) {
+            // console.log(e)
+          }
+        }
+
+        async function getStickers() {
+          try {
+            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_sticker_products_by_bot/${botId}`)
+            // console.log(1)
+            return response.data
+          } catch (e) {
+            // console.log(e)
+          }
         }
 
         async function getCategories() {
@@ -117,9 +165,14 @@ const Profile = () => {
           }
         }
       
-        async function getPhoto(prodId) {
-            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_photo?bot_id=${botId}&product_id=${prodId}`, {responseType: 'blob'})
+        async function getPhoto(prodId, photoNumber) {
+          try {
+            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_photo?bot_id=${botId}&product_id=${prodId}&photo_number=${photoNumber}`, {responseType: 'blob'})
+            // console.log(1)
             return URL.createObjectURL(response.data)
+          } catch (e) {
+            // console.log(e)
+          }
         }
       
         async function getContacts() {
@@ -198,11 +251,20 @@ const Profile = () => {
                             {user?.first_name ?? 'Username'} {user?.last_name}
                         </span>
                     </div>
+                    {
+                      newOrderId !== -1 && newOrderIndex !== -1 ? (
+                        <OrderCard
+                          order={orders[newOrderIndex]}
+                        />
+                      ) : (
+                        <div></div>
+                      )
+                    }
                     <div className='block' onClick={() => navigate('Info', { replace: false })}>Мой профиль &gt;</div>
                     <div className='block' onClick={() => navigate('Orders', { replace: false })}>Заказы &gt;</div>
                     {/* <div className='block' onClick={() => navigate('Promo', { replace: false })}>Акции &gt;</div> */}
+                    <div className='block' onClick={() => navigate('Favorites', { replace: false })}>Избранное &gt;</div>
                     <div className='block' onClick={() => navigate('Contacts', { replace: false })}>Контакты продавца &gt;</div>
-                    {/* <div className='block' onClick={() => navigate('Favorites', { replace: false })}>Избранное &gt;</div> */}
                     <div className='block' onClick={() => navigate('Support', { replace: false })}>Техническая поддержка &gt;</div>
                 </div>
                 )
