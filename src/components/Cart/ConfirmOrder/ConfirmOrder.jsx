@@ -225,11 +225,14 @@ const ConfirmOrder = () => {
                             }
                         }
                     }
+                    if (typeof goods[i].boostPrice === 'undefined') {
+                        goods[i].boostPrice = goods[i].price;
+                    }
                     response = await axios.post('https://market-bot.org:8082/clients_api/clients_menu/add_to_cart', {
                             cart_id: userInfo[0].cartId,
                             product_id: parseInt(goods[i].id.substring(0, goods[i].id.indexOf("_"))),
                             count: goodsAmount.get(goods[i].id),
-                            price: goods[i].price * goodsAmount.get(goods[i].id),
+                            price: goods[i].boostPrice * goodsAmount.get(goods[i].id),
                             option: options
                         }, {
                             headers: {

@@ -94,13 +94,18 @@ function App() {
             var photo = await getPhoto(products[i].id, j)
             products[i].photoFile.push(photo);
           }
-          if (favList.includes(products[i].id)) {
-            products[i].like = true;
-          } else {
-            products[i].like = false;
+          if (typeof favList !== 'undefined') {
+            if (favList.includes(products[i].id)) {
+              products[i].like = true;
+            } else {
+              products[i].like = false;
+            }
           }
-          if (stickers.includes(products[i].id)) {
-            products[i].stickers = stickers.get(products[i].id);
+          if (typeof stickers !== 'undefined') {
+            // if (stickers.sticker_products.includes(products[i].id)) {
+            //   console.log(products[i].id)
+              // products[i].stickers = stickers.get(products[i].id);
+            // }
           }
         }
         setAppState(response);

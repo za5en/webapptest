@@ -254,6 +254,7 @@ const Orders = () => {
                         {orders.map(item => (
                             <OrderCard
                              order={item}
+                             profile={false}
                             />
                         ))}
                     </div>
@@ -262,6 +263,7 @@ const Orders = () => {
                         {ordersTest.map(item => (
                             <OrderCard
                              order={item}
+                             profile={false}
                             />
                         ))}
                     </div>
