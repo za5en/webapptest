@@ -12,9 +12,9 @@ import OtherHeader from '../../OtherHeader/OtherHeader.jsx';
 var promo = []
 // export var deliveryAddress = []
 // export var deliveryType = []
-var paymentSelect = ['Онлайн']
+// var paymentSelect = ['Онлайн']
 
-var selection = new Map()
+export var selection = new Map()
 
 var fieldFill = new Map()
 
@@ -127,7 +127,7 @@ const ConfirmOrder = () => {
     }
 
     const confirm = async () => {
-        var paymentType = paymentSelect[0] === 0 ? 'card' : 'cash';
+        var paymentType = selection.get('payment') === 0 ? 'card' : 'cash';
         var delType = selection.get('delivery') === 0 ? 'pickup': 'delivery';
         var deliveryAddress = selection.get('delivery') === 0 ? '' : fieldFill.get('address');
         var phone = fieldFill.get('phone');
@@ -239,7 +239,7 @@ const ConfirmOrder = () => {
                                 'Content-Type': 'application/json'
                             }
                     })
-                    // console.log(response)
+                    console.log(response)
                 } else {
                     response = await axios.post('https://market-bot.org:8082/clients_api/clients_menu/add_to_cart', {
                             cart_id: userInfo[0].cartId,
@@ -340,7 +340,7 @@ const ConfirmOrder = () => {
             if (selection.get('delivery') === 1) {
                 await getCoords();
             }
-            if (paymentSelect[0] === 0) {
+            if (selection.get('payment') === 0) {
                 return await payForCart()
             }     
             else {
@@ -388,7 +388,7 @@ const ConfirmOrder = () => {
                             }
                             setIsLoading(false);
                             if (code === 200) {
-                                var type = paymentSelect[0] === 0 ? 'online' : 'courier'
+                                var type = selection.get('payment') === 0 ? 'online' : 'courier'
                                 navigate(`OrderConfirmed/${type}`, { replace: false, state: {type: type} })
                             }
                         } else {
@@ -409,10 +409,10 @@ const ConfirmOrder = () => {
     }
 
     const changePaymentType = (type) => {
-        while (paymentSelect.length > 0) {
-            paymentSelect.pop()
-        }
-        paymentSelect.push(type)
+        // while (paymentSelect.length > 0) {
+        //     paymentSelect.pop()
+        // }
+        // paymentSelect.push(type)
         selection.set('payment', type)
         setAppState(appState - 1)
         // setActiveButton(type)
