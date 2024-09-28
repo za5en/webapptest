@@ -3,8 +3,9 @@ import './Cart.css'
 import OtherHeader from '../OtherHeader/OtherHeader';
 import { useNavigate } from 'react-router-dom';
 import { goodsAmount } from '../Products/Products';
-import axios from 'axios';
-import { userInfo } from '../TestData/user.jsx';
+import { selection } from './ConfirmOrder/ConfirmOrder.jsx';
+// import axios from 'axios';
+// import { userInfo } from '../TestData/user.jsx';
 
 const Cart = () => {
     let navigate = useNavigate();
@@ -124,6 +125,9 @@ const Cart = () => {
     }
 
     const toConfirm = () => {
+        selection.set('delivery', 0);
+        selection.set('payment', 0);
+        selection.set('bonuses', 0);
         navigate('ConfirmOrder', { replace: false })
     }
 

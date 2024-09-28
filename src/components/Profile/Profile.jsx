@@ -44,18 +44,22 @@ const Profile = () => {
           orders = response.data
           orders.sort((a, b) => a.id < b.id ? 1 : -1);
           newOrderId1 = -1
+          var first = true;
           for (let i = 0; i < orders.length; i++) {
+            if (first && i > 0) {
+              first = false;
+            }
             if (orders[i].status === 'new' && orders[i].id > newOrderId1) {
               setNewOrderId(orders[i].id);
               newOrderId1 = orders[i].id;
               setNewOrderIndex(i);
             }
-            await getProducts(orders[i].id);
+            await getProducts(orders[i].id, first);
           }
           setAppState(response);
         }
 
-        async function getProducts(id) {
+        async function getProducts(id, first) {
           var response  = await axios.get(`https://market-bot.org:8082/clients_api/clients_orders/get_orders?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&order_id=${id}`)
           // console.log(1)
           var thisGoods = await getCart(response.data[0].cart_id);
@@ -63,6 +67,12 @@ const Profile = () => {
           //     thisGoods[i].review = await getReviews(thisGoods[i].product_id)
           //     thisGoods[i].photoFile = await getPhoto(thisGoods[i].product_id)
           // }
+          if (first) {
+            if (typeof thisGoods[0].product !== 'undefined') {
+              var photo = await getPhoto(userInfo[0].bot_id, thisGoods[0].product.id, 0)
+              thisGoods[0].product.photoFile = photo;
+            }
+          }
           goodsGlobal.set(id, thisGoods);
         }
   
@@ -99,7 +109,7 @@ const Profile = () => {
                 products[i].category_name = 'Без категории'
               }
               for (var j = 0; j < 3 && message === ""; j++) {
-                var photo = await getPhoto(products[i].id, j)
+                var photo = await getPhoto(botId, products[i].id, j)
                 products[i].photoFile.push(photo);
               }
               if (favList.includes(products[i].id)) {
@@ -165,7 +175,7 @@ const Profile = () => {
           }
         }
       
-        async function getPhoto(prodId, photoNumber) {
+        async function getPhoto(botId, prodId, photoNumber) {
           try {
             var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_photo?bot_id=${botId}&product_id=${prodId}&photo_number=${photoNumber}`, {responseType: 'blob'})
             // console.log(1)
@@ -226,7 +236,7 @@ const Profile = () => {
             }
             await getOrders();
           } catch (e) {
-            // console.log(e)
+            console.log(e)
           }          
           setIsLoading(false);
         }
@@ -255,6 +265,7 @@ const Profile = () => {
                       newOrderId !== -1 && newOrderIndex !== -1 ? (
                         <OrderCard
                           order={orders[newOrderIndex]}
+                          profile={true}
                         />
                       ) : (
                         <div></div>

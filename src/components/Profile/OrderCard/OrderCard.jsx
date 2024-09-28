@@ -10,7 +10,7 @@ import { goodsAmount } from '../../Products/Products.jsx';
 export var goodsOrder = new Map()
 export var goodsGlobal = new Map()
 
-const OrderCard = ({order}) => {
+const OrderCard = ({order, profile}) => {
 
     let navigate = useNavigate();
     
@@ -141,11 +141,35 @@ const OrderCard = ({order}) => {
                         height={100} width={50} />
                 </div>
             ) : (
+                profile ? (
+                    <div className='orderCard'  onClick={() => openOrder()}>
+                        <div className='orderCardWithPic'>
+                            {typeof goods[0].product !== 'undefined' && typeof goods[0].product.photoFile !== 'undefined' && goods[0].product !== null ? (
+                                <img
+			    		            src={goods[0].product.photoFile}
+                                    alt={goods[0].product.name}
+                                    className='prodImgPic'
+                                /> 
+                            ) : (
+                                <img
+			    		            src={goods[0].product.photoFile}
+                                    alt='ProductName'
+                                    className='prodImgPic'
+                                />
+                            )}
+                            <div className='prodText'>
+                                <div className='orderNumPic'>{'#' + order.id}</div>
+                                <div className='orderStatusPic'>{statuses.get(order.status)}</div>
+                                <div className='lightTextPic'>{new Date(order.start_time+'Z').toLocaleDateString(undefined, {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit'})}</div>
+                            </div>
+                        </div>
+                    </div>
+                ) : (
                 <div className='orderCard'>
                     <div className='firstOrderLine' onClick={() => openOrder()}>
                         <div className='orderDate'>{new Date(order.start_time+'Z').toLocaleDateString(undefined, {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit'})}</div>
-                            <div className='orderNum'>{'#' + order.id}</div>
-                            <div className='orderStatus'>{statuses.get(order.status)}</div>
+                        <div className='orderNum'>{'#' + order.id}</div>
+                        <div className='orderStatus'>{statuses.get(order.status)}</div>
                         {/* <div className='orderCost'>{order.sum + '₽'}</div> */}
                     </div>
                     <div className='lightText' onClick={() => openOrder()}>{order.delivery_type === 'pickup' ? "Самовывоз" : "Доставка"}</div>
@@ -177,6 +201,7 @@ const OrderCard = ({order}) => {
                     }
                     <button className='repeat-another' onClick={() => repeatOrder()}>Повторить заказ</button>
                 </div>
+                )
             )}
         </div>
     );
