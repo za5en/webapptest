@@ -16,7 +16,7 @@ const ProdInfo = () => {
 
     let navigate = useNavigate();
 
-    const {products, reviews, reviewsId, myReviews} = require('../TestData/prod.jsx');
+    const {products, reviews, reviewsId, myReviews, stickerInfo, stickerContent} = require('../TestData/prod.jsx');
     
     const location = useLocation();
 
@@ -294,6 +294,15 @@ const ProdInfo = () => {
         }
     }
 
+    var getStickers = [];
+    
+    if (typeof stickerInfo !== 'undefined' && stickerInfo.size > 0 && stickerInfo.has(product.id)) {
+        var stickers = stickerInfo.get(product.id);
+        for (let i = 0; i < stickers.length; i++) {
+            getStickers.push(stickerContent.get(stickers[i]));
+        }
+    }
+
     return (
         <div>
             <div className='otherHeader'>
@@ -324,12 +333,12 @@ const ProdInfo = () => {
                             </div>
                         ))}
                     </div>
-                    {typeof product.stickers !== 'undefined' && product.stickers.length > 0 ? (
+                    {typeof getStickers !== 'undefined' && getStickers.length > 0 ? (
                         <div className='bannerLine'>
-                            {product.stickers.map(item => (
+                            {getStickers.map(item => (
                                 <div className='scroll'>
-                                    <div className='sticker'>
-                                        <div className='stickerTextProd'>{item}</div>
+                                    <div className='sticker' style={{background: item.background === 'light' ? 'linear-gradient(90deg, #FE5BD8 0%, #FD986A 100%)' : 'linear-gradient(90deg, #5B8CFE 0%, #6AF8FD 100%)'}}>
+                                        <div className='stickerTextProd' style={{color: `#${item.color_text}`}}>{item.text}</div>
                                     </div>
                                 </div>
                             ))}

@@ -14,7 +14,7 @@ import OrderPage from './components/Profile/OrderPage/OrderPage';
 import Feedback from './components/Feedback/Feedback';
 import Contacts from './components/Profile/Blocks/Contacts/Contacts';
 import { userInfo } from './components/TestData/user.jsx';
-import { products, categories, banners, catNames } from './components/TestData/prod.jsx';
+import { products, categories, banners, catNames, stickerInfo, stickerContent } from './components/TestData/prod.jsx';
 import axios from 'axios';
 import OrderConfirmed from './components/Cart/ConfirmOrder/OrderConfirmed.jsx';
 import ReactLoading from "react-loading";
@@ -75,7 +75,24 @@ function App() {
         catNames = new Map()
         await getCategories();
         var favList = await getFavoritesProducts();
-        var stickers = await getStickers();
+        var stickers = await getStickerProducts();
+
+        if (typeof stickers !== 'undefined') {
+          for (let i = 0; i < stickers.sticker_products.length; i++) {
+            var tmp = stickerInfo.get(stickers.sticker_products[i].product_id);
+            if (typeof tmp === 'undefined') {
+              tmp = [stickers.sticker_products[i].sticker_id];
+              await getSticker(stickers.sticker_products[i].sticker_id);
+            } else {
+              if (!tmp.includes(stickers.sticker_products[i].sticker_id)) {
+                tmp.push(stickers.sticker_products[i].sticker_id);
+                await getSticker(stickers.sticker_products[i].sticker_id);
+              }
+            }
+            stickerInfo.set(stickers.sticker_products[i].product_id, tmp);
+          }
+        }
+
         for (let i = 0; i < products.length; i++) {
           if (typeof products[i].category_id === 'undefined' || products[i].category_id === null) {
             if (!categories.includes('Без категории')) {
@@ -100,12 +117,6 @@ function App() {
             } else {
               products[i].like = false;
             }
-          }
-          if (typeof stickers !== 'undefined') {
-            // if (stickers.sticker_products.includes(products[i].id)) {
-            //   console.log(products[i].id)
-              // products[i].stickers = stickers.get(products[i].id);
-            // }
           }
         }
         setAppState(response);
@@ -195,9 +206,20 @@ function App() {
       }
     }
 
-    async function getStickers() {
+    async function getStickerProducts() {
       try {
         var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_sticker_products_by_bot/${botId}`)
+        // console.log(1)
+        return response.data
+      } catch (e) {
+        // console.log(e)
+      }
+    }
+
+    async function getSticker(id) {
+      try {
+        var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_sticker/${id}`)
+        stickerContent.set(id, response.data);
         // console.log(1)
         return response.data
       } catch (e) {
@@ -282,6 +304,7 @@ function App() {
             <Route path={'Cart/ConfirmOrder'} element={<ConfirmOrder />} />
             <Route path={'Cart/ConfirmOrder/PolicyPage'} element={<PolicyPage />} />
             <Route path={'Cart/ConfirmOrder/OrderConfirmed/:type'} element={<OrderConfirmed />} />
+            <Route path={'Profile/OrderPage/Feedback'} element={<Feedback />} />
             <Route path={'Profile/Orders/OrderPage/Feedback'} element={<Feedback />} />
           </Routes>
         )
