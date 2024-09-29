@@ -334,7 +334,6 @@
 }
 
 .sticker {
-    background: linear-gradient(90deg, rgba(254,91,216,1) 0%, rgba(253,152,106,1) 100%);
     height: fit-content;
     width: fit-content;
     border-radius: 10px;

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './ProductItem.css'
 import { useNavigate } from 'react-router-dom';
 import { goodsAmount } from '../Products/Products.jsx'
-import { reviews, reviewsId } from '../TestData/prod.jsx';
+import { reviews, reviewsId, stickerContent, stickerInfo } from '../TestData/prod.jsx';
 import like1 from "../../assets/icons/non_like.svg"
 import like2 from "../../assets/icons/like.svg"
 import axios from 'axios';
@@ -123,6 +123,15 @@ const ProductItem = ({ product, className, onAdd, changePrice, link }) => {
         }
     }
 
+    var getStickers = [];
+
+    if (typeof stickerInfo !== 'undefined' && stickerInfo.size > 0 && stickerInfo.has(product.id)) {
+        var stickers = stickerInfo.get(product.id);
+        for (let i = 0; i < stickers.length; i++) {
+            getStickers.push(stickerContent.get(stickers[i]));
+        }
+    }
+
     return (
         <div className={'product ' + className}>
             <div className='toInfo'>
@@ -142,10 +151,10 @@ const ProductItem = ({ product, className, onAdd, changePrice, link }) => {
                     ) : (
                         <img className='likeIcon' src={like1} onClick={() => like(product.id)}></img>
                     )}
-                    {typeof product.stickers !== 'undefined' && product.stickers.length > 0 ? (
-                        product.stickers.map((item, index) => (
-                            <div className={`sticker${index}`}>
-                                <div className='stickerText'>{item}</div>
+                    {typeof getStickers !== 'undefined' && getStickers.length > 0 ? (
+                        getStickers.map((item, index) => (
+                            <div className={`sticker${index}`} style={{background: item.background === 'light' ? 'linear-gradient(90deg, #FE5BD8 0%, #FD986A 100%)' : 'linear-gradient(90deg, #5B8CFE 0%, #6AF8FD 100%)'}}>
+                                <div className='stickerText' style={{color: `#${item.color_text}`}}>{item.text}</div>
                             </div>
                         ))
                     ) : (

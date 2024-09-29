@@ -222,7 +222,7 @@
     position: absolute;
     left: 10px;
     top: 5px;
-    background: linear-gradient(90deg, rgba(254,91,216,1) 0%, rgba(253,152,106,1) 100%);
+    /* background: linear-gradient(90deg, rgba(254,91,216,1) 0%, rgba(253,152,106,1) 100%); */
     /* linear-gradient(90deg, rgba(91,140,254,1) 0%, rgba(106,248,253,1) 100%); */
     height: fit-content;
     width: fit-content;
@@ -234,7 +234,7 @@
     position: absolute;
     left: 10px;
     top: 25px;
-    background: linear-gradient(90deg, rgba(254,91,216,1) 0%, rgba(253,152,106,1) 100%);
+    /* background: linear-gradient(90deg, rgba(254,91,216,1) 0%, rgba(253,152,106,1) 100%); */
     /* linear-gradient(90deg, rgba(91,140,254,1) 0%, rgba(106,248,253,1) 100%); */
     height: fit-content;
     width: fit-content;
@@ -246,7 +246,7 @@
     position: absolute;
     left: 10px;
     top: 45px;
-    background: linear-gradient(90deg, rgba(254,91,216,1) 0%, rgba(253,152,106,1) 100%);
+    /* background: linear-gradient(90deg, rgba(254,91,216,1) 0%, rgba(253,152,106,1) 100%); */
     /* linear-gradient(90deg, rgba(91,140,254,1) 0%, rgba(106,248,253,1) 100%); */
     height: fit-content;
     width: fit-content;
@@ -258,6 +258,6 @@
     padding: 1.5px 5px 2px;
     font-weight: 500;
     font-size: 0.7em;
-    color: white;
+    /* color: white; */
     z-index: 2;
 }
