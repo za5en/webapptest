@@ -107,7 +107,7 @@ const ProductItem = ({ product, className, onAdd, changePrice, link }) => {
               console.log(response)
             }
         } catch (e) {
-            console.log(e)
+            // console.log(e)
         }
     }
 
