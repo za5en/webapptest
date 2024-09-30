@@ -99,10 +99,15 @@ const Contacts = () => {
                 categories.push('Без категории')
                 }
                 products[i].category_name = 'Без категории'
-              } 
-              for (var j = 0; j < 3 && message === ""; j++) {
+              }
+              var ok = true;
+              for (var j = 0; j < 3 && ok; j++) {
                 var photo = await getPhoto(products[i].id, j)
-                products[i].photoFile.push(photo);
+                if (typeof photo === 'undefined') {
+                  ok = false;
+                } else {
+                  products[i].photoFile.push(photo);
+                }
               }
               if (favList.includes(products[i].id)) {
                 products[i].like = true;
@@ -182,7 +187,11 @@ const Contacts = () => {
           try {
             var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_photo?bot_id=${botId}&product_id=${prodId}&photo_number=${photoNumber}`, {responseType: 'blob'})
             // console.log(1)
-            return URL.createObjectURL(response.data)
+            if (response.status === 200) {
+              return URL.createObjectURL(response.data)
+            } else {
+              return null;
+            }
           } catch (e) {
             // console.log(e)
           }

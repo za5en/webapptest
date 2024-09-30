@@ -106,10 +106,14 @@ function App() {
           //   categories.push(products[i].category_name)
           // }
           products[i].photoFile = [];
-          var message = "";
-          for (var j = 0; j < 3 && message === ""; j++) {
+          var ok = true;
+          for (var j = 0; j < 3 && ok; j++) {
             var photo = await getPhoto(products[i].id, j)
-            products[i].photoFile.push(photo);
+            if (typeof photo === 'undefined') {
+              ok = false;
+            } else {
+              products[i].photoFile.push(photo);
+            }
           }
           if (typeof favList !== 'undefined') {
             if (favList.includes(products[i].id)) {
@@ -171,7 +175,11 @@ function App() {
       try {
         var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_photo?bot_id=${botId}&product_id=${prodId}&photo_number=${photoNumber}`, {responseType: 'blob'})
         // console.log(1)
-        return URL.createObjectURL(response.data)
+        if (response.status === 200) {
+          return URL.createObjectURL(response.data)
+        } else {
+          return null;
+        }
       } catch (e) {
         // console.log(e)
       }
