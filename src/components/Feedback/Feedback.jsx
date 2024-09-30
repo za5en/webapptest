@@ -71,29 +71,36 @@ const Feedback = () => {
         }
         return (
             <div className='goodsFd'>
-                <div className='goodsInnerFd'>
-                    <img
-                        src={item.photoFile[0]}
-                        alt={item.product.name}
-                        className='prodImg1'
-                    />
-                    <div className='prodText'>
-                        <div className='prodName'>{item.product.name}</div>
-                        <div className='prodName'>{item.price} ₽</div>
-                        {/* <div className='prodParam'>{item.weight} гр</div> */}
-                        {/* <div className='prodParam'>{item.order_quantity} шт.</div> */}
+                {item.product !== null ? (
+                <div>
+                    <div className='goodsInnerFd'>
+                        <img
+                            src={item.photoFile[0]}
+                            alt={item.product.name}
+                            className='prodImg1'
+                        />
+                        <div className='prodText'>
+                            <div className='prodName'>{item.product.name}</div>
+                            <div className='prodName'>{item.price} ₽</div>
+                            {/* <div className='prodParam'>{item.weight} гр</div> */}
+                            {/* <div className='prodParam'>{item.order_quantity} шт.</div> */}
+                        </div>
                     </div>
+                    <MarksLine id={item.product_id} />
+                    <form className='feedbackReview'>
+                        <div className='fieldHeader'>Отзыв</div>
+                        <textarea className='textFieldExt' type="text" id={'content' + item.product_id} placeholder='Краткий отзыв по товару' onChange={str !== '' ? addString(item.product_id, str) : null} defaultValue={goodsReviews.get(item.product_id)}></textarea>
+                        {isValidContent ? (
+                            <div></div>
+                        ) : (
+                            <div className='wrongPhone'>Отзыв должен содержать не более 200 символов</div>
+                        )}
+                    </form>
                 </div>
-                <MarksLine id={item.product_id} />
-                <form className='feedbackReview'>
-                    <div className='fieldHeader'>Отзыв</div>
-                    <textarea className='textFieldExt' type="text" id={'content' + item.product_id} placeholder='Краткий отзыв по товару' onChange={str !== '' ? addString(item.product_id, str) : null} defaultValue={goodsReviews.get(item.product_id)}></textarea>
-                    {isValidContent ? (
-                        <div></div>
-                    ) : (
-                        <div className='wrongPhone'>Отзыв должен содержать не более 200 символов</div>
-                    )}
-                </form>
+                ) : (
+                    <div></div>
+                )
+                }
             </div>
         );
     }

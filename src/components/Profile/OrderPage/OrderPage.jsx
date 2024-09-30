@@ -47,10 +47,12 @@ const OrderPage = () => {
                 var key = `${goodsOrder[i].product_id}`;
                 for (let j = 0; j < goodsOrder[i].option.length; j++) {
                     let find = false;
-                    for (let k = 0; k < goodsOrder[i].product.options[j].options.length && !find; k++) {
-                        if (goodsOrder[i].option[j].options[0].name === goodsOrder[i].product.options[j].options[k].name) {
-                            key += `_${k}`;
-                            find = true;
+                    if (goodsOrder[i].product !== null) {
+                        for (let k = 0; k < goodsOrder[i].product.options[j].options.length && !find; k++) {
+                            if (goodsOrder[i].option[j].options[0].name === goodsOrder[i].product.options[j].options[k].name) {
+                                key += `_${k}`;
+                                find = true;
+                            }
                         }
                     }
                 }

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { userInfo } from '../TestData/user.jsx';
 import axios from 'axios';
 import ReactLoading from "react-loading";
-import { categories, products } from '../TestData/prod.jsx';
+import { categories, products, stickerContent, stickerInfo } from '../TestData/prod.jsx';
 import OrderCard, { goodsGlobal } from './OrderCard/OrderCard.jsx';
 
 export var orders = []
@@ -68,9 +68,17 @@ const Profile = () => {
           //     thisGoods[i].photoFile = await getPhoto(thisGoods[i].product_id)
           // }
           if (first) {
-            if (typeof thisGoods[0].product !== 'undefined') {
-              var photo = await getPhoto(userInfo[0].bot_id, thisGoods[0].product.id, 0)
-              thisGoods[0].product.photoFile = photo;
+            if (typeof thisGoods !== 'undefined') {
+              if (typeof thisGoods[0].product !== 'undefined') {
+                if (thisGoods[0].product !== null) {
+                var photo = await getPhoto(userInfo[0].bot_id, thisGoods[0].product.id, 0)
+                thisGoods[0].product.photoFile = photo;
+                } else {
+                  thisGoods[0].product = {
+                    photoFile: '',
+                  };
+                }
+              }
             }
           }
           goodsGlobal.set(id, thisGoods);
@@ -100,7 +108,24 @@ const Profile = () => {
             categories = []
             await getCategories();
             var favList = await getFavoritesProducts();
-            var stickers = await getStickers();
+            var stickers = await getStickerProducts();
+
+            if (typeof stickers !== 'undefined') {
+              for (let i = 0; i < stickers.sticker_products.length; i++) {
+                var tmp = stickerInfo.get(stickers.sticker_products[i].product_id);
+                if (typeof tmp === 'undefined') {
+                  tmp = [stickers.sticker_products[i].sticker_id];
+                  await getSticker(stickers.sticker_products[i].sticker_id);
+                } else {
+                  if (!tmp.includes(stickers.sticker_products[i].sticker_id)) {
+                    tmp.push(stickers.sticker_products[i].sticker_id);
+                    await getSticker(stickers.sticker_products[i].sticker_id);
+                  }
+                }
+                stickerInfo.set(stickers.sticker_products[i].product_id, tmp);
+              }
+            }
+
             for (let i = 0; i < products.length; i++) {
               if (products[i].category_name === null) {
                 if (!categories.includes('Без категории')) {
@@ -139,9 +164,20 @@ const Profile = () => {
           }
         }
 
-        async function getStickers() {
+        async function getStickerProducts() {
           try {
             var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_sticker_products_by_bot/${botId}`)
+            // console.log(1)
+            return response.data
+          } catch (e) {
+            // console.log(e)
+          }
+        }
+    
+        async function getSticker(id) {
+          try {
+            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_sticker/${id}`)
+            stickerContent.set(id, response.data);
             // console.log(1)
             return response.data
           } catch (e) {
