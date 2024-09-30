@@ -3,90 +3,12 @@ import '../Blocks.css'
 import './Info.css'
 import OtherHeader from '../../../OtherHeader/OtherHeader';
 import { contacts, orders } from '../../Profile.jsx';
-// import axios from 'axios';
-// import { userInfo } from '../../../TestData/user.jsx';
 import ReactLoading from "react-loading";
 import { userInfo } from '../../../TestData/user.jsx';
-// import { useTelegram } from '../../../../hooks/useTelegram.js';
-// import { categories, products } from '../../../TestData/prod.jsx';
 
 const Info = () => {
 
-    // const [appState, setAppState] = useState();
     const [isLoading, setIsLoading] = useState(false);
-
-    // const {tg, user} = useTelegram(); 
-
-    // useEffect(() => {
-    //   tg.ready();
-    // }, [])
-  
-    // let botId = 0;
-    // botId = window.Telegram.WebApp.initDataUnsafe.start_param; //by direct link
-    // if (typeof botId === 'undefined') {
-    //   let params = new URL(document.location.toString()).searchParams;
-    //   botId = params.get("bot_id"); //by inline button
-    // }
-  
-    // botId = 60
-    // let userId = 649105595
-
-    // useEffect(() => {
-
-    //     async function getUser() {
-    //         var response  = await axios.get(`https://market-bot.org:8082/clients_api/user/get_user/?bot_id=${botId}&client_tg_id=${user.id}`)
-    //         userInfo = response.data
-    //         setAppState(response);
-    //         if (response.status === 200) {
-    //           await getMenu();
-    //           await getContacts();
-    //         }
-    //     }
-
-    //     async function getMenu() {
-    //         var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_all_menu/?bot_id=${botId}&client_id=${userInfo[0].id}`)
-    //         products = response.data
-    //         categories = []
-    //         for (let i = 0; i < products.length; i++) {
-    //           if (!categories.includes(products[i].category) && !products[i].it_hidden) {
-    //             categories.push(products[i].category)
-    //           }
-    //           var photo = await getPhoto(products[i].id)
-    //           products[i].like = false;
-    //           products[i].photoFile = photo;
-    //         }
-    //         setAppState(response);
-    //     }
-      
-    //     async function getPhoto(prodId) {
-    //         var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_photo?bot_id=${botId}&product_id=${prodId}`, {responseType: 'blob'})
-    //         return URL.createObjectURL(response.data)
-    //     }
-      
-    //     async function getContacts() {
-    //         var response  = await axios.get(`https://market-bot.org:8082/clients_api/info/get_contacts/?bot_id=${botId}&client_id=${userInfo[0].id}`)
-    //         contacts = response.data[0]
-    //         setAppState(response);
-    //     }
-    
-    //     async function makeRequest() {
-    //       setIsLoading(true);
-    //       try {
-    //         if (userInfo[0].id === 1) {
-    //             await getUser();
-    //         }
-    //       } catch (e) {
-    //         // console.log(e)
-    //       }          
-    //       setIsLoading(false);
-    //     }
-    
-    //     makeRequest()
-    // }, [setAppState]);
-
-    // if (contacts.length > 0 && contacts[0].shop_vk.includes("/")) {
-    //     contacts[0].shop_vk = contacts[0].shop_vk.substring(contacts[0].shop_vk.lastIndexOf("/") + 1)
-    // }
 
     return (
         <div>

@@ -144,19 +144,24 @@ const OrderCard = ({order, profile}) => {
                 profile ? (
                     <div className='orderCard'  onClick={() => openOrder()}>
                         <div className='orderCardWithPic'>
-                            {typeof goods[0].product !== 'undefined' && typeof goods[0].product.photoFile !== 'undefined' && goods[0].product !== null ? (
-                                <img
-			    		            src={goods[0].product.photoFile}
-                                    alt={goods[0].product.name}
-                                    className='prodImgPic'
-                                /> 
-                            ) : (
-                                <img
-			    		            src={goods[0].product.photoFile}
-                                    alt='ProductName'
-                                    className='prodImgPic'
-                                />
-                            )}
+                            {typeof goods !== 'undefined' ? (
+                                    typeof goods[0].product !== 'undefined' && typeof goods[0].product.photoFile !== 'undefined' && goods[0].product !== null ? (
+                                        <img
+			    		                    src={goods[0].product.photoFile}
+                                            alt={goods[0].product.name}
+                                            className='prodImgPic'
+                                        /> 
+                                    ) : (
+                                        <img
+			    		                    src={goods[0].product.photoFile}
+                                            alt='ProductName'
+                                            className='prodImgPic'
+                                        />
+                                    )
+                                ) : (
+                                    <div></div>
+                                )
+                            }
                             <div className='prodText'>
                                 <div className='orderNumPic'>{'#' + order.id}</div>
                                 <div className='orderStatusPic'>{statuses.get(order.status)}</div>
@@ -174,30 +179,34 @@ const OrderCard = ({order, profile}) => {
                     </div>
                     <div className='lightText' onClick={() => openOrder()}>{order.delivery_type === 'pickup' ? "Самовывоз" : "Доставка"}</div>
                     {
-                        goods.map(item => (
-                            <div onClick={() => openOrder()}>
-                                <div className='promoLine'>
-                                {typeof item.product !== 'undefined' && item.product !== null ? (
-                                    <div className='prodValue'>{item.count} x {item.product.name}</div>
-                                    ) : (
-                                    <div className='prodValue'>{item.count} x Продукт</div>
-                                )}
-                                    <div className='priceValue'>{item.price}</div>
+                        typeof goods !== 'undefined' ? (
+                            goods.map(item => (
+                                <div onClick={() => openOrder()}>
+                                    <div className='promoLine'>
+                                    {typeof item.product !== 'undefined' && item.product !== null ? (
+                                        <div className='prodValue'>{item.count} x {item.product.name}</div>
+                                        ) : (
+                                        <div className='prodValue'>{item.count} x Продукт</div>
+                                    )}
+                                        <div className='priceValue'>{item.price}</div>
+                                    </div>
+                                    {typeof item.option !== 'undefined' ?
+                                        item.option.length > 0 ? (
+                                            item.option.map(prod => (
+                                                <div className='optionText'>{prod.options[0].name}</div>
+                                            ))
+                                        ) : (
+                                            <div></div>
+                                        ) : (
+                                            <div></div>
+                                        )
+                                    }
+                                    <hr className="solidOrder"></hr>
                                 </div>
-                                {typeof item.option !== 'undefined' ?
-                                    item.option.length > 0 ? (
-                                        item.option.map(prod => (
-                                            <div className='optionText'>{prod.options[0].name}</div>
-                                        ))
-                                    ) : (
-                                        <div></div>
-                                    ) : (
-                                        <div></div>
-                                    )
-                                }
-                                <hr className="solidOrder"></hr>
-                            </div>
-                        ))
+                            ))
+                        ) : (
+                            <div></div>
+                        )
                     }
                     <button className='repeat-another' onClick={() => repeatOrder()}>Повторить заказ</button>
                 </div>
