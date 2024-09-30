@@ -42,8 +42,8 @@ function App() {
     botId = params.get("bot_id"); //by inline button
   }
 
-  // botId = 83
-  // let userId = 649105595
+  botId = 77
+  let userId = 649105595
 
   const [appState, setAppState] = useState();
   const [isLoading, setIsLoading] = useState(false);
@@ -51,7 +51,7 @@ function App() {
   useEffect(() => {
     async function getUser() {
       try {
-        var response  = await axios.get(`https://market-bot.org:8082/clients_api/user/get_user/?bot_id=${botId}&client_tg_id=${user.id}`)
+        var response  = await axios.get(`https://market-bot.org:8082/clients_api/user/get_user/?bot_id=${botId}&client_tg_id=${userId}`)
         userInfo = response.data
         setAppState(response);
         if (response.status === 200) {
@@ -77,7 +77,7 @@ function App() {
         var favList = await getFavoritesProducts();
         var stickers = await getStickerProducts();
 
-        if (typeof stickers !== 'undefined') {
+        if (typeof stickers !== 'undefined' && typeof stickers.sticker_products !== 'undefined') {
           for (let i = 0; i < stickers.sticker_products.length; i++) {
             var tmp = stickerInfo.get(stickers.sticker_products[i].product_id);
             if (typeof tmp === 'undefined') {

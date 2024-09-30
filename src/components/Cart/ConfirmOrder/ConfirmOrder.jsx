@@ -239,7 +239,6 @@ const ConfirmOrder = () => {
                                 'Content-Type': 'application/json'
                             }
                     })
-                    // console.log(response)
                 } else {
                     response = await axios.post('https://market-bot.org:8082/clients_api/clients_menu/add_to_cart', {
                             cart_id: userInfo[0].cartId,
@@ -363,7 +362,7 @@ const ConfirmOrder = () => {
                             try {
                                 code = await makeRequest();
                             } catch (e) {
-                                console.log(e);
+                                // console.log(e);
                                 if (typeof e !== "undefined") {
                                     if (typeof e.response !== "undefined") {
                                         if (typeof e.response.data !== "undefined") {
