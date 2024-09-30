@@ -38,7 +38,7 @@ const Contacts = () => {
         async function contactsAddress() {
             try {
                 const response = await axios.get(
-                    `https://geocode-maps.yandex.ru/1.x/?apikey=97e17441-c27d-4020-9b23-0b815499d385&geocode=${contacts[0].shop_address}&format=json`,
+                    `https://geocode-maps.yandex.ru/1.x/?apikey=08afa3ed-8e3e-46ea-b965-cd5f435f6a92&geocode=${contacts[0].shop_address}&format=json`,
                     { withCredentials: false }
                 )
     
@@ -268,7 +268,7 @@ const Contacts = () => {
                             contacts[0].shop_address === null || contacts[0].shop_address === "" ? (
                             <div></div>
                             ) : (
-                              <YMaps query={{ apikey: '30a63ef2-9728-4aa2-b1f8-c8b716d577a8' }}>
+                              <YMaps query={{ apikey: '08afa3ed-8e3e-46ea-b965-cd5f435f6a92' }}>
                                 <Map
                                   state={{
                                     center: isValidCoordinates ? coordinates : [55.751574, 37.573856],

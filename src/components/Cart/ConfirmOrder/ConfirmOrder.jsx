@@ -157,7 +157,7 @@ const ConfirmOrder = () => {
         async function getCoords() {
             try {
                 const response = await axios.get(
-			    	`https://geocode-maps.yandex.ru/1.x/?apikey=97e17441-c27d-4020-9b23-0b815499d385&geocode=${deliveryAddress}&format=json`,
+			    	`https://geocode-maps.yandex.ru/1.x/?apikey=08afa3ed-8e3e-46ea-b965-cd5f435f6a92&geocode=${deliveryAddress}&format=json`,
 			    	{ withCredentials: false }
 			    )
 
@@ -239,7 +239,7 @@ const ConfirmOrder = () => {
                                 'Content-Type': 'application/json'
                             }
                     })
-                    console.log(response)
+                    // console.log(response)
                 } else {
                     response = await axios.post('https://market-bot.org:8082/clients_api/clients_menu/add_to_cart', {
                             cart_id: userInfo[0].cartId,
@@ -279,7 +279,7 @@ const ConfirmOrder = () => {
                   'Content-Type': 'application/json'
               }
             })
-            console.log(response)
+            // console.log(response)
             setAppState(response);
             return response.status
         }
@@ -306,7 +306,7 @@ const ConfirmOrder = () => {
                 })
                 var json = response.data
                 json.query_id = queryId
-                console.log(response)
+                // console.log(response)
                 setAppState(response);
                 return response.status
             } else {
@@ -329,7 +329,7 @@ const ConfirmOrder = () => {
                 })
                 var json = response.data
                 json.query_id = queryId
-                console.log(response)
+                // console.log(response)
                 setAppState(response);
                 return response.status
             }
