@@ -104,7 +104,7 @@ const ProductItem = ({ product, className, onAdd, changePrice, link }) => {
             var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/add_to_favorites/?product_id=${id}&bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}`)
             // console.log(1)
             if (response.status === 200) {
-              console.log(response)
+            //   console.log(response)
             }
         } catch (e) {
             // console.log(e)
@@ -116,7 +116,7 @@ const ProductItem = ({ product, className, onAdd, changePrice, link }) => {
             var response = await axios.delete(`https://market-bot.org:8082/clients_api/clients_menu/remove_from_favorites/?product_id=${id}&client_id=${userInfo[0].id}`)
             // console.log(1)
             if (response.status === 200) {
-              console.log(response)
+            //   console.log(response)
             }
         } catch (e) {
             // console.log(e)
