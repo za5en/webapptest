@@ -154,7 +154,7 @@ const OrderCard = ({order, profile}) => {
                     <div className='orderCard'  onClick={() => openOrder()}>
                         <div className='orderCardWithPic'>
                             {typeof goods !== 'undefined' ? (
-                                    typeof goods[0].product !== 'undefined' && typeof goods[0].product.photoFile !== 'undefined' && goods[0].product !== null ? (
+                                    typeof goods[0].product !== 'undefined' && goods[0].product !== null && typeof goods[0].product.photoFile !== 'undefined' ? (
                                         <img
 			    		                    src={goods[0].product.photoFile}
                                             alt={goods[0].product.name}
@@ -162,7 +162,7 @@ const OrderCard = ({order, profile}) => {
                                         /> 
                                     ) : (
                                         <img
-			    		                    src={goods[0].product.photoFile}
+			    		                    src='null'
                                             alt='ProductName'
                                             className='prodImgPic'
                                         />
