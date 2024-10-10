@@ -20,7 +20,7 @@ const CreateRequest = () => {
         var comment = document.getElementById("comment").value
       
         async function createRequest() {
-            var response = await axios.post(`https://market-bot.org:8082/clients_api/technical_support/create_request/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&title=${title}&content=${comment}&email=${email}`)
+            var response = await axios.post(`https://market-bot.org:8082/clients_api/technical_support/create_request/${userInfo[0].bot_id}/?client_id=${userInfo[0].id}&title=${title}&content=${comment}&email=${email}`)
             setAppState(response);
             return response.status
         }

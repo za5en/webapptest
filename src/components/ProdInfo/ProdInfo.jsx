@@ -210,7 +210,7 @@ const ProdInfo = () => {
             myReviews.pop();
         }
 
-        var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_reviews/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&product_id=${location.state.id}`)
+        var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_reviews/${userInfo[0].bot_id}/?client_id=${userInfo[0].id}&product_id=${location.state.id}`)
         if (response.status === 200) {
             for (let i = 0; i < response.data.length; i++) {
                 if (!reviewsId.includes(response.data[i].id)) {
@@ -242,7 +242,7 @@ const ProdInfo = () => {
 
     const deleteReview = async (reviewId) => {
         try {
-            var response = await axios.post(`https://market-bot.org:8082/clients_api/reviews/delete_review/?bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}&review_id=${reviewId}`)
+            var response = await axios.post(`https://market-bot.org:8082/clients_api/reviews/delete_review/${userInfo[0].bot_id}/?client_id=${userInfo[0].id}&review_id=${reviewId}`)
             if (response.status === 200) {
                 await getReviews();
             }
@@ -272,7 +272,7 @@ const ProdInfo = () => {
 
     async function addToFav(id) {
         try {
-            var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/add_to_favorites/?product_id=${id}&bot_id=${userInfo[0].bot_id}&client_id=${userInfo[0].id}`)
+            var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/add_to_favorites/${userInfo[0].bot_id}/?product_id=${id}&client_id=${userInfo[0].id}`)
             // console.log(1)
             if (response.status === 200) {
             //   console.log(response)
@@ -284,7 +284,7 @@ const ProdInfo = () => {
 
     async function removeToFav(id) {
         try {
-            var response = await axios.delete(`https://market-bot.org:8082/clients_api/clients_menu/remove_from_favorites/?product_id=${id}&client_id=${userInfo[0].id}`)
+            var response = await axios.delete(`https://market-bot.org:8082/clients_api/clients_menu/remove_from_favorites/${userInfo[0].bot_id}/?product_id=${id}&client_id=${userInfo[0].id}`)
             // console.log(1)
             if (response.status === 200) {
             //   console.log(response)
