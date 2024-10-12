@@ -17,7 +17,7 @@ const Support = () => {
     useEffect(() => {
     
         async function getRequests() {
-          var response = await axios.get(`https://market-bot.org:8082/clients_api/technical_support/get_my_request/${userInfo[0].bot_id}/?client_id=${userInfo[0].id}`)
+          var response = await axios.get(`https://market-bot.org:8082/clients_api/technical_support/get_my_request/${userInfo[0].bot_id}?client_id=${userInfo[0].id}`)
           if (response.status === 200) {
             while (response.length > 0) {
                 requests.pop()

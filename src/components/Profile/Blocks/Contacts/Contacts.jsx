@@ -58,7 +58,7 @@ const Contacts = () => {
         }
 
         async function getUser() {
-            var response  = await axios.get(`https://market-bot.org:8082/clients_api/user/get_user/${botId}/?client_tg_id=${user.id}`)
+            var response  = await axios.get(`https://market-bot.org:8082/clients_api/user/get_user/${botId}?client_tg_id=${user.id}`)
             userInfo = response.data
             setAppState(response);
             if (response.status === 200) {
@@ -70,7 +70,7 @@ const Contacts = () => {
         }
 
         async function getMenu() {
-            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_all_menu/${userInfo[0].bot_id}/?client_id=${userInfo[0].id}`)
+            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_all_menu/${userInfo[0].bot_id}?client_id=${userInfo[0].id}`)
             products = response.data
             categories = []
             await getCategories();
@@ -124,7 +124,7 @@ const Contacts = () => {
 
         async function getFavoritesProducts() {
           try {
-            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_favorite_products/${userInfo[0].bot_id}/?client_id=${userInfo[0].id}`)
+            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_favorite_products/${userInfo[0].bot_id}?client_id=${userInfo[0].id}`)
             // console.log(1)
             var favs = []
             for (let i = 0; i < response.data.favorite_products.length; i++) {
@@ -138,7 +138,7 @@ const Contacts = () => {
 
         async function getStickerProducts() {
           try {
-            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_sticker_products_by_bot/${userInfo[0].bot_id}/`)
+            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_sticker_products_by_bot/${userInfo[0].bot_id}`)
             // console.log(1)
             return response.data
           } catch (e) {
@@ -159,7 +159,7 @@ const Contacts = () => {
 
         async function getCategories() {
           try {
-            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_category/${userInfo[0].bot_id}/`)
+            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_category/${userInfo[0].bot_id}`)
             var tmp = new Map()
             if (response.status === 200) {
               for (let i = 0; i < response.data.categories.length; i++) {
@@ -185,7 +185,7 @@ const Contacts = () => {
       
         async function getPhoto(prodId, photoNumber) {
           try {
-            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_photo/${userInfo[0].bot_id}/?product_id=${prodId}&photo_number=${photoNumber}`, {responseType: 'blob'})
+            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_photo/${userInfo[0].bot_id}?product_id=${prodId}&photo_number=${photoNumber}`, {responseType: 'blob'})
             // console.log(1)
             if (response.status === 200) {
               return URL.createObjectURL(response.data)
@@ -198,14 +198,14 @@ const Contacts = () => {
         }
       
         async function getContacts() {
-            var response  = await axios.get(`https://market-bot.org:8082/clients_api/info/get_contacts/${userInfo[0].bot_id}/?client_id=${userInfo[0].id}`)
+            var response  = await axios.get(`https://market-bot.org:8082/clients_api/info/get_contacts/${userInfo[0].bot_id}?client_id=${userInfo[0].id}`)
             contacts = response.data[0]
             setAppState(response);
         }
 
         async function getBotInfo() {
           try {
-            var response  = await axios.get(`https://market-bot.org:8082/clients_api/info/get_bot_info/${userInfo[0].bot_id}/`)
+            var response  = await axios.get(`https://market-bot.org:8082/clients_api/info/get_bot_info/${userInfo[0].bot_id}`)
             userInfo[0].haveDelivery = response.data.have_delivery;
             userInfo[0].limit_bonuses = response.data.limit_bonuses;
             userInfo[0].cashback = response.data.cashback;
@@ -217,7 +217,7 @@ const Contacts = () => {
     
         async function getBanners() {
           try {
-            var response  = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_banners/${userInfo[0].bot_id}/?client_id=${userInfo[0].id}`)
+            var response  = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_banners/${userInfo[0].bot_id}?client_id=${userInfo[0].id}`)
             banners = response.data.banners;
             for (let i = 0; i < banners.length; i++) {
               var photo = await getBannerPhoto(banners[i].banner_id)
@@ -230,7 +230,7 @@ const Contacts = () => {
     
         async function getBannerPhoto(bannerId) {
           try {
-            var response  = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_banner_photo/${userInfo[0].bot_id}/?banner_id=${bannerId}`, {responseType: 'blob'})
+            var response  = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_banner_photo/${userInfo[0].bot_id}?banner_id=${bannerId}`, {responseType: 'blob'})
             return URL.createObjectURL(response.data)
           } catch (e) {
             // console.log(e)
