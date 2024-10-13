@@ -29,7 +29,7 @@ import Info from './components/Profile/Blocks/Info/Info.jsx';
 import PolicyPage from './components/Cart/ConfirmOrder/PolicyPage.jsx';
 
 function App() {
-  const {tg, user} = useTelegram(); 
+  const {tg, user, tokenString} = useTelegram(); 
 
   useEffect(() => {
     tg.ready();
@@ -42,21 +42,23 @@ function App() {
     botId = params.get("bot_id"); //by inline button
   }
 
-  botId = 77
-  let userId = 649105595
+  // botId = 77
+  // let userId = 649105595
 
   const [appState, setAppState] = useState();
   const [isLoading, setIsLoading] = useState(false);
+
+  console.log(tokenString)
 
   useEffect(() => {
     async function getUser() {
       try {
         var config = {
           headers: {
-            'Authorization': `bearer ${tg.initDataUnsafe ?? []}`,
+            'Authorization': tokenString,
           }
         }
-        var response  = await axios.get(`https://market-bot.org:8082/clients_api/user/get_user/${botId}?client_tg_id=${userId}`, config)
+        var response  = await axios.get(`https://market-bot.org:8082/clients_api/user/get_user/${botId}?client_tg_id=${user.id}`, config)
         userInfo = response.data
         setAppState(response);
         if (response.status === 200) {
