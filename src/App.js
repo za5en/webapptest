@@ -48,8 +48,6 @@ function App() {
   const [appState, setAppState] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log(tokenString)
-
   useEffect(() => {
     async function getUser() {
       try {
