@@ -49,7 +49,6 @@ export function useTelegram() {
       if (tokenString[tokenString.length - 1] === '&') {
         tokenString = tokenString.slice(0, -1);
       }
-        console.log(encodeURI(tokenString))
     }
     
     return {
