@@ -16,6 +16,7 @@ export function useTelegram() {
 
     var tokenString = '';
     if (tg.initDataUnsafe !== null) {
+      tokenString = 'bearer '
       // if (typeof tg.initDataUnsafe.query_id !== 'undefined' && tg.initDataUnsafe.query_id !== null) {
       //   tokenString += `query_id=${tg.initDataUnsafe.query_id}&`
       // }
