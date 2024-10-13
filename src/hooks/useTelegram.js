@@ -25,11 +25,8 @@ export function useTelegram() {
       if (typeof tg.initDataUnsafe.hash !== 'undefined' && tg.initDataUnsafe.hash !== null) {
         tokenString += `hash=${tg.initDataUnsafe.hash}&`
       }
-      if (typeof user !== 'undefined' && user !== null) {
-        tokenString += `user=${JSON.stringify(user)}&`
-      }
-      if (typeof user !== 'undefined' && user !== null) {
-        tokenString += `user=${JSON.stringify(user)}&`
+      if (typeof tg.initDataUnsafe.user !== 'undefined' && tg.initDataUnsafe.user !== null) {
+        tokenString += `user=${JSON.stringify(tg.initDataUnsafe.user)}&`
       }
       if (typeof tg.initDataUnsafe.receiver !== 'undefined' && tg.initDataUnsafe.receiver !== null) {
         tokenString += `receiver=${JSON.stringify(tg.initDataUnsafe.receiver)}&`
