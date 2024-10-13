@@ -51,7 +51,13 @@ function App() {
   useEffect(() => {
     async function getUser() {
       try {
-        var response  = await axios.get(`https://market-bot.org:8082/clients_api/user/get_user/${botId}?client_tg_id=${userId}`)
+        console.log(tg.initDataUnsafe)
+        // var config = {
+        //   headers: {
+        //     'Authorization': `bearer ${tg.initDataUnsafe ?? []}`,
+        //   }
+        // }
+        // var response  = await axios.get(`https://market-bot.org:8082/clients_api/user/get_user/${botId}?client_tg_id=${userId}`, config)
         userInfo = response.data
         setAppState(response);
         if (response.status === 200) {
@@ -62,7 +68,7 @@ function App() {
           // await createCart()
         }
       } catch (e) {
-        // console.log(e)
+        console.log(e)
       }
     }
 
