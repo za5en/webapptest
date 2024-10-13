@@ -57,6 +57,7 @@ function App() {
           }
         }
         var response  = await axios.get(`https://market-bot.org:8082/clients_api/user/get_user/${botId}?client_tg_id=${user.id}`, config)
+        console.log(response)
         userInfo = response.data
         setAppState(response);
         if (response.status === 200) {
@@ -67,7 +68,7 @@ function App() {
           // await createCart()
         }
       } catch (e) {
-        console.log(e)
+        // console.log(e)
       }
     }
 
