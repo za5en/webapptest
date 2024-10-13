@@ -67,7 +67,7 @@ function App() {
           // await createCart()
         }
       } catch (e) {
-        console.log(e)
+        // console.log(e)
       }
     }
 
