@@ -47,6 +47,7 @@ export function useTelegram() {
         tokenString += `can_send_after=${tg.initDataUnsafe.can_send_after}`
       }
       if (tokenString[tokenString.length - 1] === '&') {
+        console.log(tokenString[tokenString.length - 1])
         tokenString.slice(0, -1);
       }
     }
