@@ -6,6 +6,8 @@ import axios from 'axios';
 import { userInfo } from '../TestData/user.jsx';
 import ReactLoading from "react-loading";
 import { goodsOrder } from '../Profile/OrderCard/OrderCard.jsx';
+import { config } from '../../api.js';
+import ProdService from '../../services/ProdService.js';
 
 var goodsMarks = new Map()
 
@@ -115,7 +117,7 @@ const Feedback = () => {
             for (let i = 0; i < goodsOrder.length; i++) {
                 if (goodsReviews.get(goodsOrder[i].product_id).length < 200) {
                     setIsValidContent(true);
-                    var response = await axios.post(`https://market-bot.org:8082/clients_api/reviews/create_review/${userInfo[0].bot_id}?client_id=${userInfo[0].id}&product_id=${goodsOrder[i].product_id}&content=${goodsReviews.get(goodsOrder[i].product_id)}&rate=${goodsMarks.get(goodsOrder[i].product_id) + 1}`)
+                    await ProdService.createReview(goodsOrder[i].product_id, goodsReviews.get(goodsOrder[i].product_id), goodsMarks.get(goodsOrder[i].product_id) + 1)
                 } else {
                     setIsValidContent(false);
                 }

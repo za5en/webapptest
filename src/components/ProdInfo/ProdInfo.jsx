@@ -9,6 +9,8 @@ import ReactLoading from "react-loading";
 import like1 from "../../assets/icons/non_like.svg"
 import like2 from "../../assets/icons/like.svg"
 import Button from '../Button/Button.jsx';
+import { config } from '../../api.js';
+import ProdService from '../../services/ProdService.js';
 
 var optionsSelect = new Map()
 
@@ -210,7 +212,7 @@ const ProdInfo = () => {
             myReviews.pop();
         }
 
-        var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_reviews/${userInfo[0].bot_id}?client_id=${userInfo[0].id}&product_id=${location.state.id}`)
+        var response = await ProdService.getReviews(location.state.id);
         if (response.status === 200) {
             for (let i = 0; i < response.data.length; i++) {
                 if (!reviewsId.includes(response.data[i].id)) {
@@ -241,13 +243,9 @@ const ProdInfo = () => {
     }, [setAppState]);
 
     const deleteReview = async (reviewId) => {
-        try {
-            var response = await axios.post(`https://market-bot.org:8082/clients_api/reviews/delete_review/${userInfo[0].bot_id}?client_id=${userInfo[0].id}&review_id=${reviewId}`)
-            if (response.status === 200) {
-                await getReviews();
-            }
-        } catch (e) {
-            // console.log(e)
+        var response = await ProdService.deleteReview(reviewId);
+        if (response.status === 200) {
+            await getReviews();
         }
         setAppState(response);
     }
@@ -258,9 +256,9 @@ const ProdInfo = () => {
             if (products[i].id === id) {
                 find = true;
                 if (products[i].like) {
-                    await removeToFav(id);
+                    await ProdService.removeFromFav(id);
                 } else {
-                    await addToFav(id);
+                    await ProdService.addToFav(id);
                 }
                 products[i].like = !products[i].like;
             }
@@ -268,30 +266,6 @@ const ProdInfo = () => {
         // product.like = !product.like;
         //api method
         setProdState(prodState + 1)
-    }
-
-    async function addToFav(id) {
-        try {
-            var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/add_to_favorites/${userInfo[0].bot_id}?product_id=${id}&client_id=${userInfo[0].id}`)
-            // console.log(1)
-            if (response.status === 200) {
-            //   console.log(response)
-            }
-        } catch (e) {
-            // console.log(e)
-        }
-    }
-
-    async function removeToFav(id) {
-        try {
-            var response = await axios.delete(`https://market-bot.org:8082/clients_api/clients_menu/remove_from_favorites/${userInfo[0].bot_id}?product_id=${id}&client_id=${userInfo[0].id}`)
-            // console.log(1)
-            if (response.status === 200) {
-            //   console.log(response)
-            }
-        } catch (e) {
-            // console.log(e)
-        }
     }
 
     var getStickers = [];

@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react'
 import './Support.css'
 import OtherHeader from '../OtherHeader/OtherHeader';
 import { useNavigate } from 'react-router-dom';
-import { userInfo } from '../TestData/user.jsx';
-import axios from 'axios';
 import ReactLoading from "react-loading";
+import SupportService from '../../services/SupportService.js';
 
 export var requests = []
 
@@ -17,7 +16,7 @@ const Support = () => {
     useEffect(() => {
     
         async function getRequests() {
-          var response = await axios.get(`https://market-bot.org:8082/clients_api/technical_support/get_my_request/${userInfo[0].bot_id}?client_id=${userInfo[0].id}`)
+          var response = await SupportService.getRequests();
           if (response.status === 200) {
             while (response.length > 0) {
                 requests.pop()

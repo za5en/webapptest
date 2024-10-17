@@ -5,6 +5,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { userInfo } from '../TestData/user.jsx';
 import ReactLoading from "react-loading";
+import { config } from '../../api.js';
+import ProdService from '../../services/ProdService.js';
 
 var prodMark = new Map()
 
@@ -98,7 +100,7 @@ const EditReview = () => {
     const sendReview = async () => {
         var content = document.getElementById('content').value
         async function editReview() {
-            var response = await axios.post(`https://market-bot.org:8082/clients_api/reviews/change_review/${userInfo[0].bot_id}?client_id=${userInfo[0].id}&review_id=${location.state.revId}&content=${content}&rate=${prodMark.get(product.id) + 1}`)
+            var response = await ProdService.editReview(location.state.revId, content, prodMark.get(product.id) + 1);
             setAppState(response);
           }
 

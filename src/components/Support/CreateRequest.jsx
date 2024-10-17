@@ -4,6 +4,7 @@ import axios from 'axios';
 import { userInfo } from '../TestData/user';
 import ReactLoading from "react-loading";
 import OtherHeader from '../OtherHeader/OtherHeader.jsx';
+import SupportService from '../../services/SupportService.js';
 
 const CreateRequest = () => {
     let navigate = useNavigate();
@@ -20,11 +21,10 @@ const CreateRequest = () => {
         var comment = document.getElementById("comment").value
       
         async function createRequest() {
-            var response = await axios.post(`https://market-bot.org:8082/clients_api/technical_support/create_request/${userInfo[0].bot_id}?client_id=${userInfo[0].id}&title=${title}&content=${comment}&email=${email}`)
+            var response = await SupportService.createRequest(title, comment, email);
             setAppState(response);
             return response.status
         }
-
 
         if (document.getElementById('email').value.length > 0 && document.getElementById('email').value.length < 100) {
             setIsValidEmail(true);

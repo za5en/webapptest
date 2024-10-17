@@ -6,12 +6,16 @@ import { userInfo } from '../../TestData/user';
 import axios from 'axios';
 import ReactLoading from "react-loading";
 import { goodsAmount } from '../../Products/Products.jsx';
+import { config } from '../../../api.js';
+import { useTelegram } from '../../../hooks/useTelegram.js';
+import ProdService from '../../../services/ProdService.js';
+import OrdersService from '../../../services/OrdersService.js';
 
 export var goodsOrder = new Map()
 export var goodsGlobal = new Map()
 
 const OrderCard = ({order, profile}) => {
-
+    const {tokenString} = useTelegram();
     let navigate = useNavigate();
     
     const [appState, setAppState] = useState();
@@ -32,15 +36,15 @@ const OrderCard = ({order, profile}) => {
         item.push(order)
 
         async function getProducts() {
-            var response  = await axios.get(`https://market-bot.org:8082/clients_api/clients_orders/get_orders/${userInfo[0].bot_id}?client_id=${userInfo[0].id}&order_id=${item[0].id}`)
-            goodsOrder = await getCart(response.data[0].cart_id);
+            var response  = await OrdersService.getOnlyProducts(item[0].id);
+            goodsOrder = await OrdersService.getCart(response.data[0].cart_id);
             // var goodsInfo = await getProductInfo();
             for (let i = 0; i < goodsOrder.length; i++) {
                 goodsOrder[i].review = await getReviews(goodsOrder[i].product_id)
                 goodsOrder[i].photoFile = []
                 var ok = true;
                 for (var j = 0; j < 3 && ok; j++) {
-                    var photo = await getPhoto(goodsOrder[i].product_id, j)
+                    var photo = await OrdersService.getPhoto(goodsOrder[i].product_id, j)
                     if (typeof photo === 'undefined') {
                         ok = false;
                     } else {
@@ -60,15 +64,10 @@ const OrderCard = ({order, profile}) => {
             setAppState(goodsOrder);
         }
     
-        async function getCart(cartId) {
-            var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_carts/${userInfo[0].bot_id}?client_id=${userInfo[0].id}&cart_id=${cartId}`)
-            return response.data.data[0].products;
-        }
-    
         async function getReviews(prodId) {
             var review = []
             try {
-                var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_reviews/${userInfo[0].bot_id}?client_id=${userInfo[0].id}&product_id=${prodId}`)
+                var response = ProdService.getReviews(prodId);
                 if (response.status === 200) {
                     for (let i = 0; i < response.data.length; i++) {
                         if (response.data[i].reviewer_id === userInfo[0].id) {
@@ -82,25 +81,6 @@ const OrderCard = ({order, profile}) => {
             }
             return review 
         }
-    
-        async function getPhoto(prodId, photoNumber) {
-            try {
-              var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_photo/${userInfo[0].bot_id}?product_id=${prodId}&photo_number=${photoNumber}`, {responseType: 'blob'})
-            //   console.log(1)
-              if (response.status === 200) {
-                return URL.createObjectURL(response.data)
-              } else {
-                return null;
-              }
-            } catch (e) {
-            //   console.log(e)
-            }
-        }
-
-        // async function getProductInfo() {
-        //     var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_all_menu/${userInfo[0].bot_id}?client_id=${userInfo[0].id}`)
-        //     return response.data;
-        // }
       
         async function makeRequest() {
             setIsLoading(true);

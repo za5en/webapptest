@@ -7,6 +7,7 @@ import like1 from "../../assets/icons/non_like.svg"
 import like2 from "../../assets/icons/like.svg"
 import axios from 'axios';
 import { userInfo } from '../TestData/user.jsx';
+import ProdService from '../../services/ProdService.js';
 
 const ProductItem = ({ product, className, onAdd, changePrice, link }) => {
 
@@ -87,9 +88,9 @@ const ProductItem = ({ product, className, onAdd, changePrice, link }) => {
             if (products[i].id === id) {
                 find = true;
                 if (products[i].like) {
-                    await removeFromFav(id);
+                    await ProdService.removeFromFav(id);
                 } else {
-                    await addToFav(id);
+                    await ProdService.addToFav(id);
                 }
                 products[i].like = !products[i].like;
             }
@@ -97,30 +98,6 @@ const ProductItem = ({ product, className, onAdd, changePrice, link }) => {
         // product.like = !product.like;
         //api method
         setProdState(prodState + 1)
-    }
-
-    async function addToFav(id) {
-        try {
-            var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/add_to_favorites/${userInfo[0].bot_id}?product_id=${id}&client_id=${userInfo[0].id}`)
-            // console.log(1)
-            if (response.status === 200) {
-            //   console.log(response)
-            }
-        } catch (e) {
-            // console.log(e)
-        }
-    }
-
-    async function removeFromFav(id) {
-        try {
-            var response = await axios.delete(`https://market-bot.org:8082/clients_api/clients_menu/remove_from_favorites/${userInfo[0].bot_id}?product_id=${id}&client_id=${userInfo[0].id}`)
-            // console.log(1)
-            if (response.status === 200) {
-            //   console.log(response)
-            }
-        } catch (e) {
-            // console.log(e)
-        }
     }
 
     var getStickers = [];

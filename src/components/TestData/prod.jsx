@@ -5,6 +5,7 @@ let banners = []
 let reviews = []
 let reviewsId = []
 let myReviews = []
+let ordersTest = []
 let stickerInfo = new Map()
 let stickerContent = new Map()
 // let products = [{id: 1, name: 'Бургер', price: 99, category_name: 'Основные блюда', oldPrice: "129.10 ₽", weight: 250, variants: ['вариант 1', 'вариант 2'], options: ['опция 1', 'опция 2'], description: 'Еда вкусная и съедобная Еда вкусная и съедобная Еда вкусная и съедобная'},
@@ -20,4 +21,4 @@ let stickerContent = new Map()
 // let banners = [{id: 1, image: '', header: "Пример баннера демонстрирует работу баннеров", description: "Демонстрация баннера. Хотите такой магазин? Напишите нам в Телеграм.", goods: [88, 89, 86]},
 // {id: 2, image: '', header: "Пример баннера #2 находится здесь", description: "Демонстрация баннера. Хотите такой магазин? Не пишите нам в Телеграм."},
 // {id: 3, image: '', header: "Пример баннера #3 находится здесь", description: "Демонстрация баннера. Хотите такой магазин? Не пишите нам в Телеграм."}]
-module.exports = {products, categories, catNames, banners, reviews, reviewsId, myReviews, stickerInfo, stickerContent};
+module.exports = {products, categories, catNames, banners, reviews, reviewsId, myReviews, ordersTest, stickerInfo, stickerContent};

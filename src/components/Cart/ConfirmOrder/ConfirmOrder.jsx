@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import './ConfirmOrder.css'
 import { useNavigate } from 'react-router-dom';
 import { useTelegram } from '../../../hooks/useTelegram';
@@ -8,6 +8,7 @@ import { userInfo } from '../../TestData/user';
 import ReactLoading from "react-loading";
 import { contacts } from '../../Profile/Profile.jsx';
 import OtherHeader from '../../OtherHeader/OtherHeader.jsx';
+import ConfirmService from '../../../services/ConfirmService.js';
 
 var promo = []
 // export var deliveryAddress = []
@@ -20,7 +21,6 @@ var fieldFill = new Map()
 
 const ConfirmOrder = () => {
     let navigate = useNavigate();
-    const {queryId} = useTelegram(); 
 
     const [appState, setAppState] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
@@ -176,174 +176,21 @@ const ConfirmOrder = () => {
                 console.error('Failed to fetch coordinates:', error)
             }
         }
-
-        async function createCart() {
-            var response  = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/create_cart/${userInfo[0].bot_id}?client_id=${userInfo[0].id}`)
-            // while (cartId.length > 0) {
-            //     cartId.pop()
-            // }
-            // cartId.push(response.data.data)
-            userInfo[0].cartId = response.data.data
-            // setAppState(response);
-    
-            await addToCart();
-        }
-    
-        async function addToCart() {
-            var response = ''
-            for (let i = 0; i < goods.length; i++) {
-                if (typeof goods[i]?.options !== "undefined" && goods[i]?.options.length > 0) {
-                    let find = false;
-                    var options = []
-                    for (let j = 0; j < products.length && !find; j++) {
-                        if (parseInt(goods[i].id.substring(0, goods[i].id.indexOf("_"))) === products[j].id) {
-                            find = true;
-                            var prodKey = goods[i].id.substring(goods[i].id.indexOf("_") + 1);
-                            var k = 0;
-                            while (prodKey.length > 0) {
-                                var index = 0
-                                if (prodKey.includes("_")) {
-                                    index = prodKey.substring(0, prodKey.indexOf("_"));
-                                } else {
-                                    index = prodKey
-                                }
-    
-                                var option = {
-                                    "group_name": products[j].options[k].group_name,
-                                    options: [
-                                        products[j].options[k].options[index]
-                                    ]
-                                }
-                                options.push(option)
-    
-                                if (prodKey.includes("_")) {
-                                    prodKey = prodKey.substring(prodKey.indexOf("_") + 1)
-                                } else {
-                                    prodKey = ""
-                                }
-                                k++;
-                            }
-                        }
-                    }
-                    if (typeof goods[i].boostPrice === 'undefined') {
-                        goods[i].boostPrice = goods[i].price;
-                    }
-                    response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/add_to_cart/${userInfo[0].bot_id}`, {
-                            cart_id: userInfo[0].cartId,
-                            product_id: parseInt(goods[i].id.substring(0, goods[i].id.indexOf("_"))),
-                            count: goodsAmount.get(goods[i].id),
-                            price: goods[i].boostPrice * goodsAmount.get(goods[i].id),
-                            option: options
-                        }, {
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                    })
-                } else {
-                    response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/add_to_cart/${userInfo[0].bot_id}`, {
-                            cart_id: userInfo[0].cartId,
-                            product_id: parseInt(goods[i].id),
-                            count: goodsAmount.get(`${goods[i].id}`),
-                            price: goods[i].price * goodsAmount.get(`${goods[i].id}`),
-                            option: []
-                        }, {
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                    })
-                }
-            }
-            // message = response.data.message
-            // if (message === 'Product added to cart')
-            // setAppState(response);
-        }
-      
-        async function createOrder() {
-            var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_orders/create_order/${userInfo[0].bot_id}`, {
-                "client_id": userInfo[0].id,
-                "bot_id": userInfo[0].bot_id,
-                "cart_id": userInfo[0].cartId,
-                "pay_type": paymentType,
-                "delivery_type": delType,
-                "delivery_address": deliveryAddress,
-                "comment": comment,
-                "phone": phone,
-                "promo_code": promo[0],
-                "bonus_points": bonusPoints,
-                "latitude": userInfo[0].latitude,
-                "longitude": userInfo[0].longitude,
-                "name": name,
-            }, {
-              headers: {
-                  'Content-Type': 'application/json'
-              }
-            })
-            // console.log(response)
-            setAppState(response);
-            return response.status
-        }
-  
-        async function payForCart() {
-            if (promo[0] !== null && promo[0] !== "" && typeof promo[0] !== "undefined") {
-                var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/pay_for_cart/${userInfo[0].bot_id}?client_id=${userInfo[0].id}&cart_id=${userInfo[0].cartId}&promo_code=${promo[0]}&bonus_points=${bonusPoints}`, {
-                    "client_id": userInfo[0].id,
-                    "bot_id": userInfo[0].bot_id,
-                    "cart_id": userInfo[0].cartId,
-                    "pay_type": paymentType,
-                    "delivery_type": delType,
-                    "delivery_address": deliveryAddress,
-                    "comment": comment,
-                    "phone": phone,
-                    "promo_code": promo[0],
-                    "latitude": userInfo[0].latitude,
-                    "longitude": userInfo[0].longitude,
-                    "name": name
-                    }, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                var json = response.data
-                json.query_id = queryId
-                // console.log(response)
-                setAppState(response);
-                return response.status
-            } else {
-                var response = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/pay_for_cart/${userInfo[0].bot_id}?client_id=${userInfo[0].id}&cart_id=${userInfo[0].cartId}&bonus_points=${bonusPoints}`, {
-                  "client_id": userInfo[0].id,
-                  "bot_id": userInfo[0].bot_id,
-                  "cart_id": userInfo[0].cartId,
-                  "pay_type": paymentType,
-                  "delivery_type": delType,
-                  "delivery_address": deliveryAddress,
-                  "comment": comment,
-                  "phone": phone,
-                  "latitude": userInfo[0].latitude,
-                  "longitude": userInfo[0].longitude,
-                  "name": name
-                }, {
-                  headers: {
-                      'Content-Type': 'application/json'
-                  }
-                })
-                var json = response.data
-                json.query_id = queryId
-                // console.log(response)
-                setAppState(response);
-                return response.status
-            }
-        }
       
         async function makeRequest() {
-            await createCart();
+            await ConfirmService.createCart(goods);
             if (selection.get('delivery') === 1) {
                 await getCoords();
             }
             if (selection.get('payment') === 0) {
-                return await payForCart()
+                var response = await ConfirmService.payForCart(paymentType, delType, deliveryAddress, comment, phone, promo, bonusPoints, name);
+                setAppState(response);
+                return response.status;
             }     
             else {
-                return await createOrder()
+                var response = await ConfirmService.createOrder(paymentType, delType, deliveryAddress, comment, phone, promo, bonusPoints, name);
+                setAppState(response);
+                return response.status;
             }
         }
 
