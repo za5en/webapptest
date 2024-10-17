@@ -52,7 +52,7 @@ const Profile = () => {
               newOrderId1 = orders[i].id;
               setNewOrderIndex(i);
             }
-            await OrdersService.getProducts(orders[i].id, first);
+            await OrdersService.getProductsWPhoto(orders[i].id, first);
           }
           setAppState(response);
         }

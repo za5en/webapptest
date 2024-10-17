@@ -209,7 +209,7 @@ const ConfirmOrder = () => {
                             try {
                                 code = await makeRequest();
                             } catch (e) {
-                                console.log(e);
+                                // console.log(e);
                                 if (typeof e !== "undefined") {
                                     if (typeof e.response !== "undefined") {
                                         if (typeof e.response.data !== "undefined") {

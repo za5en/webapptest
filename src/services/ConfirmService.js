@@ -1,6 +1,7 @@
 import axios from "axios";
 import { userInfo } from "../components/TestData/user";
 import { config } from "../api";
+import { useTelegram } from "../hooks/useTelegram";
 
 export default class ConfirmService {
     static async createCart(goods) {
