@@ -60,6 +60,7 @@ export default class OrdersService {
           }
         }
         goodsGlobal.set(id, thisGoods);
+        console.log(goodsGlobal)
     }
     
     static async getCart(cartId) {
@@ -82,7 +83,7 @@ export default class OrdersService {
             return null;
           }
         } catch (e) {
-        //   console.log(e)
+          console.log(e)
         }
     }
 }
