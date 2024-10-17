@@ -1,10 +1,12 @@
-import React, { Component } from 'react'
+import React, { Component, useEffect } from 'react'
 import Button from '../Button/Button';
 import { useTelegram } from '../../hooks/useTelegram';
 import './Header.css'
 import search from "../../assets/icons/search.svg"
 import { useNavigate } from 'react-router-dom';
 import { products, categories, catNames } from '../TestData/prod.jsx';
+import eruda from 'eruda';
+import settings from "../../assets/icons/settings.svg"
 
 class HeaderComponent extends Component {
     constructor(props) {
@@ -47,7 +49,7 @@ class HeaderComponent extends Component {
 }
 
 const Header = () => {
-    const {user, onClose} = useTelegram(); 
+    const {user, onClose} = useTelegram();
     let navigate = useNavigate();
 
     let productsByCat = new Map();
@@ -84,6 +86,10 @@ const Header = () => {
             }
         }
     }
+
+    useEffect(() => {
+        eruda.init();
+    })
 
     return (
         <div className='header'>
