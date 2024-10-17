@@ -2,6 +2,7 @@ import axios from "axios";
 import { userInfo } from "../components/TestData/user";
 import { config } from "../api";
 import { useTelegram } from "../hooks/useTelegram";
+import { goodsAmount } from "../components/Products/Products";
 
 export default class ConfirmService {
     static async createCart(goods) {

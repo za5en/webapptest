@@ -3,6 +3,7 @@ import { config } from '../api.js';
 import { userInfo } from "../components/TestData/user.jsx";
 import { ordersTest } from "../components/TestData/prod.jsx";
 import { goodsGlobal } from "../components/Profile/OrderCard/OrderCard.jsx";
+import { useTelegram } from "../hooks/useTelegram.js";
 
 export default class OrdersService {
 
@@ -68,6 +69,7 @@ export default class OrdersService {
 
     static async getPhoto(prodId, photoNumber) {
         try {
+          const {tokenString} = useTelegram();
           var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_photo/${userInfo[0].bot_id}?product_id=${prodId}&photo_number=${photoNumber}`, {
             headers: {
               'Authorization': tokenString,
@@ -80,7 +82,7 @@ export default class OrdersService {
             return null;
           }
         } catch (e) {
-          console.log(e)
+        //   console.log(e)
         }
     }
 }
