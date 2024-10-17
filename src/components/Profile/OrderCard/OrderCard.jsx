@@ -117,7 +117,6 @@ const OrderCard = ({order, profile}) => {
     }
 
     var goods = goodsGlobal.get(order.id)
-    console.log(goods)
 
     return (
         <div>

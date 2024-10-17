@@ -49,7 +49,7 @@ export default class OrdersService {
           if (typeof thisGoods !== 'undefined') {
             if (typeof thisGoods[0].product !== 'undefined') {
               if (thisGoods[0].product !== null) {
-              var photo = await OrdersService.getPhoto(userInfo[0].bot_id, thisGoods[0].product.id, 0)
+              var photo = await OrdersService.getPhoto(thisGoods[0].product.id, 0)
               thisGoods[0].product.photoFile = photo;
               } else {
                 thisGoods[0].product = {
@@ -60,7 +60,6 @@ export default class OrdersService {
           }
         }
         goodsGlobal.set(id, thisGoods);
-        console.log(goodsGlobal)
     }
     
     static async getCart(cartId) {
@@ -83,7 +82,7 @@ export default class OrdersService {
             return null;
           }
         } catch (e) {
-          console.log(e)
+        //   console.log(e)
         }
     }
 }
