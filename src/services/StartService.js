@@ -17,6 +17,7 @@ export default class StartService {
             if (response.status === 200) {
                 await StartService.Start(botId);
             }
+            return response;
         } catch (e) {
             console.log(e)
         }
@@ -24,7 +25,6 @@ export default class StartService {
 
     static async Start(botId) {        
         async function getMenu(botId) {
-            const [appState, setAppState] = useState();
             try {
             var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_all_menu/${botId}?client_id=${userInfo[0].id}`, config)
             products = response.data
@@ -77,7 +77,6 @@ export default class StartService {
                 }
               }
             }
-            setAppState(response);
           } catch (e) {
             // console.log(e)
           }
