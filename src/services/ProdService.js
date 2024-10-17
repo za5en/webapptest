@@ -5,7 +5,7 @@ import { config } from "../api";
 export default class ProdService {
     static async addToFav(id) {
         try {
-            await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/add_to_favorites/${userInfo[0].bot_id}?product_id=${id}&client_id=${userInfo[0].id}`, config)
+            await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/add_to_favorites/${userInfo[0].bot_id}?product_id=${id}&client_id=${userInfo[0].id}`, null, config)
         } catch (e) {
             console.log(e)
         }
@@ -21,7 +21,7 @@ export default class ProdService {
 
     static async createReview(id, content, mark) {
         try {
-            await axios.post(`https://market-bot.org:8082/clients_api/reviews/create_review/${userInfo[0].bot_id}?client_id=${userInfo[0].id}&product_id=${id}&content=${content}&rate=${mark}`, config)
+            await axios.post(`https://market-bot.org:8082/clients_api/reviews/create_review/${userInfo[0].bot_id}?client_id=${userInfo[0].id}&product_id=${id}&content=${content}&rate=${mark}`, null, config)
         } catch (e) {
             // console.log(e)
         }

@@ -1,7 +1,6 @@
 import { useTelegram } from '../hooks/useTelegram';
 import { userInfo } from '../components/TestData/user.jsx';
 import { products, categories, banners, catNames, stickerInfo, stickerContent } from "../components/TestData/prod";
-import { useState } from "react";
 import axios from "axios";
 import { contacts } from "../components/Profile/Profile.jsx";
 import { config } from "../api";
@@ -19,7 +18,7 @@ export default class StartService {
             }
             return response;
         } catch (e) {
-            console.log(e)
+            // console.log(e)
         }
     }
 

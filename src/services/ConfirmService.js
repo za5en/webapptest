@@ -4,7 +4,7 @@ import { config } from "../api";
 
 export default class ConfirmService {
     static async createCart(goods) {
-        var response  = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/create_cart/${userInfo[0].bot_id}?client_id=${userInfo[0].id}`, config)
+        var response  = await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/create_cart/${userInfo[0].bot_id}?client_id=${userInfo[0].id}`, null, config)
         userInfo[0].cartId = response.data.data
         await ConfirmService.addToCart(goods);
     }
