@@ -12,6 +12,7 @@ export default class StartService {
         // let userId = 649105595
         
         try {
+            console.log(botId)
             var response  = await axios.get(`https://market-bot.org:8082/clients_api/user/get_user/${botId}?client_tg_id=${user.id}`, config)
             userInfo = response.data
             if (response.status === 200) {

@@ -27,6 +27,7 @@ function App() {
   useEffect(() => {
     async function makeRequest() {
       setIsLoading(true);
+      console.log(botId)
       await StartService.getUser(botId);
       setIsLoading(false);
     }
