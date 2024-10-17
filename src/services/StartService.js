@@ -22,12 +22,10 @@ export default class StartService {
         }
     }
 
-    static async Start() {
-
-        const [appState, setAppState] = useState();
-        
+    static async Start() {        
         async function getMenu(botId) {
-          try {
+            const [appState, setAppState] = useState();
+            try {
             var response = await axios.get(`https://market-bot.org:8082/clients_api/clients_menu/get_all_menu/${botId}?client_id=${userInfo[0].id}`, config)
             products = response.data
             categories = []
