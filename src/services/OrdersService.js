@@ -80,7 +80,7 @@ export default class OrdersService {
             return null;
           }
         } catch (e) {
-          // console.log(e)
+          console.log(e)
         }
     }
 }

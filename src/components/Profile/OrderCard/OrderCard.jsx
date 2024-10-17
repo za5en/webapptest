@@ -3,11 +3,8 @@ import './OrderCard.css'
 import { useNavigate } from 'react-router-dom';
 import { item } from '../OrderPage/OrderPage.jsx'
 import { userInfo } from '../../TestData/user';
-import axios from 'axios';
 import ReactLoading from "react-loading";
 import { goodsAmount } from '../../Products/Products.jsx';
-import { config } from '../../../api.js';
-import { useTelegram } from '../../../hooks/useTelegram.js';
 import ProdService from '../../../services/ProdService.js';
 import OrdersService from '../../../services/OrdersService.js';
 
@@ -15,7 +12,6 @@ export var goodsOrder = new Map()
 export var goodsGlobal = new Map()
 
 const OrderCard = ({order, profile}) => {
-    const {tokenString} = useTelegram();
     let navigate = useNavigate();
     
     const [appState, setAppState] = useState();
