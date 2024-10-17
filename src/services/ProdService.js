@@ -7,7 +7,7 @@ export default class ProdService {
         try {
             await axios.post(`https://market-bot.org:8082/clients_api/clients_menu/add_to_favorites/${userInfo[0].bot_id}?product_id=${id}&client_id=${userInfo[0].id}`, config)
         } catch (e) {
-            // console.log(e)
+            console.log(e)
         }
     }
 
